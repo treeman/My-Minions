@@ -2,24 +2,28 @@
 
 #include "Tree/Game.hpp"
 
+Tree::Game *Tree::Game::game = 0;
+
 using namespace Tree;
 
-Game::Game( int width, int height, bool fullscreen, std::string title )
+Game::Game() : exit_called( false )
 {
-	hge->System_SetState( HGE_DONTSUSPEND, true );
-	hge->System_SetState( HGE_SHOWSPLASH, false );
-	hge->System_SetState( HGE_HIDEMOUSE, true );
 	
-	hge->Random_Seed( time( NULL ) );
-	srand( time( NULL ) );
 }
 Game::~Game()
 {
 	
 }
 
-Game *Instance();
-void Destroy();
+Game *Game::Instance()
+{
+	if( !game ) game = new Game;
+	return game;
+}
+void Game::Destroy()
+{
+	delete game;
+}
 
 bool Game::Logic()
 {
@@ -30,11 +34,11 @@ bool Game::Logic()
 	
 	if( curr_state ) {
 		
-//		hgeInputEvent event;
-//		while( hge->Input_GetEvent( &event ) ) 
-//		{
-//			curr_state->HandleEvent( event );
-//		}
+		hgeInputEvent event;
+		while( hge->Input_GetEvent( &event ) ) 
+		{
+			curr_state->HandleEvent( event );
+		}
 		
 		curr_state->Update( dt );
 	}
@@ -53,7 +57,16 @@ bool Game::Render()
 	return false;
 }
 
-void Game::Init()
+void Game::Init( int width, int height, bool fullscreen, std::string title )
+{
+	hge->System_SetState( HGE_DONTSUSPEND, true );
+	hge->System_SetState( HGE_SHOWSPLASH, false );
+	hge->System_SetState( HGE_HIDEMOUSE, true );
+	
+	hge->Random_Seed( time( NULL ) );
+	srand( time( NULL ) );
+}
+void Game::InitPostHge()
 {
 	curr_state = Top();
 }

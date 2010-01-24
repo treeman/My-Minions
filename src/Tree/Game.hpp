@@ -20,7 +20,7 @@ namespace Tree
 		bool Logic();
 		bool Render();
 		
-		void Init( int width, int height, bool fullscreen, std::string title, bool show_logo );
+		void Init( int width, int height, bool fullscreen, std::string title );
 		void InitPostHge();
 		
 		void Pop();
@@ -43,5 +43,3 @@ namespace Tree
 	};
 
 }
-
-Tree::Game Tree::Game::game = 0;

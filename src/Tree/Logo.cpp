@@ -1,5 +1,5 @@
 #include "Tree/Logo.hpp"
-//#include "includes/System/Settings.hpp"
+#include "Tree/Game.hpp"
 
 using namespace Tree;
 
@@ -32,7 +32,7 @@ Logo::~Logo()
 bool Logo::HandleEvent( hgeInputEvent &event )
 {
 	if( event.type == INPUT_KEYDOWN || event.type == INPUT_MBUTTONDOWN ) {
-//		state_handler->Pop();
+		Tree::Game::Instance()->Pop();
 	}
 	return true;
 }
@@ -49,7 +49,7 @@ void Logo::Update( float dt )
 		alpha = (int)( 255 * t.GetTime() / fade_time );
 		if( alpha > 255 ) {
 			alpha = 255;
-//			state_handler->Pop();
+			Tree::Game::Instance()->Pop();
 			return;
 		}
 	}
