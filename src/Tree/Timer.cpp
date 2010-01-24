@@ -1,5 +1,7 @@
 #include "Tree/Timer.hpp"
 
+using namespace Tree;
+
 Timer::Timer() : start_tick(0), pause_tick(0), time(0), is_started(false), is_paused(false) 
 {
 	
