@@ -3,14 +3,16 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/weak_ptr.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <string>
 #include <vector>
 #include <map>
+#include <list>
 
-#include "Tree/Dator.hpp"
 #include "Tree/Errorhandling.hpp"
 #include "Tree/Singleton.hpp"
+#include "Tree/BaseDator.hpp"
 
 #define SETTINGS Tree::Settings::Instance()
 
@@ -32,6 +34,8 @@ namespace Tree
 		
 		template<typename T>
 		T GetValue( std::string name ) throw( Error::setting_not_found );
+		template<typename T>
+		void SetValue( std::string name, T value );
 		
 		std::string GetSetting( std::string name );
 
@@ -75,4 +79,13 @@ T Tree::Settings::GetValue( std::string name ) throw( Error::setting_not_found )
 		std::string s = "Setting '" + name + "' not found";
 		throw( Error::setting_not_found( s.c_str() ) ); 
 	}
+}
+
+template<typename T>
+void Tree::Settings::SetValue( std::string name, T value )
+{
+	try {
+		SetVariable( name, boost::lexical_cast<std::string>( value ) );
+	}
+	catch( boost::bad_lexical_cast &e ) { }
 }

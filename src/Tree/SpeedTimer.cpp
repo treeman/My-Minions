@@ -1,6 +1,6 @@
 #include "Tree/SpeedTimer.hpp"
 
-using namespace Tree;
+using Tree::SpeedTimer;
 
 SpeedTimer::SpeedTimer() : speed(1.0)
 {

@@ -1,6 +1,6 @@
 #include "Tree/InputHandler.hpp"
 
-using namespace Tree;
+using Tree::InputChain;
 
 InputChain::InputChain() { }
 	

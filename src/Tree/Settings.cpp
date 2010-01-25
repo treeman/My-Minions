@@ -2,8 +2,9 @@
 #include <fstream>
 
 #include "Tree/Settings.hpp"
+#include "Tree/Dator.hpp"
 
-using namespace Tree;
+using Tree::Settings;
 
 Settings::Settings()
 { 

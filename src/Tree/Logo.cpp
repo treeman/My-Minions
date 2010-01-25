@@ -1,7 +1,7 @@
 #include "Tree/Logo.hpp"
 #include "Tree/Game.hpp"
 
-using namespace Tree;
+using Tree::Logo;
 
 Logo::Logo()
 {

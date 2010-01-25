@@ -6,6 +6,8 @@
 #include "Tree/Settings.hpp"
 #include "Demo.hpp"
 
+#include "Tree/Log.hpp"
+
 bool frame_func()
 {
 	return Tree::Game::Instance()->Logic();
@@ -18,6 +20,9 @@ bool render_func()
 
 int main( int argc, char *argv[] )
 {	
+	//init the boost logs
+	init_logs();
+	
 	try {
 		HgeObj hge;
 		
@@ -30,7 +35,8 @@ int main( int argc, char *argv[] )
 			800, //width
 			600, //height
 			true, //windowed
-			"7days test" //window title
+			"7days test", //window title
+			"settings.ini"
 		);
 		
 		if( hge->System_Initiate() )
@@ -49,11 +55,11 @@ int main( int argc, char *argv[] )
 	}
 	catch( std::exception &e )
 	{
-		
+		L_ << "Fatal exception: " << e.what();
 	}
 	catch( ... )
 	{
-		
+		L_ << "Fatal unknown exception caught!";
 	}
 	
 	//destroy the game
