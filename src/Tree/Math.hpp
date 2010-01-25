@@ -37,6 +37,31 @@ namespace math
 		if( x > max ) return max;
 		return x;
 	}
+	
+	template<class Iterator>
+	Iterator random( Iterator first, Iterator last )
+	{
+		//will crash if first == last
+		if( first == last ) {
+			return first;
+		}
+		int n = 0;
+		Iterator it = first;
+		for( ; it != last; ++it ) {
+			++n;
+		}
+		if( n == 1 ) {
+			return first;
+		}
+		
+		int r = math::irandom( 0, n - 1 );
+		for( int i = 0; i < n; ++i, ++first ) { 
+			if( i == r ) {
+				return first;
+			}
+		}
+		return first;
+	}
 }
 
 namespace fastmath 

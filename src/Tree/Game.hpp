@@ -4,23 +4,19 @@
 
 #include "Hge/Hge.hpp"
 #include "Tree/GameState.hpp"
+#include "Tree/Singleton.hpp"
 
 namespace Tree 
 {
-	
-	class Game {
+	class Game : public Singleton<Game> {
 	public:
 		Game();
 		~Game();
 		
-		//singleton
-		static Game *Instance();
-		static void Destroy();
-		
 		bool Logic();
 		bool Render();
 		
-		void Init( int width, int height, bool fullscreen, std::string title );
+		void Init( int width, int height, bool windowed, std::string title, std::string settings_file = "" );
 		void InitPostHge();
 		
 		void Pop();
@@ -38,8 +34,6 @@ namespace Tree
 		boost::shared_ptr<GameState> curr_state;
 		
 		HgeObj hge;
-		
-		static Game *game;
 	};
 
 }

@@ -3,6 +3,7 @@
 
 #include "Tree/Game.hpp"
 #include "Tree/Logo.hpp"
+#include "Tree/Settings.hpp"
 #include "Demo.hpp"
 
 bool frame_func()
@@ -24,15 +25,11 @@ int main( int argc, char *argv[] )
 		hge->System_SetState( HGE_FRAMEFUNC, frame_func );
 		hge->System_SetState( HGE_RENDERFUNC, render_func );
 		
-		//important to set it to windowed to prevent flashing back n forth
-		//if you want it windowed but it's fullscreen by default
-		hge->System_SetState( HGE_WINDOWED, true );
-		
 		//create the game
 		Tree::Game::Instance()->Init(
 			800, //width
 			600, //height
-			false, //fullscreen
+			true, //windowed
 			"7days test" //window title
 		);
 		
@@ -61,6 +58,8 @@ int main( int argc, char *argv[] )
 	
 	//destroy the game
 	Tree::Game::Instance()->Destroy();
+	//destroy settings
+	Tree::Settings::Instance()->Destroy();
 
 	return 0;
 }

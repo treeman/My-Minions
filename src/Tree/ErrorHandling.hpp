@@ -4,7 +4,7 @@
 #include <exception>
 #include <stdexcept>
 
-namespace Tree 
+namespace Error 
 {
 	class file_not_found : public std::exception {
 	public:

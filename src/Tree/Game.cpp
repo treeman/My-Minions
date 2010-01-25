@@ -1,8 +1,7 @@
 #include <time.h>
 
 #include "Tree/Game.hpp"
-
-Tree::Game *Tree::Game::game = 0;
+#include "Tree/Settings.hpp"
 
 using namespace Tree;
 
@@ -13,16 +12,6 @@ Game::Game() : exit_called( false )
 Game::~Game()
 {
 	
-}
-
-Game *Game::Instance()
-{
-	if( !game ) game = new Game;
-	return game;
-}
-void Game::Destroy()
-{
-	delete game;
 }
 
 bool Game::Logic()
@@ -57,14 +46,27 @@ bool Game::Render()
 	return false;
 }
 
-void Game::Init( int width, int height, bool fullscreen, std::string title )
+void Game::Init( int width, int height, bool windowed, std::string title, std::string settings_file )
 {
 	hge->System_SetState( HGE_DONTSUSPEND, true );
 	hge->System_SetState( HGE_SHOWSPLASH, false );
 	hge->System_SetState( HGE_HIDEMOUSE, true );
 	
+	hge->System_SetState( HGE_SCREENWIDTH, width );
+	hge->System_SetState( HGE_SCREENHEIGHT, height );
+	hge->System_SetState( HGE_WINDOWED, windowed );
+	hge->System_SetState( HGE_SCREENBPP, 32 );
+	hge->System_SetState( HGE_TITLE, title.c_str() );
+	
 	hge->Random_Seed( time( NULL ) );
 	srand( time( NULL ) );
+	
+	if( settings_file != "" ) {
+		try {
+			SETTINGS->ParseFile( settings_file );
+		}
+		catch( Error::file_not_found &e ) { }
+	}
 }
 void Game::InitPostHge()
 {
