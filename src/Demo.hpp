@@ -41,8 +41,9 @@ private:
 	//our static ground
 	b2Body *groundBody;
 	
-	//a dynamic body
-	b2Body *body;
+	//dynamic bodies
+	typedef std::vector<b2Body*> Bodies;
+	Bodies bodies;
 	
 	HgeObj hge;
 };

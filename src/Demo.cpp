@@ -1,5 +1,8 @@
 #include "Demo.hpp"
 #include "Tree/Game.hpp"
+#include "BoxRender.hpp"
+
+#include <boost/foreach.hpp>
 
 Demo::Demo() : fnt( new hgeFont( "fnt/arial10.fnt" ) )
 {
@@ -50,17 +53,31 @@ Demo::Demo() : fnt( new hgeFont( "fnt/arial10.fnt" ) )
 	//create the dynamic body
 	b2BodyDef bodyDef;
 	bodyDef.position.Set( 10.0f, 100.0f );
-	body = world->CreateBody( &bodyDef );
+	bodies.push_back( world->CreateBody( &bodyDef ) );
+	bodyDef.position.Set( 12.0f, 120.0f );
+	bodies.push_back( world->CreateBody( &bodyDef ) );
+	bodyDef.position.Set( 15.0f, 110.0f );
+	bodies.push_back( world->CreateBody( &bodyDef ) );
+	bodyDef.position.Set( 9.0f, 95.0f );
+	bodies.push_back( world->CreateBody( &bodyDef ) );
+	bodyDef.position.Set( 27.0f, 90.0f );
+	bodies.push_back( world->CreateBody( &bodyDef ) );
+	bodyDef.position.Set( 25.0f, 110.0f );
+	bodies.push_back( world->CreateBody( &bodyDef ) );
+	bodyDef.position.Set( 20.0f, 120.0f );
+	bodies.push_back( world->CreateBody( &bodyDef ) );
 	
 	//define the dynamic body
 	b2PolygonDef shapeDef;
 	shapeDef.SetAsBox( 4.0f, 4.0f );
 	shapeDef.density = 1.0f;
 	shapeDef.friction = 0.3f;
-	body->CreateShape( &shapeDef );
 	
-	//note that you can set multiple shapes to a body
-	body->SetMassFromShapes();
+	BOOST_FOREACH( b2Body *b, bodies ) {
+		b->CreateShape( &shapeDef );
+		//note that you can set multiple shapes to a body
+		b->SetMassFromShapes();
+	}
 	
 	///note: never heap allocate bodies, shapes or joints with box2D
 	///always have b2World on heap
@@ -145,14 +162,6 @@ void Demo::Render()
 		fnt->printf( 30, 30 + h * n, HGETEXT_LEFT, "%i", *it );
 	}
 	
-	//render the ground
-	b2Vec2 gpos = groundBody->GetPosition();
-	hgeh::render_solid_rect( hge, gpos.x - 50, gpos.y - 10, gpos.x + 50, gpos.y + 10, 0xff64b2cf );
-	
-	//render the dynamic body
-	b2Vec2 pos = body->GetPosition();
-	hgeh::render_solid_rect( hge, pos.x, pos.y, pos.x + 4, pos.y + 4, 0xff9a1111 );
-	
 	//testing render help functions
 	hgeh::render_rect( hge, 200, 40, 220, 60, 0xffffffff );
 	hgeh::render_rect( hge, 241, 40, 260, 61, 0xffffffff );
@@ -161,6 +170,13 @@ void Demo::Render()
 	hgeh::render_solid_circle( hge, 150, 230, 30, 20, 0xff333333 );
 	hgeh::render_circle_slice( hge, 300, 300, 20, 10, 0, math::PI_2, 0xffffffff );
 	hgeh::render_solid_circle_slice( hge, 350, 300, 20, 10, 0, math::PI_2, 0xffffffff );
+	
+	//render the box2D bodies
+	b2Body *b = world->GetBodyList();
+	while( b ) {
+		render_body( b );
+		b = b->GetNext();
+	}
 }
 
 void Demo::ShuffleNext()

@@ -51,19 +51,7 @@ void hgeh::render_circle( HGE *hge, float x, float y, float radius, int segments
 		theta += increment;
 	}
 	
-	for( Positions::iterator it = positions.begin(); it != positions.end(); )
-	{
-		Vec2D p1 = *it;
-		++it;
-		Vec2D p2;
-		if( it != positions.end() ) {
-			p2 = *it;
-		}
-		else {
-			p2 = *positions.begin();
-		}
-		hge->Gfx_RenderLine( p1.x, p1.y, p2.x, p2.y, color );
-	}
+	render_lines( hge, positions, color, true );
 }
 
 void hgeh::render_circle_slice( HGE *hge, float x, float y, float radius, int segments, float begin, float end, DWORD color )
@@ -84,19 +72,7 @@ void hgeh::render_circle_slice( HGE *hge, float x, float y, float radius, int se
 		theta += increment;
 	}
 	
-	for( Positions::iterator it = positions.begin(); it != positions.end(); )
-	{
-		Vec2D p1 = *it;
-		++it;
-		Vec2D p2;
-		if( it != positions.end() ) {
-			p2 = *it;
-		}
-		else {
-			break;
-		}
-		hge->Gfx_RenderLine( p1.x, p1.y, p2.x, p2.y, color );
-	}
+	render_lines( hge, positions, color );
 	
 	Vec2D first = Vec2D( std::cos( begin ), std::sin( begin ) ) * radius + center;
 	Vec2D last = Vec2D( std::cos( end ), std::sin( end ) ) * radius + center;
@@ -121,9 +97,7 @@ void hgeh::render_solid_circle_slice( HGE *hge, float x, float y, float radius, 
 	Positions positions;
 	for( int i = 0; i < segments + 1; ++i )
 	{
-		Vec2D p = Vec2D( std::cos( theta ), std::sin( theta ) );
-		p *= radius;
-		p += center;
+		Vec2D p = Vec2D( std::cos( theta ), std::sin( theta ) ) * radius + center;
 		positions.push_back( p );
 		theta += increment;
 	}
@@ -163,4 +137,31 @@ void hgeh::render_solid_circle_slice( HGE *hge, float x, float y, float radius, 
 		
 		hge->Gfx_RenderTriple( &t );
 	}
+}
+
+void hgeh::render_lines( HGE *hge, std::vector<Vec2D> positions, DWORD color, bool loop )
+{
+	typedef std::vector<Vec2D> Positions;
+	
+	for( Positions::iterator it = positions.begin(); it != positions.end(); )
+	{
+		Vec2D p1 = *it;
+		++it;
+		Vec2D p2;
+		if( it != positions.end() ) {
+			p2 = *it;
+		}
+		else {
+			if( loop ) p2 = *positions.begin();
+			else return;
+		}
+		hge->Gfx_RenderLine( p1.x, p1.y, p2.x, p2.y, color );
+	}
+}
+
+void hgeh::render_triples( HGE *hge, std::vector<Vec2D> positions, DWORD color )
+{
+	typedef std::vector<Vec2D> Positions;
+	
+	
 }
