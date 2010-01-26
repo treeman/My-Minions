@@ -6,6 +6,9 @@
 #include "Tree/SpeedTimer.hpp"
 #include "Tree/Shufflebag.hpp"
 
+#include "Box2D/Box2D.h"
+
+//this demo tests some things :)
 class Demo : public Tree::GameState {
 public:
 	Demo();
@@ -32,4 +35,14 @@ private:
 	int latest;
 	
 	void ShuffleNext();
+	
+	boost::shared_ptr<b2World> world;
+	
+	//our static ground
+	b2Body *groundBody;
+	
+	//a dynamic body
+	b2Body *body;
+	
+	HgeObj hge;
 };

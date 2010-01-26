@@ -15,6 +15,55 @@ Demo::Demo() : fnt( new hgeFont( "fnt/arial10.fnt" ) )
 		bag->Add( i );
 	}
 	ShuffleNext();
+	
+	//set bounding box
+	b2AABB worldAABB;
+	worldAABB.lowerBound.Set( 0.0f, 0.0f );
+	worldAABB.upperBound.Set( 800.0f, 600.0f );
+	
+	b2Vec2 gravity( 0.0f, 10.0f );
+	
+	//set if bodies can sleep when they come to rest
+	bool doSleep = true;
+	
+	world.reset( new b2World( worldAABB, gravity, doSleep ) );
+	
+	//define the ground body
+	//it will be static by default (no mass) and statics do not
+	//collide with other statics and they cannot move
+	b2BodyDef groundBodyDef;
+	groundBodyDef.position.Set( 10.0f, 500.0f );
+	
+	//use the world to create a body
+	//note: does not need to be deleted, the world manages memory
+	groundBody = world->CreateBody( &groundBodyDef );
+	
+	//definition for a basic polygon
+	b2PolygonDef groundShapeDef;
+	
+	//transform into a box which will become 100x20 big
+	groundShapeDef.SetAsBox( 50.0f, 10.0f );
+	
+	//copy the box defenition into our ground
+	groundBody->CreateShape( &groundShapeDef );
+	
+	//create the dynamic body
+	b2BodyDef bodyDef;
+	bodyDef.position.Set( 10.0f, 100.0f );
+	body = world->CreateBody( &bodyDef );
+	
+	//define the dynamic body
+	b2PolygonDef shapeDef;
+	shapeDef.SetAsBox( 4.0f, 4.0f );
+	shapeDef.density = 1.0f;
+	shapeDef.friction = 0.3f;
+	body->CreateShape( &shapeDef );
+	
+	//note that you can set multiple shapes to a body
+	body->SetMassFromShapes();
+	
+	///note: never heap allocate bodies, shapes or joints with box2D
+	///always have b2World on heap
 }
 
 bool Demo::HandleEvent( hgeInputEvent &event )
@@ -65,7 +114,14 @@ bool Demo::HandleEvent( hgeInputEvent &event )
 
 void Demo::Update( float dt )
 {
+	//at least 60hz timestep
+	float timeStep = 1.0f / 60.0f;
 	
+	//recommended is 10, lower means faster but less accurate
+	int iterations  = 10;
+	
+	//update the simulation
+	world->Step( timeStep, iterations );
 }
 void Demo::Render()
 {
@@ -88,6 +144,23 @@ void Demo::Render()
 	{
 		fnt->printf( 30, 30 + h * n, HGETEXT_LEFT, "%i", *it );
 	}
+	
+	//render the ground
+	b2Vec2 gpos = groundBody->GetPosition();
+	hgeh::render_solid_rect( hge, gpos.x - 50, gpos.y - 10, gpos.x + 50, gpos.y + 10, 0xff64b2cf );
+	
+	//render the dynamic body
+	b2Vec2 pos = body->GetPosition();
+	hgeh::render_solid_rect( hge, pos.x, pos.y, pos.x + 4, pos.y + 4, 0xff9a1111 );
+	
+	//testing render help functions
+	hgeh::render_rect( hge, 200, 40, 220, 60, 0xffffffff );
+	hgeh::render_rect( hge, 241, 40, 260, 61, 0xffffffff );
+	hgeh::render_rect( hge, 283, 40, 300, 60, 0xffffffff );
+	hgeh::render_circle( hge, 150, 150, 30, 16, 0xff333333 );
+	hgeh::render_solid_circle( hge, 150, 230, 30, 20, 0xff333333 );
+	hgeh::render_circle_slice( hge, 300, 300, 20, 10, 0, math::PI_2, 0xffffffff );
+	hgeh::render_solid_circle_slice( hge, 350, 300, 20, 10, 0, math::PI_2, 0xffffffff );
 }
 
 void Demo::ShuffleNext()
