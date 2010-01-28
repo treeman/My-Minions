@@ -1,0 +1,5 @@
+*opensteer
+*need a real menu damnet!
+*gui!
+*save/load facility
+*refactor to allow for different demos etc

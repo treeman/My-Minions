@@ -7,6 +7,7 @@
 #include "Tree/Shufflebag.hpp"
 
 #include "Box2D/Box2D.h"
+#include "BoxRender.hpp"
 
 //this demo tests some things :)
 class Demo : public Tree::GameState {
@@ -44,6 +45,9 @@ private:
 	//dynamic bodies
 	typedef std::vector<b2Body*> Bodies;
 	Bodies bodies;
+	
+	//debug drawer for box2d
+	b2Debug::Drawer debug_drawer;
 	
 	HgeObj hge;
 };

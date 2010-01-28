@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Hge/Hge.hpp"
-#include "Tree/Math.hpp"
+#include "Tree/Util.hpp"
 #include "Tree/ErrorHandling.hpp"
 
 namespace Tree {
@@ -41,7 +41,7 @@ namespace Tree {
 				bag.swap( rest );
 			}
 			
-			typename List::iterator it = math::random( bag.begin(), bag.end() );
+			typename List::iterator it = Tree::random( bag.begin(), bag.end() );
 			
 			T temp = *it;
 			

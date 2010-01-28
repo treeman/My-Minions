@@ -1,4 +1,4 @@
-obj/
+Demo/obj/
 *.depend
 *.layout
 *.cbp
@@ -6,6 +6,6 @@ misc/
 *_log.txt
 *.out
 *.exe
-bin/gfx
-bin/sound
-bin/fnt
+*/bin/gfx
+*/bin/sound
+*/bin/fnt

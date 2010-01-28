@@ -56,7 +56,7 @@ void Game::Init( int width, int height, bool windowed, std::string title, std::s
 {
 	hge->System_SetState( HGE_DONTSUSPEND, true );
 	hge->System_SetState( HGE_SHOWSPLASH, false );
-	hge->System_SetState( HGE_HIDEMOUSE, true );
+	hge->System_SetState( HGE_HIDEMOUSE, false );
 	
 	//avoid flashing back n forth
 	hge->System_SetState( HGE_WINDOWED, true );

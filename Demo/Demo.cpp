@@ -1,6 +1,6 @@
 #include "Demo.hpp"
 #include "Tree/Game.hpp"
-#include "BoxRender.hpp"
+#include "Tree/Log.hpp"
 
 #include <boost/foreach.hpp>
 
@@ -35,7 +35,7 @@ Demo::Demo() : fnt( new hgeFont( "fnt/arial10.fnt" ) )
 	//it will be static by default (no mass) and statics do not
 	//collide with other statics and they cannot move
 	b2BodyDef groundBodyDef;
-	groundBodyDef.position.Set( 10.0f, 500.0f );
+	groundBodyDef.position.Set( 400.0f, 550.0f );
 	
 	//use the world to create a body
 	//note: does not need to be deleted, the world manages memory
@@ -44,27 +44,27 @@ Demo::Demo() : fnt( new hgeFont( "fnt/arial10.fnt" ) )
 	//definition for a basic polygon
 	b2PolygonDef groundShapeDef;
 	
-	//transform into a box which will become 100x20 big
-	groundShapeDef.SetAsBox( 50.0f, 10.0f );
+	//transform into a box which will become 600x40 big
+	groundShapeDef.SetAsBox( 300.0f, 20.0f );
 	
 	//copy the box defenition into our ground
 	groundBody->CreateShape( &groundShapeDef );
 	
 	//create the dynamic body
 	b2BodyDef bodyDef;
-	bodyDef.position.Set( 10.0f, 100.0f );
+	bodyDef.position.Set( 410.0f, 100.0f );
 	bodies.push_back( world->CreateBody( &bodyDef ) );
-	bodyDef.position.Set( 12.0f, 120.0f );
+	bodyDef.position.Set( 412.0f, 120.0f );
 	bodies.push_back( world->CreateBody( &bodyDef ) );
-	bodyDef.position.Set( 15.0f, 110.0f );
+	bodyDef.position.Set( 415.0f, 110.0f );
 	bodies.push_back( world->CreateBody( &bodyDef ) );
-	bodyDef.position.Set( 9.0f, 95.0f );
+	bodyDef.position.Set( 409.0f, 95.0f );
 	bodies.push_back( world->CreateBody( &bodyDef ) );
-	bodyDef.position.Set( 27.0f, 90.0f );
+	bodyDef.position.Set( 427.0f, 90.0f );
 	bodies.push_back( world->CreateBody( &bodyDef ) );
-	bodyDef.position.Set( 25.0f, 110.0f );
+	bodyDef.position.Set( 425.0f, 110.0f );
 	bodies.push_back( world->CreateBody( &bodyDef ) );
-	bodyDef.position.Set( 20.0f, 120.0f );
+	bodyDef.position.Set( 420.0f, 120.0f );
 	bodies.push_back( world->CreateBody( &bodyDef ) );
 	
 	//define the dynamic body
@@ -81,6 +81,20 @@ Demo::Demo() : fnt( new hgeFont( "fnt/arial10.fnt" ) )
 	
 	///note: never heap allocate bodies, shapes or joints with box2D
 	///always have b2World on heap
+	
+	//set flags for debug drawer
+	uint32 flags = 0;
+	flags += 1 * b2DebugDraw::e_shapeBit; //draw shapes
+	flags += 1 * b2DebugDraw::e_jointBit; //draw joints
+	flags += 1 * b2DebugDraw::e_coreShapeBit; //core shapes
+	flags += 1 * b2DebugDraw::e_aabbBit; //aabbs
+	flags += 1 * b2DebugDraw::e_obbBit; //obbs
+	flags += 1 * b2DebugDraw::e_pairBit; //pairs
+	flags += 1 * b2DebugDraw::e_centerOfMassBit; //coms
+	
+	debug_drawer.SetFlags( flags );
+	
+	world->SetDebugDraw( &debug_drawer );
 }
 
 bool Demo::HandleEvent( hgeInputEvent &event )
@@ -131,6 +145,7 @@ bool Demo::HandleEvent( hgeInputEvent &event )
 
 void Demo::Update( float dt )
 {
+//	L_ << "begin update";
 	//at least 60hz timestep
 	float timeStep = 1.0f / 60.0f;
 	
@@ -139,6 +154,8 @@ void Demo::Update( float dt )
 	
 	//update the simulation
 	world->Step( timeStep, iterations );
+	
+//	L_ << "end update";
 }
 void Demo::Render()
 {
@@ -171,12 +188,14 @@ void Demo::Render()
 	hgeh::render_circle_slice( hge, 300, 300, 20, 10, 0, math::PI_2, 0xffffffff );
 	hgeh::render_solid_circle_slice( hge, 350, 300, 20, 10, 0, math::PI_2, 0xffffffff );
 	
-	//render the box2D bodies
-	b2Body *b = world->GetBodyList();
-	while( b ) {
-		render_body( b );
-		b = b->GetNext();
-	}
+//	//render the box2D bodies
+//	b2Body *b = world->GetBodyList();
+//	while( b ) {
+//		render_body( b );
+//		b = b->GetNext();
+//	}
+
+	debug_drawer.Render();
 }
 
 void Demo::ShuffleNext()
