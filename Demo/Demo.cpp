@@ -1,11 +1,14 @@
 #include "Demo.hpp"
 #include "Tree/Game.hpp"
 #include "Tree/Log.hpp"
+#include "Tree/Tweaks.hpp"
 
 #include <boost/foreach.hpp>
 
 Demo::Demo() : fnt( new hgeFont( "fnt/arial10.fnt" ) )
 {
+	TWEAKS->Load( "tweaks.lua" );
+	
 	tex.Load( "gfx/dude.png" );
 	spr.reset( new hgeSprite( tex, 0, 0, 800, 600 ) );
 	
@@ -14,7 +17,7 @@ Demo::Demo() : fnt( new hgeFont( "fnt/arial10.fnt" ) )
 	
 	bag.reset( new Tree::ShuffleBag<int>() );
 	
-	for( int i = 0; i < 20; i++ ) {
+	for( int i = 0; i < TWEAKS->GetFloat( "boxes" ); i++ ) {
 		bag->Add( i );
 	}
 	ShuffleNext();
