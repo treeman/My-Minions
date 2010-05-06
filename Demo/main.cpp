@@ -29,7 +29,7 @@ int main( int argc, char *argv[] )
         //register basic hge functionality
         hge->System_SetState( HGE_FRAMEFUNC, frame_func );
         hge->System_SetState( HGE_RENDERFUNC, render_func );
-        hge->System_SetState( HGE_LOGFILE, "hgelog.txt" );
+        hge->System_SetState( HGE_LOGFILE, "hge_log.txt" );
 
         //create the game
         Tree::Game::Instance()->Init(
