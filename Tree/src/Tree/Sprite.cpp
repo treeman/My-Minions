@@ -1,5 +1,6 @@
 #include "Sprite.hpp"
 #include "Tree/Log.hpp"
+#include "Tree/Butler.hpp"
 
 #include <boost/foreach.hpp>
 
@@ -117,7 +118,7 @@ bool SpriteLoader::LoadSprite( lua_State *L, boost::shared_ptr<Sprite> spr )
             L_ << "color: " << color;
             L_ << "frames: " << frames << "fps: " << fps;
 
-            TexObj tex( path );
+            TexObj tex = BUTLER->GetTex( path );
 
             if( tex ) {
                 L_ << "the tex is good!";
