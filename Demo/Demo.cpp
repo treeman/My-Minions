@@ -14,6 +14,11 @@ Demo::Demo()
 
     SETTINGS->Register<int>( "test", 4 );
 
+    BUTLER->LoadSprites( "sprites.lua" );
+
+    dude = BUTLER->GetSprite( "dude" );
+    girl = BUTLER->GetSprite( "girl" );
+
     tex.Load( "gfx/dude.png" );
     spr.reset( new hgeSprite( tex, 0, 0, 800, 600 ) );
 
@@ -103,9 +108,6 @@ Demo::Demo()
     debug_drawer.SetFlags( flags );
 
     world->SetDebugDraw( &debug_drawer );
-
-    Tree::SpriteLoader spr_loader;
-    spr_loader.Load( "sprites.lua" );
 }
 
 bool Demo::HandleEvent( hgeInputEvent &event )
@@ -207,6 +209,9 @@ void Demo::Render()
 //  }
 
     debug_drawer.Render();
+
+    girl->Render( 100, 100 );
+    dude->Render( 200, 100 );
 }
 
 void Demo::ShuffleNext()

@@ -10,6 +10,10 @@ Butler::~Butler()
 {
 
 }
+void Butler::LoadSprites( std::string lua_file )
+{
+    spr_loader.Load( lua_file );
+}
 
 boost::shared_ptr<hgeFont> Butler::GetFont( std::string path )
 {
@@ -35,5 +39,9 @@ TexObj Butler::GetTex( std::string path )
         tex_map.insert( std::make_pair( path, tex ) );
         return tex;
     }
+}
+boost::shared_ptr<Tree::Sprite> Butler::GetSprite( std::string name )
+{
+    return spr_loader.Get( name );
 }
 

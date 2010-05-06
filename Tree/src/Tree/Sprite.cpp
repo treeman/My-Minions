@@ -63,7 +63,7 @@ void SpriteLoader::Load( std::string lua_file ) throw( Error::lua_error & )
                     LoadSprite( L, sprite );
                 }
             }
-            L_ << name << " got " << sprite->sprites.size() << " made";
+
             if( sprite->sprites.size() ) {
                 sprite_map.insert( std::make_pair( name, sprite ) );
             }
