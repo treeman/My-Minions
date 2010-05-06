@@ -13,6 +13,7 @@ namespace Tree
         static void Destroy()
         {
             delete instance;
+            instance = 0;
         }
 
     protected:

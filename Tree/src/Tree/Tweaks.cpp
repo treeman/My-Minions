@@ -21,16 +21,31 @@ void Tweaks::Load( std::string path )
     for( lua_pushnil( L ); lua_next( L, -2 ); lua_pop( L, 1 ) )
     {
         if( lua_isnumber( L, -1 ) ) {
-            floats[lua_tostring( L, -2 )] = (float)lua_tonumber( L, -1 );
+            doubles[lua_tostring( L, -2 )] = (double)lua_tonumber( L, -1 );
+        }
+        else if( lua_isstring( L, -1 ) ) {
+            strings[lua_tostring( L, -2 )] = lua_tostring( L, -1 );
         }
     }
 }
 
-float Tweaks::GetFloat( std::string s )
+double Tweaks::GetDouble( std::string s )
 {
-    FloatMap::iterator it = floats.find( s );
-    if( it != floats.end() ) { return it->second; }
+    DoubleMap::iterator it = doubles.find( s );
+    if( it != doubles.end() ) { return it->second; }
     else {
-        throw( Error::setting_not_found( (s + " wasn't found in tweaks.lua").c_str() ) );
+        throw( Error::setting_not_found( ("The double " + s +
+            " wasn't found in tweaks.lua").c_str() ) );
     }
 }
+
+std::string Tweaks::GetString( std::string s )
+{
+    StringMap::iterator it = strings.find( s );
+    if( it != strings.end() ) { return it->second; }
+    else {
+        throw( Error::setting_not_found( ("The string " + s +
+            " wasn't found in tweaks.lua").c_str() ) );
+    }
+}
+
