@@ -4,6 +4,7 @@
 #include "Tree/Settings.hpp"
 #include "Tree/Log.hpp"
 #include "Tree/Tweaks.hpp"
+#include "Tree/Butler.hpp"
 
 using Tree::Game;
 
@@ -16,6 +17,7 @@ Game::~Game()
     //clean up the singletons
     Tree::Settings::Instance()->Destroy();
     Tree::Tweaks::Instance()->Destroy();
+    Tree::Butler::Instance()->Destroy();
 
     L_ << "The game is destroyed";
 }

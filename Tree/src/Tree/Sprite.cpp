@@ -3,6 +3,9 @@
 
 #include <boost/assert.hpp>
 
+using Tree::Sprite;
+using Tree::SpriteLoader;
+
 Sprite::Sprite( std::string file, float x, float y, float w, float h, DWORD col ) : tex( file ),
     spr( new hgeSprite( tex, x, y, w, h ) ), color( col )
 {
