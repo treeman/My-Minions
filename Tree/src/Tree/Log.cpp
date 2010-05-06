@@ -13,5 +13,5 @@ void init_logs()
 
     g_l()->writer().add_destination( bl::destination::file( "tree_log.txt" ) );
 
-    L_ << "log file initiated";
+    L_ << "log file initiated\n";
 }

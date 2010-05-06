@@ -1,15 +1,40 @@
 #include "Sprite.hpp"
 #include "Tree/Log.hpp"
 
-#include <boost/assert.hpp>
+#include <boost/foreach.hpp>
 
+using Tree::SimpleSprite;
+using Tree::SimpleAnimation;
 using Tree::Sprite;
 using Tree::SpriteLoader;
 
-Sprite::Sprite( std::string file, float x, float y, float w, float h, DWORD col ) : tex( file ),
-    spr( new hgeSprite( tex, x, y, w, h ) ), color( col )
+void SimpleSprite::Render( float x, float y )
 {
-    if( col != 0 ) spr->SetColor( col );
+    spr->SetColor( color );
+    spr->Render( x + x_off, y + y_off );
+}
+void SimpleAnimation::Render( float x, float y )
+{
+    spr->SetColor( color );
+    spr->Render( x + x_off, y + y_off );
+}
+
+Sprite::Sprite()
+{
+
+}
+
+void Sprite::Update( float dt )
+{
+    BOOST_FOREACH( boost::shared_ptr<BaseSimpleSprite> s, sprites ) {
+        s->Update( dt );
+    }
+}
+void Sprite::Render( float x, float y )
+{
+    BOOST_FOREACH( boost::shared_ptr<BaseSimpleSprite> s, sprites ) {
+        s->Render( x, y );
+    }
 }
 
 SpriteLoader::SpriteLoader() { }
@@ -27,65 +52,21 @@ void SpriteLoader::Load( std::string lua_file ) throw( Error::lua_error & )
     lua_getglobal( L, "sprites" );
     for( lua_pushnil( L ); lua_next( L, -2 ); lua_pop( L, 1 ) )
     {
-        //parse a sprite here
-        std::string name, path;
-        float x = 0, y = 0, w = 0, h = 0;
-        DWORD color = 0;
+        if( lua_istable( L, -1 ) ) {
+            boost::shared_ptr<Sprite> sprite( new Sprite() );
 
-        bool is_valid = true;
+            std::string name = lua_tostring( L, -2 );
+            if( !LoadSprite( L, sprite ) ) {
 
-        lua_pushstring( L, "name" );
-        lua_gettable( L, -2 );
-        if( lua_isstring( L, -1 ) ) {
-            name = lua_tostring( L, -1 );
-        } else { is_valid = false; }
-        lua_pop( L, 1 );
-
-        lua_pushstring( L, "path" );
-        lua_gettable( L, -2 );
-        if( lua_isstring( L, -1 ) ) {
-            path = lua_tostring( L, -1 );
-        } else { is_valid = false; }
-        lua_pop( L, 1 );
-
-        lua_pushstring( L, "color" );
-        lua_gettable( L, -2 );
-        if( lua_isnumber( L, -1 ) ) {
-            color = (DWORD)lua_tonumber( L, -1 );
-        }
-        lua_pop( L, 1 );
-
-        lua_pushstring( L, "x" );
-        lua_gettable( L, -2 );
-        if( lua_isnumber( L, -1 ) ) {
-            x = (float)lua_tonumber( L, -1 );
-        }
-        lua_pop( L, 1 );
-
-        lua_pushstring( L, "y" );
-        lua_gettable( L, -2 );
-        if( lua_isnumber( L, -1 ) ) {
-            y = (float)lua_tonumber( L, -1 );
-        }
-        lua_pop( L, 1 );
-
-        lua_pushstring( L, "w" );
-        lua_gettable( L, -2 );
-        if( lua_isnumber( L, -1 ) ) {
-            w = (float)lua_tonumber( L, -1 );
-        }
-        lua_pop( L, 1 );
-
-        lua_pushstring( L, "h" );
-        lua_gettable( L, -2 );
-        if( lua_isnumber( L, -1 ) ) {
-            h = (float)lua_tonumber( L, -1 );
-        }
-        lua_pop( L, 1 );
-
-        if( is_valid ) {
-            boost::shared_ptr<Sprite> spr( new Sprite( path, x, y, w, h, color ) );
-            sprite_map[name] = spr;
+                for( lua_pushnil( L ); lua_next( L, -2 ); lua_pop( L, 1 ) )
+                {
+                    LoadSprite( L, sprite );
+                }
+            }
+            L_ << name << " got " << sprite->sprites.size() << " made";
+            if( sprite->sprites.size() ) {
+                sprite_map.insert( std::make_pair( name, sprite ) );
+            }
         }
     }
 }
@@ -98,3 +79,79 @@ boost::shared_ptr<Sprite> SpriteLoader::Get( std::string name )
     }
     else { return it->second; }
 }
+
+bool SpriteLoader::LoadSprite( lua_State *L, boost::shared_ptr<Sprite> spr )
+{
+    L_ << "trying to load a sprite";
+    if( lua_istable( L, -1 ) ) {
+        L_ << "it's a table!";
+
+        std::string path = "";
+        float x = 0, y = 0;
+        float w, h;
+        float x_off = 0, y_off = 0;
+        DWORD color = 0xffffffff;
+        int frames = 0;
+        float fps = 0;
+
+        luah::get_num<float>( L, "x", x );
+        luah::get_num<float>( L, "y", y );
+
+        luah::get_num<float>( L, "x_off", x_off );
+        luah::get_num<float>( L, "y_off", y_off );
+
+        luah::get_num<DWORD>( L, "color", color );
+
+        luah::get_num<int>( L, "frames", frames );
+        luah::get_num<float>( L, "fps", fps );
+
+
+        if( luah::get_num<float>( L, "w", w ) &&
+            luah::get_num<float>( L, "h", h ) &&
+            luah::get_string( L, "path", path ) )
+        {
+            L_ << "path " << path;
+            L_ << "x: " << x << " y: " << y;
+            L_ << "w: " << w << " h: " << h;
+            L_ << "x_off: " << x_off << " y_off: " << y_off;
+            L_ << "color: " << color;
+            L_ << "frames: " << frames << "fps: " << fps;
+
+            TexObj tex( path );
+
+            if( tex ) {
+                L_ << "the tex is good!";
+
+                boost::shared_ptr<BaseSimpleSprite> simple;
+                if( frames && fps ) {
+                    L_ << "animation here";
+                    boost::shared_ptr<SimpleAnimation> a( new SimpleAnimation() );
+                    a->spr.reset( new hgeAnimation( tex, frames, fps, x, y, w, h ) );
+                    simple = a;
+                }
+                else {
+                    L_ << "sprite here";
+                    boost::shared_ptr<SimpleSprite> s( new SimpleSprite() );
+                    s->spr.reset( new hgeSprite( tex, x, y, w, h ) );
+                    simple = s;
+                }
+
+                simple->x_off = x_off; simple->y_off = y_off;
+                simple->color = color;
+                simple->tex = tex;
+
+                spr->sprites.push_back( simple );
+
+                return true;
+            }
+            else {
+                L_ << "the tex is bad..";
+            }
+        }
+        else {
+            L_ << "w, h or path was not defined";
+        }
+    }
+    return false;
+}
+

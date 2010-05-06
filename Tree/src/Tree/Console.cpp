@@ -1,6 +1,7 @@
 #include <boost/weak_ptr.hpp>
 
 #include "Tree/Console.hpp"
+#include "Tree/Butler.hpp"
 
 using Tree::Console;
 
@@ -8,8 +9,7 @@ Console::Console()
 {
     SETTINGS->AddListener( this );
 
-    fnt.reset( new hgeFont( "fnt/arial10.fnt" ) );
-    fnt->SetColor( 0xFF45DD57 );
+    fnt = BUTLER->GetFont( "fnt/arial10.fnt" );
 
     x = 10; y = 10;
     w = 400;
@@ -223,6 +223,8 @@ void Console::Render()
     if( !is_active ) {
         return;
     }
+
+    fnt->SetColor( 0xFF45DD57 );
 
     RenderBones();
     RenderHistory();

@@ -24,3 +24,16 @@ boost::shared_ptr<hgeFont> Butler::GetFont( std::string path )
     }
 }
 
+TexObj Butler::GetTex( std::string path )
+{
+    TexMap::iterator it = tex_map.find( path );
+    if( it != tex_map.end() ) {
+        return it->second;
+    }
+    else {
+        TexObj tex( path );
+        tex_map.insert( std::make_pair( path, tex ) );
+        return tex;
+    }
+}
+

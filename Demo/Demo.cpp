@@ -2,11 +2,14 @@
 #include "Tree/Game.hpp"
 #include "Tree/Log.hpp"
 #include "Tree/Tweaks.hpp"
+#include "Tree/Butler.hpp"
+#include "Tree/Sprite.hpp"
 
 #include <boost/foreach.hpp>
 
-Demo::Demo() : fnt( new hgeFont( "fnt/arial10.fnt" ) )
+Demo::Demo()
 {
+    fnt = BUTLER->GetFont( "fnt/arial10.fnt" );
     TWEAKS->Load( "magic_numbers.lua" );
 
     SETTINGS->Register<int>( "test", 4 );
@@ -100,6 +103,9 @@ Demo::Demo() : fnt( new hgeFont( "fnt/arial10.fnt" ) )
     debug_drawer.SetFlags( flags );
 
     world->SetDebugDraw( &debug_drawer );
+
+    Tree::SpriteLoader spr_loader;
+    spr_loader.Load( "sprites.lua" );
 }
 
 bool Demo::HandleEvent( hgeInputEvent &event )

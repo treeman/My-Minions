@@ -13,42 +13,48 @@
 //Should be able to load sprites and animes from lua
 namespace Tree
 {
-    struct Sprite {
-        Sprite( std::string file, float x, float y, float w, float h, DWORD color = 0 );
+    class BaseSimpleSprite {
+    public:
+        BaseSimpleSprite() : color( 0xffffffff ), x_off( 0 ), y_off ( 0 )
+        { }
+        virtual ~BaseSimpleSprite() { }
 
-        TexObj tex;
-        boost::shared_ptr<hgeSprite> spr;
-        DWORD color;
-    };
+        virtual void Update( float ) { }
+        virtual void Render( float x, float y ) = 0;
 
-    /*struct SimpleSprite {
-        boost::shared_ptr<hgeSprite> spr;
         DWORD color;
         TexObj tex;
         float x_off, y_off;
     };
 
-    struct SimpleAnimation {
+    class SimpleSprite : public BaseSimpleSprite {
+    public:
+        void Render( float x, float y );
+
+        boost::shared_ptr<hgeSprite> spr;
+    };
+
+    class SimpleAnimation : public BaseSimpleSprite {
+    public:
+        void Update( float dt ) { spr->Update( dt ); }
+        void Render( float x, float y );
+
         boost::shared_ptr<hgeAnimation> spr;
-        DWORD color;
-        TexObj tex;
-        float x_off, y_off;
     };
 
     class Sprite {
     public:
-
-    void Update( float dt );
-    void Render( float x, float y );
+        void Update( float dt );
+        void Render( float x, float y );
     private:
+        Sprite();
+
         friend class SpriteLoader;
 
-        typedef std::vector<SimpleSprite> Sprites;
-        typedef std::vector<SimpleAnimation> Anims;
+        typedef std::vector<boost::shared_ptr<BaseSimpleSprite> > Sprites;
 
         Sprites sprites;
-        Anims anims;
-    };*/
+    };
 
     class SpriteLoader {
     public:
@@ -60,6 +66,9 @@ namespace Tree
     private:
         typedef std::map<std::string, boost::shared_ptr<Sprite> > SpriteMap;
         SpriteMap sprite_map;
+
+        //lua helper to load a sprite
+        bool LoadSprite( lua_State *L, boost::shared_ptr<Sprite> spr );
     };
 }
 
