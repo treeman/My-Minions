@@ -8,7 +8,7 @@
 
 using namespace b2Debug;
 
-inline DWORD b2Debug::make_color( const b2Color& c, int alpha )
+DWORD b2Debug::make_color( const b2Color& c, int alpha )
 {
     return ARGB( alpha, Tree::enbyten( c.r ), Tree::enbyten( c.g ), Tree::enbyten( c.b ) );
 }
@@ -76,3 +76,4 @@ void Drawer::Render()
     }
     shapes.clear();
 }
+

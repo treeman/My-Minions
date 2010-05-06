@@ -9,21 +9,21 @@
 #include "Hge/Hge.hpp"
 #include "Dator.hpp"
 
-namespace Tree 
+namespace Tree
 {
-	class SoundManager {
-	public:
-		SoundManager();
-		~SoundManager();
-		
-		std::string SetUseSound( bool predicate );
-		std::string SetMusicVolume( int val );
-		std::string SetEffectVolume( int val );
-	private:
-		HgeObj hge;
-		
-		boost::shared_ptr<Dator<int> > music_vol;
-		boost::shared_ptr<Dator<int> > effect_vol;
-		boost::shared_ptr<Dator<bool> > use_sound;
-	};
+    class SoundManager {
+    public:
+        SoundManager();
+        ~SoundManager();
+
+        std::string SetUseSound( bool predicate );
+        std::string SetMusicVolume( int val );
+        std::string SetEffectVolume( int val );
+    private:
+        HgeObj hge;
+
+        boost::shared_ptr<Dator<int> > music_vol;
+        boost::shared_ptr<Dator<int> > effect_vol;
+        boost::shared_ptr<Dator<bool> > use_sound;
+    };
 }

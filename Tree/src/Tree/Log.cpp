@@ -7,11 +7,11 @@ BOOST_DEFINE_LOG( g_l, logger_type )
 
 void init_logs()
 {
-	g_l()->writer().add_formatter( bl::formatter::time("$hh:$mm.$ss ") );
-	g_l()->writer().add_formatter( bl::formatter::idx(), "[%] " );
+    g_l()->writer().add_formatter( bl::formatter::time("$hh:$mm.$ss ") );
+    g_l()->writer().add_formatter( bl::formatter::idx(), "[%] " );
     g_l()->writer().add_formatter( bl::formatter::append_newline() );
-    
+
     g_l()->writer().add_destination( bl::destination::file( "tree_log.txt" ) );
-    
+
     L_ << "log file initiated";
 }

@@ -13,21 +13,21 @@
 //Should be able to load sprites and animes from lua
 
 struct Sprite {
-	Sprite( std::string file, float x, float y, float w, float h, DWORD color = 0 );
+    Sprite( std::string file, float x, float y, float w, float h, DWORD color = 0 );
 
-	TexObj tex;
-	boost::shared_ptr<hgeSprite> spr;
-	DWORD color;
+    TexObj tex;
+    boost::shared_ptr<hgeSprite> spr;
+    DWORD color;
 };
 
 class SpriteLoader {
 public:
-	SpriteLoader();
-	
-	void Load( std::string lua_file ) throw( Error::lua_error & );
-	
-	boost::shared_ptr<Sprite> Get( std::string name );
+    SpriteLoader();
+
+    void Load( std::string lua_file ) throw( Error::lua_error & );
+
+    boost::shared_ptr<Sprite> Get( std::string name );
 private:
-	typedef std::map<std::string, boost::shared_ptr<Sprite> > SpriteMap;
-	SpriteMap sprite_map;
+    typedef std::map<std::string, boost::shared_ptr<Sprite> > SpriteMap;
+    SpriteMap sprite_map;
 };

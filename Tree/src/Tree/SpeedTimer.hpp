@@ -5,20 +5,20 @@
 
 namespace Tree {
 
-	class SpeedTimer : public Timer {
-	public:
-		SpeedTimer();
-		virtual ~SpeedTimer();
-		
-		void SetSpeed( float multiplier );
-		float GetSpeed() const;
-	private:
-		float GetTimeStep() const;
-		void UpdateTimeAcc();
-		
-		float speed;
-	};
-	
+    class SpeedTimer : public Timer {
+    public:
+        SpeedTimer();
+        virtual ~SpeedTimer();
+
+        void SetSpeed( float multiplier );
+        float GetSpeed() const;
+    private:
+        float GetTimeStep() const;
+        void UpdateTimeAcc();
+
+        float speed;
+    };
+
 }
 
 #endif

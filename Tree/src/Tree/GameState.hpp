@@ -2,15 +2,15 @@
 
 #include "InputHandler.hpp"
 
-namespace Tree 
+namespace Tree
 {
-	class Game;
-	
-	class GameState : public InputHandler {
-	public:
-		virtual ~GameState() { }
-		
-		virtual void Update( float dt ) = 0;
-		virtual void Render() = 0;
-	};
+    class Game;
+
+    class GameState : public InputHandler {
+    public:
+        virtual ~GameState() { }
+
+        virtual void Update( float dt ) = 0;
+        virtual void Render() = 0;
+    };
 }
