@@ -3,6 +3,8 @@
 #include "Lua/Lua.hpp"
 #include "Tree/Log.hpp"
 
+using Tree::Tweaks;
+
 Tweaks::Tweaks()
 {
 

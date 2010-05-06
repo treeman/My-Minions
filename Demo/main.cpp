@@ -64,8 +64,7 @@ int main( int argc, char *argv[] )
 
     //destroy the game
     Tree::Game::Instance()->Destroy();
-    //destroy settings
-    Tree::Settings::Instance()->Destroy();
 
     return 0;
 }
+

@@ -3,6 +3,7 @@
 #include "Tree/Game.hpp"
 #include "Tree/Settings.hpp"
 #include "Tree/Log.hpp"
+#include "Tree/Tweaks.hpp"
 
 using Tree::Game;
 
@@ -12,7 +13,11 @@ Game::Game() : exit_called( false )
 }
 Game::~Game()
 {
+    //clean up the singletons
+    Tree::Settings::Instance()->Destroy();
+    Tree::Tweaks::Instance()->Destroy();
 
+    L_ << "The game is destroyed";
 }
 
 bool Game::Logic()

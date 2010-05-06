@@ -13,6 +13,7 @@
 #include "Tree/Errorhandling.hpp"
 #include "Tree/Singleton.hpp"
 #include "Tree/BaseDator.hpp"
+#include "Tree/Dator.hpp"
 
 #define SETTINGS Tree::Settings::Instance()
 
@@ -29,8 +30,10 @@ namespace Tree
         Settings();
         virtual ~Settings();
 
+        template<typename T>
+        void Register( std::string name, T val );
         void RegisterVariable( std::string name, boost::weak_ptr<BaseDator> dator );
-        void UnregisterVariable( std::string name );
+        void Unregister( std::string name );
 
         template<typename T>
         T GetValue( std::string name ) throw( Error::setting_not_found );
@@ -50,6 +53,10 @@ namespace Tree
         typedef std::multimap<std::string, boost::weak_ptr<BaseDator> > DatorMap;
         DatorMap dator_map;
 
+        //these are simply containers which hold a setting forever
+        typedef std::vector<boost::shared_ptr<BaseDator> > MyDators;
+        MyDators my_dators;
+
         typedef std::map<std::string, std::string> StringMap;
         StringMap unparsed_settings_map;
 
@@ -60,6 +67,15 @@ namespace Tree
 
         void UpdateListeners( std::string setting, std::string value, std::string return_val );
     };
+}
+
+template<typename T>
+void Tree::Settings::Register( std::string name, T val )
+{
+    boost::shared_ptr<BaseDator> dator( new Dator<T>( val ) );
+    my_dators.push_back( dator );
+
+    RegisterVariable( name, dator );
 }
 
 template<typename T>

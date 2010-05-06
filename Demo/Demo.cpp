@@ -9,6 +9,8 @@ Demo::Demo() : fnt( new hgeFont( "fnt/arial10.fnt" ) )
 {
     TWEAKS->Load( "magic_numbers.lua" );
 
+    SETTINGS->Register<int>( "test", 4 );
+
     tex.Load( "gfx/dude.png" );
     spr.reset( new hgeSprite( tex, 0, 0, 800, 600 ) );
 
