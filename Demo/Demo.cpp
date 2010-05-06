@@ -169,6 +169,9 @@ void Demo::Update( float dt )
     world->Step( timeStep, iterations );
 
 //  L_ << "end update";
+
+    girl->Update( dt );
+    dude->Update( dt );
 }
 void Demo::Render()
 {

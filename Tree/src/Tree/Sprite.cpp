@@ -83,9 +83,7 @@ boost::shared_ptr<Sprite> SpriteLoader::Get( std::string name )
 
 bool SpriteLoader::LoadSprite( lua_State *L, boost::shared_ptr<Sprite> spr )
 {
-    L_ << "trying to load a sprite";
     if( lua_istable( L, -1 ) ) {
-        L_ << "it's a table!";
 
         std::string path = "";
         float x = 0, y = 0;
@@ -111,27 +109,18 @@ bool SpriteLoader::LoadSprite( lua_State *L, boost::shared_ptr<Sprite> spr )
             luah::get_num<float>( L, "h", h ) &&
             luah::get_string( L, "path", path ) )
         {
-            L_ << "path " << path;
-            L_ << "x: " << x << " y: " << y;
-            L_ << "w: " << w << " h: " << h;
-            L_ << "x_off: " << x_off << " y_off: " << y_off;
-            L_ << "color: " << color;
-            L_ << "frames: " << frames << "fps: " << fps;
-
             TexObj tex = BUTLER->GetTex( path );
 
             if( tex ) {
-                L_ << "the tex is good!";
-
                 boost::shared_ptr<BaseSimpleSprite> simple;
+
                 if( frames && fps ) {
-                    L_ << "animation here";
+
                     boost::shared_ptr<SimpleAnimation> a( new SimpleAnimation() );
                     a->spr.reset( new hgeAnimation( tex, frames, fps, x, y, w, h ) );
                     simple = a;
                 }
                 else {
-                    L_ << "sprite here";
                     boost::shared_ptr<SimpleSprite> s( new SimpleSprite() );
                     s->spr.reset( new hgeSprite( tex, x, y, w, h ) );
                     simple = s;
@@ -145,12 +134,6 @@ bool SpriteLoader::LoadSprite( lua_State *L, boost::shared_ptr<Sprite> spr )
 
                 return true;
             }
-            else {
-                L_ << "the tex is bad..";
-            }
-        }
-        else {
-            L_ << "w, h or path was not defined";
         }
     }
     return false;

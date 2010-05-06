@@ -3,25 +3,22 @@
 sprites =
 {
     dude = {
-        path = "gfx/dude.png",
-        w = 10, h = 10,
+        path = "gfx/dod.png",
+        w = 20, h = 20,
     },
 
     girl = {
         {
-            path = "gfx/action.png",
-            x = 2, y = 3,
-            w = 5, h = 6,
+            path = "gfx/girl.png",
+            w = 20, h = 20,
             color = 0xff232132,
             x_off = 10, y_off = 10,
         },
         {
-            path = "gfx/action.png",
-            x = 5, y = 5,
-            w = 10, h = 10,
-            x_off = 4, y_off = 4,
-            frames = 5,
-            fps = 50,
+            path = "gfx/x.png",
+            w = 20, h = 20,
+            frames = 2,
+            fps = 10,
         },
     }
 }
