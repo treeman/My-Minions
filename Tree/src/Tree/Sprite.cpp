@@ -118,6 +118,7 @@ bool SpriteLoader::LoadSprite( lua_State *L, boost::shared_ptr<Sprite> spr )
 
                     boost::shared_ptr<SimpleAnimation> a( new SimpleAnimation() );
                     a->spr.reset( new hgeAnimation( tex, frames, fps, x, y, w, h ) );
+                    a->spr->Play();
                     simple = a;
                 }
                 else {

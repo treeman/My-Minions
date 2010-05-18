@@ -54,5 +54,7 @@ private:
     boost::shared_ptr<Tree::Sprite> girl;
 
     HgeObj hge;
+
+    b2Debug::SolidPolygon poly;
 };
 

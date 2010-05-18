@@ -9,8 +9,6 @@
 #include "Lua/Lua.hpp"
 #include "Tree/Errorhandling.hpp"
 
-//Shall become a helper for managing tex and sprites
-//Should be able to load sprites and animes from lua
 namespace Tree
 {
     class BaseSimpleSprite {

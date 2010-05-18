@@ -4,13 +4,22 @@
 #include "Tree/Tweaks.hpp"
 #include "Tree/Butler.hpp"
 #include "Tree/Sprite.hpp"
+#include "Box2D/Box2D.h"
 
 #include <boost/foreach.hpp>
 
-Demo::Demo()
+b2Vec2 vec[4];
+
+Demo::Demo() : poly( vec, 4, b2Color( 1.0, 1.0, 1.0 ) )
 {
     fnt = BUTLER->GetFont( "fnt/arial10.fnt" );
     TWEAKS->Load( "magic_numbers.lua" );
+
+    poly.ps.clear();
+    poly.ps.push_back( b2Vec2( 200, 200 ) );
+    poly.ps.push_back( b2Vec2( 300, 100 ) );
+    poly.ps.push_back( b2Vec2( 400, 200 ) );
+    poly.ps.push_back( b2Vec2( 250, 300 ) );
 
     SETTINGS->Register<int>( "test", 4 );
 
@@ -108,6 +117,8 @@ Demo::Demo()
     debug_drawer.SetFlags( flags );
 
     world->SetDebugDraw( &debug_drawer );
+
+    poly.Render();
 }
 
 bool Demo::HandleEvent( hgeInputEvent &event )
@@ -204,17 +215,19 @@ void Demo::Render()
     hgeh::render_circle_slice( hge, 300, 300, 20, 10, 0, math::PI_2, 0xffffffff );
     hgeh::render_solid_circle_slice( hge, 350, 300, 20, 10, 0, math::PI_2, 0xffffffff );
 
-//  //render the box2D bodies
-//  b2Body *b = world->GetBodyList();
-//  while( b ) {
-//      render_body( b );
-//      b = b->GetNext();
-//  }
+    ////render the box2D bodies
+    //b2Body *b = world->GetBodyList();
+    //while( b ) {
+    //    render_body( b );
+    //    b = b->GetNext();
+    //}
 
-    debug_drawer.Render();
+    //debug_drawer.Render();
 
     girl->Render( 100, 100 );
     dude->Render( 200, 100 );
+
+    poly.Render();
 }
 
 void Demo::ShuffleNext()
