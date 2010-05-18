@@ -4,6 +4,7 @@
 #include "Tree/Tweaks.hpp"
 #include "Tree/Butler.hpp"
 #include "Tree/Sprite.hpp"
+#include "Tree/LogHelper.hpp"
 #include "Box2D/Box2D.h"
 
 #include <boost/foreach.hpp>
@@ -14,6 +15,8 @@ Demo::Demo() : poly( vec, 4, b2Color( 1.0, 1.0, 1.0 ) )
 {
     fnt = BUTLER->GetFont( "fnt/arial10.fnt" );
     TWEAKS->Load( "magic_numbers.lua" );
+
+    LOGHELPER->SetLogKey( HGEK_L );
 
     poly.ps.clear();
     poly.ps.push_back( b2Vec2( 200, 200 ) );

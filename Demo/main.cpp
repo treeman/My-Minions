@@ -21,7 +21,7 @@ bool render_func()
 int main( int argc, char *argv[] )
 {
     //init the boost logs
-    init_logs();
+    Tree::init_logs();
 
     try {
         HgeObj hge;

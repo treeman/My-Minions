@@ -5,6 +5,7 @@
 #include "Tree/Log.hpp"
 #include "Tree/Tweaks.hpp"
 #include "Tree/Butler.hpp"
+#include "Tree/LogHelper.hpp"
 
 using Tree::Game;
 
@@ -18,6 +19,7 @@ Game::~Game()
     Tree::Settings::Instance()->Destroy();
     Tree::Tweaks::Instance()->Destroy();
     Tree::Butler::Instance()->Destroy();
+    Tree::LogHelper::Instance()->Destroy();
 
     L_ << "The game is destroyed";
 }
@@ -34,6 +36,7 @@ bool Game::Logic()
         hgeInputEvent event;
         while( hge->Input_GetEvent( &event ) )
         {
+            LOGHELPER->HandleEvent( event );
             if( console->HandleEvent( event ) ) {
                 curr_state->HandleEvent( event );
             }
@@ -56,6 +59,10 @@ bool Game::Render()
     game_debug->Render();
 
     hge->Gfx_EndScene();
+
+    //necessary to call it here so we can log rendering stuff too
+    LOGHELPER->EndofLoop();
+
     return false;
 }
 

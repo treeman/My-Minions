@@ -1,6 +1,7 @@
 #include "BoxRender.hpp"
 #include "Hge/Hge.hpp"
 #include "Tree/Log.hpp"
+#include "Tree/Loghelper.hpp"
 
 #include <vector>
 #include <boost/foreach.hpp>
@@ -32,8 +33,9 @@ struct Edge {
         }
         if( p1_x == p2_x ) slope = 1000;
         else slope = (p1.y - p2.y) / (p1.x - p2.x);
-
-        L_ << " making " << p1_x << "," << p1_y << " " << p2_x << "," << p2_y;
+        if( LOGHELPER->ShallLog() ) {
+            L_ << " making " << p1_x << "," << p1_y << " " << p2_x << "," << p2_y;
+        }
     }
 
     int y_min;
@@ -44,9 +46,11 @@ struct Edge {
 
 void Log( std::vector<Edge> edges )
 {
-    for( int i = 0; i < edges.size(); ++i ) {
-        L_ << "y_min: " << edges[i].y_min << " " << edges[i].x << " max: " 
-            << edges[i].y_max << " slope: " << edges[i].slope;
+    if( LOGHELPER->ShallLog() ) {
+        for( int i = 0; i < edges.size(); ++i ) {
+            L_ << "y_min: " << edges[i].y_min << " " << edges[i].x << " max: " 
+                << edges[i].y_max << " slope: " << edges[i].slope;
+        }
     }
 }
 
@@ -67,7 +71,9 @@ void SolidPolygon::Render()
 {
     if( ps.empty() ) return;
 
-    L_ << "rendering solid polygon";
+    if( LOGHELPER->ShallLog() ) {
+        L_ << "rendering solid polygon";
+    }
 
     typedef std::vector<Edge> Edges;
     Edges edges;
@@ -81,8 +87,10 @@ void SolidPolygon::Render()
     }
     edges.push_back( Edge( ps.front(), ps.back() ) );
 
-    L_ << "edges: " << edges.size();
-    Log( edges );
+    if( LOGHELPER->ShallLog() ) {
+        L_ << "edges: " << edges.size();
+        Log( edges );
+    }
 
     Edges global_edges;
 
@@ -111,15 +119,19 @@ void SolidPolygon::Render()
         }*/
     }
     std::stable_sort( global_edges.begin(), global_edges.end(), global_order );
-    L_ << "global edges: " << global_edges.size();
-    Log( global_edges );
+    if( LOGHELPER->ShallLog() ) {
+        L_ << "global edges: " << global_edges.size();
+        Log( global_edges );
+    }
 
     //initialize parity
     int parity = 0;
 
     //and scan line
     float scan_line = global_edges[0].y_min;
-    //L_ << "lowest y: " << scan_line;
+    if( LOGHELPER->ShallLog() ) {
+        L_ << "lowest y: " << scan_line;
+    }
 
     Edges active_edges;
 
@@ -130,13 +142,17 @@ void SolidPolygon::Render()
         }
     }
 
-    //L_ << "active edges: " << active_edges.size();
-    //Log( active_edges );
+    if( LOGHELPER->ShallLog() ) {
+        L_ << "active edges: " << active_edges.size();
+        Log( active_edges );
+    }
 
     //render loop
     while( !active_edges.empty() ) {
 
-        //L_ << "looping";
+        if( LOGHELPER->ShallLog() ) {
+            L_ << "looping";
+        }
 
         //draw a line
         for( int i = 0; i < active_edges.size(); i += 2 ) {
@@ -145,7 +161,9 @@ void SolidPolygon::Render()
                 Edge e1 = active_edges[i];
                 Edge e2 = active_edges[n];
 
-                //L_ << "drawing line: " << e1.x << " " << e2.x << " " << scan_line;
+                if( LOGHELPER->ShallLog() ) {
+                    L_ << "drawing line: " << e1.x << " " << e2.x << " " << scan_line;
+                }
                 hge->Gfx_RenderLine( e1.x, scan_line, e2.x, scan_line, color );
 
                 //change parity
@@ -166,8 +184,10 @@ void SolidPolygon::Render()
             }
         }
         active_edges = next_active_edges;
-        //L_ << "active_edges: " << active_edges.size();
-        //Log( active_edges );
+        if( LOGHELPER->ShallLog() ) {
+            L_ << "active_edges: " << active_edges.size();
+            Log( active_edges );
+        }
 
         //take the next lines we're scanning from global
         Edges new_global_edges;
@@ -180,16 +200,22 @@ void SolidPolygon::Render()
             }
         }
         global_edges = new_global_edges;
-        //L_ << "global_edges: " << global_edges.size();
-        //Log( global_edges );
+        if( LOGHELPER->ShallLog() ) {
+            L_ << "global_edges: " << global_edges.size();
+            Log( global_edges );
+        }
 
         //reorder active_edges table to have min x at the top
         std::sort( active_edges.begin(), active_edges.end(), min_x );
-        //L_ << "sorted active edges!";
-        //Log( active_edges );
+        if( LOGHELPER->ShallLog() ) {
+            L_ << "sorted active edges!";
+            Log( active_edges );
+        }
     }
 
-    //L_ << " done!";
+    if( LOGHELPER->ShallLog() ) {
+        L_ << " done!";
+    }
     hgeh::render_lines( hge, ps, color );
 }
 void Circle::Render()

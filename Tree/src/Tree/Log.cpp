@@ -5,7 +5,7 @@
 BOOST_DEFINE_LOG_FILTER( g_l_filter, filter_type )
 BOOST_DEFINE_LOG( g_l, logger_type )
 
-void init_logs()
+void Tree::init_logs()
 {
     g_l()->writer().add_formatter( bl::formatter::time("$hh:$mm.$ss ") );
     g_l()->writer().add_formatter( bl::formatter::idx(), "[%] " );
@@ -15,3 +15,4 @@ void init_logs()
 
     L_ << "log file initiated\n";
 }
+
