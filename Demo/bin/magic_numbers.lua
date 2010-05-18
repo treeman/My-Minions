@@ -1,3 +1,3 @@
 -- random magic numbers
 
-boxes = 15
+boxes = 45

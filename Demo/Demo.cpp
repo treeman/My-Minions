@@ -19,10 +19,10 @@ Demo::Demo() : poly( vec, 4, b2Color( 1.0, 1.0, 1.0 ) )
     LOGHELPER->SetLogKey( HGEK_L );
 
     poly.ps.clear();
+    poly.ps.push_back( b2Vec2( 100, 100 ) );
+    poly.ps.push_back( b2Vec2( 200, 100 ) );
     poly.ps.push_back( b2Vec2( 200, 200 ) );
-    poly.ps.push_back( b2Vec2( 300, 100 ) );
-    poly.ps.push_back( b2Vec2( 400, 200 ) );
-    poly.ps.push_back( b2Vec2( 250, 300 ) );
+    poly.ps.push_back( b2Vec2( 100, 200 ) );
 
     SETTINGS->Register<int>( "test", 4 );
 
@@ -77,20 +77,12 @@ Demo::Demo() : poly( vec, 4, b2Color( 1.0, 1.0, 1.0 ) )
 
     //create the dynamic body
     b2BodyDef bodyDef;
-    bodyDef.position.Set( 410.0f, 100.0f );
-    bodies.push_back( world->CreateBody( &bodyDef ) );
-    bodyDef.position.Set( 412.0f, 120.0f );
-    bodies.push_back( world->CreateBody( &bodyDef ) );
-    bodyDef.position.Set( 415.0f, 110.0f );
-    bodies.push_back( world->CreateBody( &bodyDef ) );
-    bodyDef.position.Set( 409.0f, 95.0f );
-    bodies.push_back( world->CreateBody( &bodyDef ) );
-    bodyDef.position.Set( 427.0f, 90.0f );
-    bodies.push_back( world->CreateBody( &bodyDef ) );
-    bodyDef.position.Set( 425.0f, 110.0f );
-    bodies.push_back( world->CreateBody( &bodyDef ) );
-    bodyDef.position.Set( 420.0f, 120.0f );
-    bodies.push_back( world->CreateBody( &bodyDef ) );
+    for( int i = 0; i < TWEAKS->GetDouble( "boxes" ); ++i ) {
+        float x = math::frandom( 400, 420 );
+        float y = 40 + i * 5;
+        bodyDef.position.Set( x, y );
+        bodies.push_back( world->CreateBody( &bodyDef ) );
+    }
 
     //define the dynamic body
     b2PolygonDef shapeDef;
@@ -225,7 +217,7 @@ void Demo::Render()
     //    b = b->GetNext();
     //}
 
-    //debug_drawer.Render();
+    debug_drawer.Render();
 
     girl->Render( 100, 100 );
     dude->Render( 200, 100 );

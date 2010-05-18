@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <boost/foreach.hpp>
+#include <limits.h>
 
 using namespace b2Debug;
 
@@ -16,31 +17,29 @@ void Poly::Render()
 struct Edge {
     Edge( Vec2D p1, Vec2D p2 )
     {
-        int p1_x = (int)( p1.x );
-        int p1_y = (int)( p1.y );
-        int p2_x = (int)( p2.x );
-        int p2_y = (int)( p2.y );
-
-        if( p1_y < p2_y ) {
-            y_min = p1_y;
-            x = p1_x;
-            y_max = p2_y;
+        if( p1.y < p2.y ) {
+            y_min = p1.y;
+            x = p1.x;
+            y_max = p2.y;
+            x2 = p2.x;
+            x1 = p1.x;
         }
         else {
-            y_min = p2_y;
-            x = p2_x;
-            y_max = p1_y;
+            y_min = p2.y;
+            x = p2.x;
+            y_max = p1.y;
+            x1 = p2.x;
+            x2 = p1.x;
         }
-        if( p1_x == p2_x ) slope = 1000;
+        if( p1.x == p2.x ) slope = std::numeric_limits<float>::max();
         else slope = (p1.y - p2.y) / (p1.x - p2.x);
-        if( LOGHELPER->ShallLog() ) {
-            L_ << " making " << p1_x << "," << p1_y << " " << p2_x << "," << p2_y;
-        }
     }
 
-    int y_min;
-    int y_max;
-    int x;
+    float y_min;
+    float y_max;
+    float x;
+    float x1;
+    float x2;
     float slope;
 };
 
@@ -48,8 +47,9 @@ void Log( std::vector<Edge> edges )
 {
     if( LOGHELPER->ShallLog() ) {
         for( int i = 0; i < edges.size(); ++i ) {
-            L_ << "y_min: " << edges[i].y_min << " " << edges[i].x << " max: " 
-                << edges[i].y_max << " slope: " << edges[i].slope;
+            L_ << "e: " << edges[i].x1 << "," << edges[i].y_min << " " <<
+                edges[i].x2 << "," << edges[i].y_max << " x: " << edges[i].x
+                << " s: " << edges[i].slope;
         }
     }
 }
@@ -65,6 +65,11 @@ bool global_order( Edge e1, Edge e2 )
         return e1.x < e2.x;
     else
         return e1.y_min < e2.y_min;
+}
+
+int round( float f )
+{
+    return (int)std::floor( f + 0.5 );
 }
 
 void SolidPolygon::Render()
@@ -98,27 +103,10 @@ void SolidPolygon::Render()
     for( int i = 0, g = 0; i < edges.size(); ++i ) {
         if( edges[i].slope == 0 ) continue;
         else global_edges.push_back( edges[i] );
-
-        /*if( global_edges.empty() ) {
-            global_edges.push_back( edges[i] );
-        }
-        else {
-            if( edges[i].y_min > global_edges[g].y_min ) {
-                if( i != global_edges.size() ) ++g;
-            }
-            else if( edges[i].x > global_edges[g].x ) {
-                if( i != global_edges.size() ) ++g;
-            }
-
-            if( g < global_edges.size() ) {
-                global_edges.insert( global_edges.begin() + g, edges[i] );
-            }
-            else {
-                global_edges.push_back( edges[i] );
-            }
-        }*/
     }
+
     std::stable_sort( global_edges.begin(), global_edges.end(), global_order );
+
     if( LOGHELPER->ShallLog() ) {
         L_ << "global edges: " << global_edges.size();
         Log( global_edges );
@@ -128,7 +116,7 @@ void SolidPolygon::Render()
     int parity = 0;
 
     //and scan line
-    float scan_line = global_edges[0].y_min;
+    int scan_line = round( global_edges[0].y_min );
     if( LOGHELPER->ShallLog() ) {
         L_ << "lowest y: " << scan_line;
     }
@@ -137,7 +125,7 @@ void SolidPolygon::Render()
 
     //init active edges
     for( int i = 0; i < global_edges.size(); ++i ) {
-        if( global_edges[i].y_min == scan_line ) {
+        if( round( global_edges[i].y_min ) == scan_line ) {
             active_edges.push_back( global_edges[i] );
         }
     }
@@ -147,8 +135,22 @@ void SolidPolygon::Render()
         Log( active_edges );
     }
 
+    int t = 0;
+
     //render loop
     while( !active_edges.empty() ) {
+        if( t > 1000 ) {
+            if( LOGHELPER->ShallLog() ) {
+                L_ << "huge failure!";
+
+                L_ << "global_edges: " << global_edges.size();
+                Log( global_edges );
+
+                L_ << "active edges";
+                Log( active_edges );
+            }
+            break;
+        }
 
         if( LOGHELPER->ShallLog() ) {
             L_ << "looping";
@@ -162,7 +164,8 @@ void SolidPolygon::Render()
                 Edge e2 = active_edges[n];
 
                 if( LOGHELPER->ShallLog() ) {
-                    L_ << "drawing line: " << e1.x << " " << e2.x << " " << scan_line;
+                    L_ << "drawing line: " << e1.x << "," << scan_line
+                        << " " << e2.x << "," << scan_line;
                 }
                 hge->Gfx_RenderLine( e1.x, scan_line, e2.x, scan_line, color );
 
@@ -178,21 +181,17 @@ void SolidPolygon::Render()
         //remove edges that y_max == scan_line
         Edges next_active_edges;
         for( int i = 0; i < active_edges.size(); ++i ) {
-            if( active_edges[i].y_max != scan_line ) {
-                active_edges[i].x = (int)( (float)active_edges[i].x + 1 / active_edges[i].slope );
+            if( round( active_edges[i].y_max ) > scan_line ) {
+                active_edges[i].x = active_edges[i].x + 1 / active_edges[i].slope;
                 next_active_edges.push_back( active_edges[i] );
             }
         }
         active_edges = next_active_edges;
-        if( LOGHELPER->ShallLog() ) {
-            L_ << "active_edges: " << active_edges.size();
-            Log( active_edges );
-        }
 
         //take the next lines we're scanning from global
         Edges new_global_edges;
         for( int i = 0; i < global_edges.size(); ++i ) {
-            if( global_edges[i].y_min == scan_line ) {
+            if( round( global_edges[i].y_min ) == scan_line ) {
                 active_edges.push_back( global_edges[i] );
             }
             else {
@@ -211,6 +210,7 @@ void SolidPolygon::Render()
             L_ << "sorted active edges!";
             Log( active_edges );
         }
+        ++t;
     }
 
     if( LOGHELPER->ShallLog() ) {
