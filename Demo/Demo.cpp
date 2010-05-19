@@ -114,15 +114,42 @@ Demo::Demo() : poly( vec, 4, b2Color( 1.0, 1.0, 1.0 ) )
     world->SetDebugDraw( &debug_drawer );
 
     b2BodyDef dude_def;
-    dude_def.position.Set( 200, 20 );
+    dude_def.position.Set( 160, 100 );
+    dude_def.angularDamping = 0.1f;
     dude_body = world->CreateBody( &dude_def );
 
     b2PolygonDef shape_def;
     shape_def.SetAsBox( 10, 10 );
-    shape_def.density = 0.5;
+    shape_def.density = 1;
     shape_def.friction = 0.3;
     dude_body->CreateShape( &shape_def );
     dude_body->SetMassFromShapes();
+
+    b2BodyDef balloon_def;
+    balloon_def.linearDamping = 0.1;
+
+    b2CircleDef balloon;
+    balloon.radius = 2;
+    balloon.density = 0.1;
+    balloon.friction = 0.05;
+
+    for( int i = 0; i < 25; ++i ) {
+        float x = math::frandom( -10, 10 ) + 160;
+        float y = math::frandom( -10, 10 ) + 10;
+        balloon_def.position.Set( x, y );
+        b2Body *balloon_body = world->CreateBody( &balloon_def );
+
+        balloon_body->CreateShape( &balloon );
+        balloon_body->SetMassFromShapes();
+
+        b2DistanceJointDef j;
+        j.Initialize( dude_body, balloon_body, dude_body->GetWorldCenter(),
+            balloon_body->GetWorldCenter() );
+        j.collideConnected = true;
+
+        world->CreateJoint( &j );
+        balloons.push_back( balloon_body );
+    }
 }
 
 bool Demo::HandleEvent( hgeInputEvent &event )
@@ -186,6 +213,11 @@ bool Demo::HandleEvent( hgeInputEvent &event )
 void Demo::Update( float dt )
 {
 //  L_ << "begin update";
+
+    BOOST_FOREACH( b2Body *b, balloons ) {
+        b->ApplyForce( b2Vec2( 0, -50 ), b->GetWorldCenter() );
+    }
+
     //at least 60hz timestep
     float timeStep = 1.0f / 60.0f;
 
@@ -248,7 +280,7 @@ void Demo::Render()
     Vec2D dude_pos = dude_body->GetPosition();
     float rot = dude_body->GetAngle();
 
-    dude->RenderEx( dude_pos.x, dude_pos.y, rot );
+    //dude->RenderEx( dude_pos.x, dude_pos.y, rot );
 }
 
 void Demo::ShuffleNext()

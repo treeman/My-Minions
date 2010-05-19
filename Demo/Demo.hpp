@@ -58,5 +58,7 @@ private:
     b2Debug::SolidPolygon poly;
 
     b2Body *dude_body;
+    typedef std::vector<b2Body*> Bodies;
+    Bodies balloons;
 };
 
