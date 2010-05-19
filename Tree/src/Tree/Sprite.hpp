@@ -11,45 +11,31 @@
 
 namespace Tree
 {
-    class BaseSimpleSprite {
+    class SimpleSprite {
     public:
-        BaseSimpleSprite() : color( 0xffffffff ), x_off( 0 ), y_off ( 0 )
+        SimpleSprite() : color( 0 ), x_off( 0 ), y_off ( 0 ), is_anim( false )
         { }
-        virtual ~BaseSimpleSprite() { }
 
-        virtual void Update( float ) { }
-        virtual void Render( float x, float y ) = 0;
-
+        boost::shared_ptr<hgeSprite> spr;
         DWORD color;
         TexObj tex;
         float x_off, y_off;
-    };
-
-    class SimpleSprite : public BaseSimpleSprite {
-    public:
-        void Render( float x, float y );
-
-        boost::shared_ptr<hgeSprite> spr;
-    };
-
-    class SimpleAnimation : public BaseSimpleSprite {
-    public:
-        void Update( float dt ) { spr->Update( dt ); }
-        void Render( float x, float y );
-
-        boost::shared_ptr<hgeAnimation> spr;
+        bool is_anim;
     };
 
     class Sprite {
     public:
         void Update( float dt );
+
         void Render( float x, float y );
+        void RenderEx( float x, float y, float rot,
+            float hscale = 1.0f, float vscale = 0.0f );
     private:
         Sprite();
 
         friend class SpriteLoader;
 
-        typedef std::vector<boost::shared_ptr<BaseSimpleSprite> > Sprites;
+        typedef std::vector<boost::shared_ptr<SimpleSprite> > Sprites;
 
         Sprites sprites;
     };

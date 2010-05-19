@@ -56,5 +56,7 @@ private:
     HgeObj hge;
 
     b2Debug::SolidPolygon poly;
+
+    b2Body *dude_body;
 };
 

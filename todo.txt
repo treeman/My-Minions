@@ -2,3 +2,4 @@
 *need a real menu damnet!
 *gui!
 *save/load facility
+*Make a mesh which concists of animations, sprites and a box2d body

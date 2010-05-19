@@ -60,7 +60,7 @@ Demo::Demo() : poly( vec, 4, b2Color( 1.0, 1.0, 1.0 ) )
     //it will be static by default (no mass) and statics do not
     //collide with other statics and they cannot move
     b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set( 400.0f, 550.0f );
+    groundBodyDef.position.Set( 400.0f, 600.0f );
 
     //use the world to create a body
     //note: does not need to be deleted, the world manages memory
@@ -69,8 +69,8 @@ Demo::Demo() : poly( vec, 4, b2Color( 1.0, 1.0, 1.0 ) )
     //definition for a basic polygon
     b2PolygonDef groundShapeDef;
 
-    //transform into a box which will become 600x40 big
-    groundShapeDef.SetAsBox( 300.0f, 20.0f );
+    //transform into a box which will become 800x40 big
+    groundShapeDef.SetAsBox( 400.0f, 20.0f );
 
     //copy the box defenition into our ground
     groundBody->CreateShape( &groundShapeDef );
@@ -113,7 +113,16 @@ Demo::Demo() : poly( vec, 4, b2Color( 1.0, 1.0, 1.0 ) )
 
     world->SetDebugDraw( &debug_drawer );
 
-    poly.Render();
+    b2BodyDef dude_def;
+    dude_def.position.Set( 200, 20 );
+    dude_body = world->CreateBody( &dude_def );
+
+    b2PolygonDef shape_def;
+    shape_def.SetAsBox( 10, 10 );
+    shape_def.density = 0.5;
+    shape_def.friction = 0.3;
+    dude_body->CreateShape( &shape_def );
+    dude_body->SetMassFromShapes();
 }
 
 bool Demo::HandleEvent( hgeInputEvent &event )
@@ -155,6 +164,18 @@ bool Demo::HandleEvent( hgeInputEvent &event )
                 break;
             case HGEK_S:
                 ShuffleNext();
+                break;
+            case HGEK_RIGHT:
+                dude_body->ApplyImpulse( b2Vec2( 1000, 0 ),
+                    dude_body->GetWorldCenter() );
+                break;
+            case HGEK_LEFT:
+                dude_body->ApplyImpulse( b2Vec2( -1000, 0 ),
+                    dude_body->GetWorldCenter() );
+                break;
+            case HGEK_UP:
+                dude_body->ApplyImpulse( b2Vec2( 0, -10000 ),
+                    dude_body->GetWorldCenter() );
                 break;
         }
     }
@@ -219,10 +240,15 @@ void Demo::Render()
 
     debug_drawer.Render();
 
-    girl->Render( 100, 100 );
+    girl->Render( 300, 100 );
     dude->Render( 200, 100 );
 
     poly.Render();
+
+    Vec2D dude_pos = dude_body->GetPosition();
+    float rot = dude_body->GetAngle();
+
+    dude->RenderEx( dude_pos.x, dude_pos.y, rot );
 }
 
 void Demo::ShuffleNext()
@@ -231,3 +257,4 @@ void Demo::ShuffleNext()
     bagged = bag->GetBag();
     rest = bag->GetRest();
 }
+

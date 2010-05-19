@@ -30,25 +30,25 @@ struct b2TimeStep;
 class b2ContactManager : public b2PairCallback
 {
 public:
-	b2ContactManager() : m_world(NULL), m_destroyImmediate(false) {}
+    b2ContactManager() : m_world(NULL), m_destroyImmediate(false) {}
 
-	// Implements PairCallback
-	void* PairAdded(void* proxyUserData1, void* proxyUserData2);
+    // Implements PairCallback
+    void* PairAdded(void* proxyUserData1, void* proxyUserData2);
 
-	// Implements PairCallback
-	void PairRemoved(void* proxyUserData1, void* proxyUserData2, void* pairUserData);
+    // Implements PairCallback
+    void PairRemoved(void* proxyUserData1, void* proxyUserData2, void* pairUserData);
 
-	void Destroy(b2Contact* c);
+    void Destroy(b2Contact* c);
 
-	void Collide();
+    void Collide();
 
-	b2World* m_world;
+    b2World* m_world;
 
-	// This lets us provide broadphase proxy pair user data for
-	// contacts that shouldn't exist.
-	b2NullContact m_nullContact;
+    // This lets us provide broadphase proxy pair user data for
+    // contacts that shouldn't exist.
+    b2NullContact m_nullContact;
 
-	bool m_destroyImmediate;
+    bool m_destroyImmediate;
 };
 
 #endif

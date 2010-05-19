@@ -5,6 +5,7 @@ sprites =
     dude = {
         path = "gfx/dod.png",
         w = 20, h = 20,
+        hotspot_x = 10, hotspot_y = 10,
     },
 
     girl = {
