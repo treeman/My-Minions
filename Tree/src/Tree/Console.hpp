@@ -9,11 +9,11 @@
 #include <boost/function.hpp>
 #include <boost/ref.hpp>
 
-#include "InputHandler.hpp"
-#include "Hge/Hge.hpp"
-#include "Timer.hpp"
-#include "Dator.hpp"
-#include "Settings.hpp"
+#include "Tree/Graphics.hpp"
+#include "Tree/InputHandler.hpp"
+#include "Tree/Timer.hpp"
+#include "Tree/Dator.hpp"
+#include "Tree/Settings.hpp"
 
 namespace Tree
 {
@@ -22,7 +22,7 @@ namespace Tree
         Console();
         ~Console();
 
-        bool HandleEvent( hgeInputEvent &e );
+        bool HandleEvent( sf::Event &e );
 
         void HearSetting( std::string setting, std::string value, std::string return_val );
 
@@ -43,12 +43,13 @@ namespace Tree
         typedef std::vector<std::string> StrList;
         typedef std::map<std::string, std::string> StrMap;
 
-        boost::shared_ptr<hgeFont> fnt;
+        float GetStringWidth( std::string str );
+        sf::String render_str;
 
         float x, y;
         float w, h;
 
-        boost::shared_ptr<hgeSprite> back;
+        sf::Shape back;
 
         bool IsHistoryLocked();
 
@@ -77,7 +78,6 @@ namespace Tree
         StrMap suggestion_map;
         int sugg_pos;
         float suggestion_box_width;
-        boost::shared_ptr<hgeQuad> q;
 
         void InputLineSet( std::string str, bool update_suggestion = true );
         void InputLineOnInput();
@@ -137,19 +137,17 @@ namespace Tree
 
         int some_stuff;
 
-        DWORD fnt_color;
-        DWORD fnt_history_color;
-        DWORD fnt_history_line_sign_color;
-        DWORD fnt_highlight_color;
-        DWORD fnt_suggestion_color;
-        DWORD blinkie_color;
+        sf::Color fnt_color;
+        sf::Color fnt_history_color;
+        sf::Color fnt_history_line_sign_color;
+        sf::Color fnt_highlight_color;
+        sf::Color fnt_suggestion_color;
+        sf::Color blinkie_color;
 
-        DWORD large_back_color;
-        DWORD suggestion_back_color;
-        DWORD selection_color;
-        DWORD delimiter_color;
-
-        HgeObj hge;
+        sf::Color large_back_color;
+        sf::Color suggestion_back_color;
+        sf::Color selection_color;
+        sf::Color delimiter_color;
 
         void RenderDebug();
 
@@ -161,3 +159,4 @@ namespace Tree
 }
 
 #endif
+

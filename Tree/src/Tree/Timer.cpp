@@ -2,7 +2,8 @@
 
 using Tree::Timer;
 
-Timer::Timer() : start_tick(0), pause_tick(0), time(0), is_started(false), is_paused(false)
+Timer::Timer() : start_tick(0), pause_tick(0), time(0), speed( 1 ),
+    is_started(false), is_paused(false)
 {
 
 }
@@ -14,7 +15,7 @@ Timer::~Timer()
 void Timer::Start()
 {
     if( !is_started || is_paused ) {
-        start_tick = hge->Timer_GetTime();
+        start_tick = clock.GetElapsedTime();
         is_started = true;
         is_paused = false;
     }
@@ -55,7 +56,17 @@ float Timer::GetTime() const
 void Timer::SetTime( float new_time )
 {
     time = new_time;
-    start_tick = hge->Timer_GetTime();
+    start_tick = clock.GetElapsedTime();
+}
+
+void Timer::SetSpeed( float multiplier )
+{
+    UpdateTimeAcc();
+    speed = multiplier;
+}
+float Timer::GetSpeed() const
+{
+    return speed;
 }
 
 bool Timer::IsStarted() const
@@ -69,10 +80,11 @@ bool Timer::IsPaused() const
 
 float Timer::GetTimeStep() const
 {
-    return hge->Timer_GetTime() - start_tick;
+    return ( clock.GetElapsedTime() - start_tick ) * speed;
 }
 void Timer::UpdateTimeAcc()
 {
     time = GetTime();
-    start_tick = hge->Timer_GetTime();
+    start_tick = clock.GetElapsedTime();
 }
+

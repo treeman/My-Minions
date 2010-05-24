@@ -53,3 +53,4 @@ namespace Error
         const char *s;
     };
 }
+

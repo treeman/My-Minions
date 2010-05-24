@@ -2,28 +2,23 @@
 
 #include "Tree/Log.hpp"
 #include "Tree/InputHandler.hpp"
-#include "Tree/Singleton.hpp"
-
-#define LOGHELPER Tree::LogHelper::Instance()
 
 namespace Tree
 {
-    class LogHelper : public Singleton<LogHelper>, public InputHandler {
+    class LogHelper;
+
+    boost::shared_ptr<LogHelper> GetLogHelper();
+
+    class LogHelper : public InputHandler {
     public:
-        LogHelper() : shall_log( false ), one_iteration_key( 0 )
-        { }
+        LogHelper();
 
-        bool ShallLog() const { return shall_log; }
+        bool ShallLog() const;
 
-        void SetLogKey( int key ) { one_iteration_key = key; }
-        bool HandleEvent( hgeInputEvent &e )
-        {
-            if( e.type == INPUT_KEYDOWN && e.key == one_iteration_key ) {
-                shall_log = true;
-            }
-        }
+        void SetLogKey( int key );
+        bool HandleEvent( sf::Event &e );
 
-        void EndofLoop() { shall_log = false; }
+        void EndofLoop();
     private:
         bool shall_log;
         int one_iteration_key;

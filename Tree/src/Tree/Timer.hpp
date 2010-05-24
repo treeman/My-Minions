@@ -1,7 +1,7 @@
 #ifndef TIMER_HPP_INCLUDED
 #define TIMER_HPP_INCLUDED
 
-#include "Hge/Hge.hpp"
+#include <SFML/System.hpp>
 
 namespace Tree {
 
@@ -19,6 +19,9 @@ namespace Tree {
         float GetTime() const;
         void SetTime( float time );
 
+        void SetSpeed( float multiplier );
+        float GetSpeed() const;
+
         bool IsStarted() const;
         bool IsPaused() const;
     protected:
@@ -28,12 +31,16 @@ namespace Tree {
         float start_tick;
         float pause_tick;
         float time;
+
+        float speed;
+
         bool is_started;
         bool is_paused;
 
-        HgeObj hge;
+        sf::Clock clock;
     };
 
 }
 
 #endif
+

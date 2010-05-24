@@ -32,5 +32,19 @@ namespace luah
         lua_pop( L, 1 );
         return success;
     }
+
+    inline bool get_bool( lua_State *L, std::string name, bool &result )
+    {
+        bool success = false;
+
+        lua_pushstring( L, name.c_str() );
+        lua_gettable( L, -2 );
+        if( lua_isboolean( L, -1 ) ) {
+            result = lua_toboolean( L, -1 );
+            success = true;
+        }
+        lua_pop( L, 1 );
+        return success;
+    }
 }
 

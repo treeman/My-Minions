@@ -4,8 +4,8 @@
 #include <boost/shared_ptr.hpp>
 
 #include "Tree/GameState.hpp"
-#include "Hge/Hge.hpp"
 #include "Tree/Timer.hpp"
+#include "Tree/Graphics.hpp"
 
 namespace Tree {
 
@@ -14,22 +14,16 @@ namespace Tree {
         Logo();
         ~Logo();
 
-        bool HandleEvent( hgeInputEvent &e );
+        bool HandleEvent( sf::Event &e );
 
         void Update( float dt );
-        void Render();
+        void Draw();
     private:
         Timer t;
 
-        TexObj logo_tex;
-        boost::shared_ptr<hgeSprite> logo;
-        float x, y;
-
-        boost::shared_ptr<hgeSprite> fade;
+        sf::Sprite logo;
+        int fade;
         int fade_dir;
-        DWORD fade_color;
-
-        HgeObj hge;
     };
 
 }

@@ -15,17 +15,20 @@
 #include "Tree/BaseDator.hpp"
 #include "Tree/Dator.hpp"
 
-#define SETTINGS Tree::Settings::Instance()
-
 namespace Tree
 {
+    class Settings;
+
+    //get settings from game
+    boost::shared_ptr<Settings> GetSettings();
+
     class SettingsListener {
     public:
         virtual ~SettingsListener() { }
         virtual void HearSetting( std::string setting, std::string value, std::string return_val ) = 0;
     };
 
-    class Settings : public Singleton<Settings> {
+    class Settings {
     public:
         Settings();
         virtual ~Settings();
@@ -91,10 +94,8 @@ T Tree::Settings::GetValue( std::string name ) throw( Error::setting_not_found )
             dator_map.erase( it );
         }
     }
-    else {
-        std::string s = "Setting '" + name + "' not found";
-        throw( Error::setting_not_found( s.c_str() ) );
-    }
+    std::string s = "Setting '" + name + "' not found";
+    throw( Error::setting_not_found( s.c_str() ) );
 }
 
 template<typename T>
@@ -105,3 +106,4 @@ void Tree::Settings::SetValue( std::string name, T value )
     }
     catch( boost::bad_lexical_cast &e ) { }
 }
+

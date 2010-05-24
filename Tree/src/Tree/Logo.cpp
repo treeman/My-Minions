@@ -1,37 +1,32 @@
 #include "Tree/Logo.hpp"
 #include "Tree/Game.hpp"
+#include "Tree/Util.hpp"
 
 using Tree::Logo;
 
 Logo::Logo()
 {
-    logo_tex.Load( "gfx/treelogo.png" );
+    logo.SetImage( *Tree::GetButler()->GetImage( "gfx/treelogo.png" ) );
 
-//  const int w = state_handler->GetWindowWidth();
-//  const int h = state_handler->GetWindowHeight();
+    const int w = Tree::GetWindowWidth();
+    const int h = Tree::GetWindowHeight();
 
-    const int w = 800;
-    const int h = 600;
+    logo.SetPosition( ( w - 300 ) / 2, ( h - 200 ) / 2 - 50 );
 
-//  logo dimensions 300x200
-    logo.reset( new hgeSprite( logo_tex, 0, 0, 300, 200 ) );
-    x = ( w - 300 ) / 2;
-    y = ( h - 200 ) / 2 - 50;
-
-    fade.reset( new hgeSprite( 0, 0, 0, w, h ) );
-    fade_color = 0xFF000000;
+    fade = 0;
     fade_dir = -1;
 
     t.Start();
 }
 Logo::~Logo()
 {
-    hge->Texture_Free( logo_tex );
 }
 
-bool Logo::HandleEvent( hgeInputEvent &event )
+bool Logo::HandleEvent( sf::Event &event )
 {
-    if( event.type == INPUT_KEYDOWN || event.type == INPUT_MBUTTONDOWN ) {
+    if( event.Type == sf::Event::KeyPressed
+        || event.Type == sf::Event::MouseButtonPressed )
+    {
         Tree::Game::Instance()->Pop();
     }
     return true;
@@ -42,22 +37,20 @@ void Logo::Update( float dt )
     const float fade_time = 1.0;
     const float fade_pause = 2.0;
 
-    int alpha = GETA( fade_color );
-
     if( fade_dir == 1 )
     {
-        alpha = (int)( 255 * t.GetTime() / fade_time );
-        if( alpha > 255 ) {
-            alpha = 255;
+        fade = (int)( 255 * t.GetTime() / fade_time );
+        if( fade > 255 ) {
+            fade = 255;
             Tree::Game::Instance()->Pop();
             return;
         }
     }
     else if( fade_dir == -1 )
     {
-        alpha = 255 - (int)( 255 * t.GetTime() / fade_time );
-        if( alpha < 0 ) {
-            alpha = 0;
+        fade = 255 - (int)( 255 * t.GetTime() / fade_time );
+        if( fade < 0 ) {
+            fade = 0;
             fade_dir = 0;
             t.Restart();
         }
@@ -68,11 +61,10 @@ void Logo::Update( float dt )
             t.Restart();
         }
     }
-    fade_color = SETA( fade_color, alpha );
 }
-void Logo::Render()
+void Logo::Draw()
 {
-    logo->Render( x, y );
-    fade->SetColor( fade_color );
-    fade->Render(0,0);
+    logo.SetColor( sf::Color( 255, 255, 255, 255 - fade ) );
+    Tree::Draw( logo );
 }
+

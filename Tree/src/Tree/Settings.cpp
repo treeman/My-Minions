@@ -3,8 +3,14 @@
 
 #include "Tree/Settings.hpp"
 #include "Tree/Dator.hpp"
+#include "Tree/Game.hpp"
 
 using Tree::Settings;
+
+boost::shared_ptr<Settings> Tree::GetSettings()
+{
+    return GAME->GetSettings();
+}
 
 Settings::Settings()
 {
@@ -176,3 +182,4 @@ void Settings::UpdateListeners( std::string setting, std::string value, std::str
         (*it)->HearSetting( setting, value, return_val );
     }
 }
+

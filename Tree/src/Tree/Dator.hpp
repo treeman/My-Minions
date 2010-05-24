@@ -42,7 +42,7 @@ namespace Tree
         std::string Set( const std::string new_val )
         {
             try { return Set( boost::lexical_cast<T>( new_val ) ); }
-            catch( boost::bad_lexical_cast &e ) { return ""; }
+            catch( ... ) { return ""; }
         }
         std::string Set( T new_val )
         {
@@ -80,3 +80,4 @@ namespace Tree
         boost::function<std::string( const std::string )> change_func;
     };
 }
+

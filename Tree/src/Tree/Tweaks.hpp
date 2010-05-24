@@ -2,14 +2,16 @@
 
 #include <string>
 #include <map>
-
-#include "Tree/Singleton.hpp"
-
-#define TWEAKS Tree::Tweaks::Instance()
+#include <boost/shared_ptr.hpp>
 
 namespace Tree
 {
-    class Tweaks : public Tree::Singleton<Tweaks> {
+    class Tweaks;
+
+    //get tweaks from game
+    boost::shared_ptr<Tweaks> GetTweaks();
+
+    class Tweaks {
     public:
         Tweaks();
 
@@ -23,3 +25,4 @@ namespace Tree
         StringMap strings;
     };
 }
+

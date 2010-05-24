@@ -2,14 +2,18 @@
 
 #include "Tree/Console.hpp"
 #include "Tree/Butler.hpp"
+#include "Tree/Util.hpp"
+#include "Tree/Log.hpp"
 
 using Tree::Console;
 
 Console::Console()
 {
-    SETTINGS->AddListener( this );
+    Tree::GetSettings()->AddListener( this );
 
-    fnt = BUTLER->GetFont( "fnt/arial10.fnt" );
+    render_str.SetFont( *Tree::GetButler()->GetFont(
+        "fnt/arial.ttf", 10 ) );
+    render_str.SetSize( 10 );
 
     x = 10; y = 10;
     w = 400;
@@ -24,16 +28,8 @@ Console::Console()
     text_off_down = 5;
     text_off_top = 5;
 
-    line_height = fnt->GetHeight() - 2;
-
-    back.reset( new hgeSprite( 0, 0, 0, w, h ) );
-    q.reset( new hgeQuad() );
-
-    blinkie_time = 0.5;
-
-    suggestion_box_width = 0;
-
-    is_active = false;
+    render_str.SetText( "tesT" );
+    line_height = render_str.GetRect().GetHeight();
 
     opacity = 0xDD;
     fnt_opacity = 0xFF;
@@ -41,64 +37,73 @@ Console::Console()
     selection_opacity = 0x66;
     delimiter_opacity = 0x22;
 
-    fnt_color = 0x45DD57;
-    fnt_history_color = 0x45DD57;
-    fnt_history_line_sign_color = 0x1AA12A;
-    fnt_highlight_color = 0xEBF230;
-    fnt_suggestion_color = 0x45DD57;
-    blinkie_color = 0x7A7A7A;
-    selection_color = 0x7A7A7A;
+    fnt_color = sf::Color( 69, 221, 87 );
+    fnt_history_color = sf::Color( 69, 221, 87, fnt_opacity );
+    fnt_history_line_sign_color = sf::Color( 26, 161, 42, fnt_opacity );
+    fnt_highlight_color = sf::Color( 235, 242, 48, fnt_opacity );
+    fnt_suggestion_color = sf::Color( 69, 221, 87, fnt_opacity );
+    blinkie_color = sf::Color( 122, 122, 122, blinkie_opacity );
+    selection_color = sf::Color( 122, 122, 122, selection_opacity );
 
-    large_back_color = 0x515151;
-    suggestion_back_color = 0x5C5C5C;
-    delimiter_color = 0x2C2C2C;
+    large_back_color = sf::Color( 51, 51, 51, opacity );
+    suggestion_back_color = sf::Color( 92, 92, 92, opacity );
+    delimiter_color = sf::Color( 44, 44, 44, delimiter_opacity );
+
+    back = sf::Shape::Rectangle( 0, 0, w, h, large_back_color );
+    back.SetPosition( x, y );
+
+    blinkie_time = 0.5;
+
+    suggestion_box_width = 0;
+
+    is_active = false;
 
     SelectionClear();
     blink_timer.Start();
 
     showDebug.reset( new Dator<bool>( false ) );
-    SETTINGS->RegisterVariable( "console_show_debug", boost::weak_ptr<BaseDator>( showDebug ) );
+    Tree::GetSettings()->RegisterVariable( "console_show_debug", boost::weak_ptr<BaseDator>( showDebug ) );
 
     clearHistory.reset( new CallDator( boost::bind( &Console::Clear, this ) ) );
-    SETTINGS->RegisterVariable( "console_clear", boost::weak_ptr<BaseDator>( clearHistory ) );
+    Tree::GetSettings()->RegisterVariable( "console_clear", boost::weak_ptr<BaseDator>( clearHistory ) );
 
     showCommands.reset( new CallDator( boost::bind( &Console::ShowCommands, this ) ) );
-    SETTINGS->RegisterVariable( "console_show_commands", boost::weak_ptr<BaseDator>( showCommands ) );
+    Tree::GetSettings()->RegisterVariable( "console_show_commands", boost::weak_ptr<BaseDator>( showCommands ) );
 
     showCommandsValues.reset( new CallDator( boost::bind( &Console::ShowCommandsValues, this ) ) );
-    SETTINGS->RegisterVariable( "console_show_commands_values", boost::weak_ptr<BaseDator>( showCommandsValues ) );
+    Tree::GetSettings()->RegisterVariable( "console_show_commands_values", boost::weak_ptr<BaseDator>( showCommandsValues ) );
 }
 Console::~Console()
 {
 
 }
 
-bool Console::HandleEvent( hgeInputEvent &e )
+bool Console::HandleEvent( sf::Event &e )
 {
     if( !is_active ) {
-        if( e.type == INPUT_KEYDOWN && e.key == HGEK_F1 ) {
+        if( e.Type == sf::Event::KeyPressed && e.Key.Code == sf::Key::F1 ) {
             Activate();
         }
         else {
             return true;
         }
     }
-    else if( e.type == INPUT_KEYDOWN && e.key == HGEK_F1 ) {
+    else if( e.Type == sf::Event::KeyPressed && e.Key.Code == sf::Key::F1 ) {
         Deactivate();
         return true;
     }
 
-    if( e.type == INPUT_KEYDOWN )
+    if( e.Type == sf::Event::KeyPressed )
     {
-        if( e.key == HGEK_ENTER && input_line.size() > 0 ) {
+        if( e.Key.Code == sf::Key::Return && input_line.size() > 0 ) {
             InputLineExecute();
         }
-        else if( e.key == HGEK_SPACE ) {
+        else if( e.Key.Code == sf::Key::Space ) {
             SelectionDelete();
             InputLineAddChar( ' ', input_line_pos );
             InputLineMoveRight();
         }
-        else if( e.key == HGEK_BACKSPACE ) {
+        else if( e.Key.Code == sf::Key::Back ) {
             if( SelectionIsActive() ) {
                 SelectionDelete();
             }
@@ -107,16 +112,16 @@ bool Console::HandleEvent( hgeInputEvent &e )
                 InputLineMoveLeft();
             }
         }
-        else if( e.key == HGEK_A && hge->Input_GetKeyState( HGEK_CTRL ) ) {
+        else if( e.Key.Code == sf::Key::A && e.Key.Control ) {
             SelectionAll();
         }
-        else if( e.key == HGEK_C && hge->Input_GetKeyState( HGEK_CTRL ) ) {
+        else if( e.Key.Code == sf::Key::C && e.Key.Control ) {
             SelectionCopy();
         }
-        else if( e.key == HGEK_V && hge->Input_GetKeyState( HGEK_CTRL ) ) {
+        else if( e.Key.Code == sf::Key::V && e.Key.Control ) {
             SelectionPaste( input_line_pos );
         }
-        else if( e.key == HGEK_DELETE ) {
+        else if( e.Key.Code == sf::Key::Delete ) {
             if( SelectionIsActive() ) {
                 SelectionDelete();
             }
@@ -124,7 +129,7 @@ bool Console::HandleEvent( hgeInputEvent &e )
                 InputLineDeleteChar( input_line_pos );
             }
         }
-        else if( e.key == HGEK_UP ) {
+        else if( e.Key.Code == sf::Key::Up ) {
             SelectionClear();
             if( IsSuggestionLocked() ) {
                 MoveUpInSuggestion();
@@ -133,7 +138,7 @@ bool Console::HandleEvent( hgeInputEvent &e )
                 MoveBackInHistory();
             }
         }
-        else if( e.key == HGEK_DOWN ) {
+        else if( e.Key.Code == sf::Key::Down ) {
             SelectionClear();
             if( IsHistoryLocked() ) {
                 MoveForwardInHistory();
@@ -142,13 +147,13 @@ bool Console::HandleEvent( hgeInputEvent &e )
                 MoveDownInSuggestion();
             }
         }
-        else if( e.key == HGEK_TAB ) {
+        else if( e.Key.Code == sf::Key::Tab ) {
             if( IsSuggestionLocked() ) {
                 AutoCompleteSuggestion();
             }
         }
-        else if( e.key == HGEK_LEFT ) {
-            if( hge->Input_GetKeyState( HGEK_SHIFT ) ) {
+        else if( e.Key.Code == sf::Key::Left ) {
+            if( e.Key.Shift ) {
                 SelectionMoveLeft();
             }
             else {
@@ -156,8 +161,8 @@ bool Console::HandleEvent( hgeInputEvent &e )
             }
             InputLineMoveLeft();
         }
-        else if( e.key == HGEK_RIGHT ) {
-            if( hge->Input_GetKeyState( HGEK_SHIFT ) ) {
+        else if( e.Key.Code == sf::Key::Right ) {
+            if( e.Key.Shift ) {
                 SelectionMoveRight();
             }
             else {
@@ -165,15 +170,18 @@ bool Console::HandleEvent( hgeInputEvent &e )
             }
             InputLineMoveRight();
         }
-        else if( e.chr > 32 ) {
-            SelectionDelete();
-            InputLineAddChar( e.chr, input_line_pos );
-            InputLineMoveRight();
-        }
-        else {
-            return true;
-        }
+
         blink_timer.Restart();
+    }
+    else if( e.Type == sf::Event::TextEntered && e.Text.Unicode > 32 ) {
+        SelectionDelete();
+        InputLineAddChar( e.Text.Unicode, input_line_pos );
+        InputLineMoveRight();
+
+        blink_timer.Restart();
+    }
+    else {
+        return true;
     }
     return false;
 }
@@ -192,7 +200,7 @@ std::string Console::Clear()
 }
 std::string Console::ShowCommands()
 {
-    StrList cmd_list = SETTINGS->GetSettings();
+    StrList cmd_list = Tree::GetSettings()->GetSettings();
     for( StrList::iterator it = cmd_list.begin(); it != cmd_list.end(); ++it )
     {
         PushHistory( "* " + *it );
@@ -202,7 +210,7 @@ std::string Console::ShowCommands()
 
 std::string Console::ShowCommandsValues()
 {
-    StrMap cmd_map = SETTINGS->GetSettingsValues();
+    StrMap cmd_map = Tree::GetSettings()->GetSettingsValues();
     for( StrMap::iterator it = cmd_map.begin(); it != cmd_map.end(); ++it )
     {
         if( !it->second.empty() ) {
@@ -224,8 +232,6 @@ void Console::Render()
         return;
     }
 
-    fnt->SetColor( 0xFF45DD57 );
-
     RenderBones();
     RenderHistory();
     RenderInputLine();
@@ -240,6 +246,12 @@ void Console::Activate()
 void Console::Deactivate()
 {
     is_active = false;
+}
+
+float Console::GetStringWidth( std::string str )
+{
+    render_str.SetText( str );
+    return render_str.GetRect().GetWidth();
 }
 
 bool Console::IsHistoryLocked()
@@ -282,14 +294,15 @@ void Console::PushCmd( std::string str )
 }
 void Console::PushHistory( std::string str )
 {
-    if( fnt->GetStringWidth( str.c_str() ) > ( w - 2 * text_off_left ) ) {
+    if( GetStringWidth( str ) > ( w - 2 * text_off_left ) ) {
         //find the largest string that isn't too large
         std::string s; int i = 0;
         do {
             s += str[i];
             i++;
         }
-        while( fnt->GetStringWidth( s.c_str() ) < ( w - 2 * text_off_left ) && i < (int)str.size() );
+        while( GetStringWidth( str ) < ( w - 2 * text_off_left )
+            && i < (int)str.size() );
 
         //try to split on the nearest space of the new string instead
         int space_pos = s.rfind( ' ' );
@@ -358,16 +371,16 @@ void Console::UpdateSuggestionList()
         return;
     }
 
-    StrMap allsettings_map = SETTINGS->GetSettingsValues();
+    StrMap allsettings_map = Tree::GetSettings()->GetSettingsValues();
     for( StrMap::iterator it = allsettings_map.begin(); it != allsettings_map.end(); ++it )
     {
         std::string composit = it->first + ' ' + it->second;
 
         if( composit.find( input_line ) == 0 ) {
             suggestion_map.insert( *it );
-            float temp = fnt->GetStringWidth( composit.c_str() );
-            if( temp > suggestion_box_width ) {
-                suggestion_box_width = temp;
+            float w = GetStringWidth( composit );
+            if( w > suggestion_box_width ) {
+                suggestion_box_width = w;
             }
         }
     }
@@ -422,7 +435,9 @@ void Console::InputLineDeleteChar( int pos )
 }
 void Console::InputLineAddChar( char ch, int pos )
 {
-    if( fnt->GetStringWidth( std::string(input_line + ch).c_str() ) < ( w - 2 * text_off_left ) ) {
+    if( GetStringWidth( std::string( input_line + ch ) )
+        < ( w - 2 * text_off_left ) )
+    {
         input_line.insert( pos, 1, ch );
         InputLineOnInput();
     }
@@ -430,7 +445,7 @@ void Console::InputLineAddChar( char ch, int pos )
 void Console::InputLineExecute()
 {
     PushCmd( input_line );
-    SETTINGS->ParseSetting( input_line );
+    Tree::GetSettings()->ParseSetting( input_line );
     InputLineClear();
 }
 void Console::InputLineClear()
@@ -523,8 +538,7 @@ void Console::SelectionPaste( int pos )
 
 void Console::RenderBones()
 {
-    back->SetColor( SETA( large_back_color, opacity ) );
-    back->Render( x, y );
+    Tree::Draw( back );
 
 //  //line above input line
 //  const float x1 = x;
@@ -541,7 +555,7 @@ void Console::RenderBones()
 }
 void Console::RenderHistory()
 {
-    fnt->SetColor( SETA( fnt_history_color, fnt_opacity ) );
+    render_str.SetColor( fnt_history_color );
 
     const int max_n = (int)(( h - text_off_top - text_off_down ) / line_height - 2);
     int n = (int)big_history.size() - 1 < max_n ? big_history.size() - 1 : max_n;
@@ -549,15 +563,28 @@ void Console::RenderHistory()
     {
         if( it->substr( 0, 3 ) == ">> " )
         {
-            fnt->SetColor( SETA( fnt_history_line_sign_color, fnt_opacity ) );
-            fnt->Render( x + text_off_left, y + text_off_top + n * line_height, HGETEXT_LEFT, ">> " );
+            render_str.SetColor( fnt_history_line_sign_color );
+            render_str.SetText( ">> " );
+            render_str.SetPosition( x + text_off_left,
+                y + text_off_top + n * line_height );
 
-            fnt->SetColor( SETA( fnt_history_color, fnt_opacity ) );
-            fnt->Render( x + text_off_left + fnt->GetStringWidth( ">> " ), y + text_off_top + n * line_height,
-                HGETEXT_LEFT, it->substr( 3 ).c_str() );
+            Tree::Draw( render_str );
+
+            float pre_w = render_str.GetRect().GetWidth();
+
+            render_str.SetColor( fnt_history_color );
+            render_str.SetText( it->substr( 3 ) );
+            render_str.SetPosition( x + text_off_left + pre_w,
+                y + text_off_top + n * line_height );
+
+            Tree::Draw( render_str );
         }
         else {
-            fnt->Render( x + text_off_left, y + text_off_top + n * line_height, HGETEXT_LEFT, it->c_str() );
+            render_str.SetText( it->c_str() );
+            render_str.SetPosition( x + text_off_left,
+                y + text_off_top + n * line_height );
+
+            Tree::Draw( render_str );
         }
         --n;
         if( n < 0 ) {
@@ -568,7 +595,10 @@ void Console::RenderHistory()
 
 void Console::RenderInputLine()
 {
-    fnt->Render( x + text_off_left, y + h - text_off_down - fnt->GetHeight(), HGETEXT_LEFT, input_line.c_str() );
+    render_str.SetPosition( x + text_off_left, y + h - text_off_down - line_height );
+    render_str.SetText( input_line );
+
+    Tree::Draw( render_str );
 
     if( SelectionIsActive() ) {
 
@@ -582,34 +612,37 @@ void Console::RenderInputLine()
             sel = input_line.substr( sel_start + sel_length, -sel_length );
         }
 
-        const float sel_x1 = x + text_off_left + fnt->GetStringWidth( before.c_str() );
-        const float sel_x2 = sel_x1 + fnt->GetStringWidth( sel.c_str() );
+        float before_w = GetStringWidth( before );
+        float sel_w = GetStringWidth( sel );
+
+        const float sel_x1 = x + text_off_left + before_w;
+        const float sel_x2 = sel_x1 + sel_w;
         const float sel_y1 = y + h - text_off_down;
-        const float sel_y2 = y + h - text_off_down - fnt->GetHeight();
+        const float sel_y2 = y + h - text_off_down - line_height;
 
-        q->v[0].x = sel_x1; q->v[0].y = sel_y1;
-        q->v[1].x = sel_x2; q->v[1].y = sel_y1;
-        q->v[2].x = sel_x2; q->v[2].y = sel_y2;
-        q->v[3].x = sel_x1; q->v[3].y = sel_y2;
+        sf::Shape rect = sf::Shape::Rectangle( sel_x1, sel_y1, sel_x2, sel_y2,
+            selection_color );
 
-        q->v[0].col = SETA( selection_color, selection_opacity );
-        q->v[1].col = SETA( selection_color, selection_opacity );
-        q->v[2].col = SETA( selection_color, selection_opacity );
-        q->v[3].col = SETA( selection_color, selection_opacity );
-
-        hge->Gfx_RenderQuad( q.get() );
+        Tree::Draw( rect );
     }
 
-    fnt->Render( x + text_off_left, y + h - text_off_down - fnt->GetHeight(), HGETEXT_LEFT, input_line.c_str() );
+    render_str.SetPosition( x + text_off_left, y + h - text_off_down - line_height );
+    render_str.SetText( input_line );
+
+    Tree::Draw( render_str );
 
     if( blink_timer.GetTime() < blinkie_time ) {
 
         //the little blinking helper thing
-        float line_x = x + text_off_left + fnt->GetStringWidth( input_line.substr( 0, input_line_pos ).c_str() );
-        float line_h = fnt->GetHeight();
-        float line_y = y + h - text_off_down - fnt->GetHeight();
+        float line_x = x + text_off_left +
+            GetStringWidth( input_line.substr( 0, input_line_pos ) );
+        float line_h = line_height;
+        float line_y = y + h - text_off_down - line_height;
 
-        hge->Gfx_RenderLine( line_x, line_y, line_x, line_y + line_h, SETA( blinkie_color, blinkie_opacity ) );
+        sf::Shape line = sf::Shape::Line( line_x, line_y, line_x, line_y + line_h,
+            1, blinkie_color );
+
+        Tree::Draw( line );
     }
     else if( blink_timer.GetTime() > 2 * blinkie_time ) {
         blink_timer.Restart();
@@ -626,28 +659,32 @@ void Console::RenderTypeSuggestions()
     const float y1 = y + h;
     const float y2 = y1 + text_off_down + line_height * suggestion_map.size();
 
-    back->SetColor( SETA( suggestion_back_color, opacity ) );
-    back->Render4V( x1, y1, x2, y1, x2, y2, x1, y2 );
+    sf::Shape box = sf::Shape::Rectangle( x1, y1, x2, y2,
+        suggestion_back_color );
+
+    Tree::Draw( box );
 
     int n = 0;
     for( StrMap::iterator it = suggestion_map.begin(); it != suggestion_map.end(); ++it )
     {
         if( n == sugg_pos ) {
-            fnt->SetColor( SETA( fnt_highlight_color, fnt_opacity ) );
+            render_str.SetColor( fnt_highlight_color );
         }
         else {
-            fnt->SetColor( SETA( fnt_suggestion_color, fnt_opacity ) );
+            render_str.SetColor( fnt_suggestion_color );
         }
 
-        std::string s = it->first + ' ' + it->second;
-        fnt->Render( x + text_off_left, y + h + line_height * n, HGETEXT_LEFT, s.c_str() );
+        render_str.SetText( it->first + ' ' + it->second );
+        render_str.SetPosition( x + text_off_left, y + h + line_height * n );
+
+        Tree::Draw( render_str );
         n++;
     }
 }
 
 void Console::RenderDebug()
 {
-    if( !showDebug->Val() ) return;
+    /*if( !showDebug->Val() ) return;
 
     fnt->SetColor( 0xffffffff );
     fnt->printf( x + w + text_off_left, y, HGETEXT_LEFT, "line_pos: %i history_pos: %i history_length: %i",
@@ -667,4 +704,6 @@ void Console::RenderDebug()
     }
     fnt->printf( x + w + text_off_left, y + line_height, HGETEXT_LEFT, "sel_start: %i sel_length: %i substr: %s",
         sel_start, sel_length, s.c_str() );
+    */
 }
+

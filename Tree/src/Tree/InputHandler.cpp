@@ -4,10 +4,10 @@ using Tree::InputChain;
 
 InputChain::InputChain() { }
 
-bool InputChain::HandleEvent( hgeInputEvent &event )
+bool InputChain::HandleEvent( sf::Event &e )
 {
     for( HandlerList::iterator it = handler_list.begin(); it != handler_list.end(); ++it ) {
-        if( !(*it)->HandleEvent( event ) ) {
+        if( !(*it)->HandleEvent( e ) ) {
             return false;
         }
     }
@@ -28,3 +28,4 @@ void InputChain::RemoveHandler( InputHandler *handler )
 {
     handler_list.remove( handler );
 }
+

@@ -3,7 +3,7 @@
 
 #include <list>
 
-#include "Hge/Hge.hpp"
+#include <SFML/Window.hpp>
 
 namespace Tree {
 
@@ -13,12 +13,15 @@ namespace Tree {
         virtual ~InputHandler() { }
 
         //return true if event is allowed to be passed to the next handler
-        virtual bool HandleEvent( hgeInputEvent& ) = 0;
+        virtual bool HandleEvent( sf::Event &e ) = 0;
 
-        int GetPriority() {
+        const int GetPriority() const {
             return input_priority;
         }
-    protected:
+        void SetPriority( int p ) {
+            input_priority = p;
+        }
+    private:
         int input_priority;
     };
 
@@ -26,7 +29,7 @@ namespace Tree {
     public:
         InputChain();
 
-        bool HandleEvent( hgeInputEvent &event );
+        bool HandleEvent( sf::Event &e );
 
         void AddHandler( InputHandler *handler );
         void RemoveHandler( InputHandler *handler );

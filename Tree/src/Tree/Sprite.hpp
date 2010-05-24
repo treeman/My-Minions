@@ -5,35 +5,29 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "Hge/Hge.hpp"
 #include "Lua/Lua.hpp"
 #include "Tree/Errorhandling.hpp"
+#include "Tree/Graphics.hpp"
 
 namespace Tree
 {
     class SimpleSprite {
     public:
-        SimpleSprite() : color( 0 ), x_off( 0 ), y_off ( 0 ), is_anim( false )
+        SimpleSprite() : x_off( 0 ), y_off ( 0 )
         { }
 
-        boost::shared_ptr<hgeSprite> spr;
-        DWORD color;
-        TexObj tex;
+        sf::Sprite spr;
         float x_off, y_off;
-        bool is_anim;
     };
 
-    class Sprite {
+    class Sprite : public sf::Drawable {
     public:
-        void Update( float dt );
-
-        void Render( float x, float y );
-        void RenderEx( float x, float y, float rot,
-            float hscale = 1.0f, float vscale = 0.0f );
+        void Draw();
     private:
         Sprite();
-
         friend class SpriteLoader;
+
+        void Render( sf::RenderTarget &target ) const;
 
         typedef std::vector<boost::shared_ptr<SimpleSprite> > Sprites;
 

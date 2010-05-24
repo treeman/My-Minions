@@ -2,8 +2,14 @@
 #include "Tree/Errorhandling.hpp"
 #include "Lua/Lua.hpp"
 #include "Tree/Log.hpp"
+#include "Tree/Game.hpp"
 
 using Tree::Tweaks;
+
+boost::shared_ptr<Tweaks> Tree::GetTweaks()
+{
+    return GAME->GetTweaks();
+}
 
 Tweaks::Tweaks()
 {

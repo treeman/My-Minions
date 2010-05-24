@@ -13,28 +13,17 @@ Sprite::Sprite()
 
 }
 
-void Sprite::Update( float dt )
+void Sprite::Draw()
 {
     BOOST_FOREACH( boost::shared_ptr<SimpleSprite> s, sprites ) {
-        if( s->is_anim ) {
-            hgeAnimation *a = static_cast<hgeAnimation*>( s->spr.get() );
-            a->Update( dt );
-        }
+        Tree::Draw( s->spr );
     }
 }
-void Sprite::Render( float x, float y )
+
+void Sprite::Render( sf::RenderTarget &target ) const
 {
     BOOST_FOREACH( boost::shared_ptr<SimpleSprite> s, sprites ) {
-        s->spr->SetColor( s->color );
-        s->spr->Render( x, y );
-    }
-}
-void Sprite::RenderEx( float x, float y, float rot,
-    float hscale, float vscale )
-{
-    BOOST_FOREACH( boost::shared_ptr<SimpleSprite> s, sprites ) {
-        s->spr->SetColor( s->color );
-        s->spr->RenderEx( x, y, rot, hscale, vscale );
+        target.Draw( s->spr );
     }
 }
 
@@ -42,6 +31,7 @@ SpriteLoader::SpriteLoader() { }
 
 void SpriteLoader::Load( std::string lua_file ) throw( Error::lua_error & )
 {
+    L_ << "loading sprite file '" << lua_file << "'";
     LuaState L;
 
     if( luaL_dofile( L, lua_file.c_str() ) ) {
@@ -87,13 +77,11 @@ bool SpriteLoader::LoadSprite( lua_State *L, boost::shared_ptr<Sprite> spr )
 
         std::string path = "";
         float x = 0, y = 0;
-        float w, h;
+        float w = 0, h = 0;
         float x_off = 0, y_off = 0;
-        DWORD color = 0xffffffff;
-        int frames = 0;
-        float fps = 0;
         float hot_x = 0;
         float hot_y = 0;
+        bool smoothen = false;
 
         luah::get_num<float>( L, "x", x );
         luah::get_num<float>( L, "y", y );
@@ -101,42 +89,26 @@ bool SpriteLoader::LoadSprite( lua_State *L, boost::shared_ptr<Sprite> spr )
         luah::get_num<float>( L, "x_off", x_off );
         luah::get_num<float>( L, "y_off", y_off );
 
-        luah::get_num<DWORD>( L, "color", color );
-
-        luah::get_num<int>( L, "frames", frames );
-        luah::get_num<float>( L, "fps", fps );
-
         luah::get_num<float>( L, "hotspot_x", hot_x );
         luah::get_num<float>( L, "hotspot_y", hot_y );
+
+        luah::get_bool( L, "smoothen", smoothen );
 
         if( luah::get_num<float>( L, "w", w ) &&
             luah::get_num<float>( L, "h", h ) &&
             luah::get_string( L, "path", path ) )
         {
-            TexObj tex = BUTLER->GetTex( path );
+            boost::shared_ptr<sf::Image> img = Tree::GetButler()->GetImage( path );
 
-            if( tex ) {
+            if( img ) {
                 boost::shared_ptr<SimpleSprite> simple( new SimpleSprite() );
 
-                if( frames && fps ) {
-
-                    boost::shared_ptr<hgeAnimation> a( new hgeAnimation( tex, frames, fps, x, y, w, h ) );
-                    a->Play();
-                    simple->spr = a;
-                    simple->is_anim = true;
-                }
-                else {
-                    simple->spr.reset( new hgeSprite( tex, x, y, w, h ) );
-                    simple->is_anim = false;
-                }
-
-                simple->spr->SetHotSpot( hot_x, hot_y );
+                img->SetSmooth( smoothen );
+                simple->spr.SetImage( *img );
+                simple->spr.SetSubRect( sf::IntRect( x, y, w, h ) );
+                simple->spr.SetCenter( hot_x, hot_y );
 
                 simple->x_off = x_off; simple->y_off = y_off;
-                if( color ) {
-                    simple->color = color;
-                }
-                simple->tex = tex;
 
                 spr->sprites.push_back( simple );
 

@@ -1,4 +1,4 @@
-Demo/obj/
+*.o
 *.depend
 *.layout
 *.cbp
@@ -9,3 +9,5 @@ misc/
 */bin/gfx
 */bin/sound
 */bin/fnt
+*.dll
+

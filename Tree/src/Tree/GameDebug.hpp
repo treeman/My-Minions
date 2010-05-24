@@ -2,7 +2,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "Hge/Hge.hpp"
+#include "Tree/Graphics.hpp"
 #include "Settings.hpp"
 #include "Dator.hpp"
 
@@ -13,14 +13,12 @@ namespace Tree
         GameDebug();
 
         void Update( float dt );
-        void Render();
+        void Draw();
     private:
-        HgeObj hge;
-
         boost::shared_ptr<Dator<bool> > show_mouse_pos;
         boost::shared_ptr<Dator<bool> > show_fps;
 
-        boost::shared_ptr<hgeFont> arial10;
-        boost::shared_ptr<hgeFont> visitor20;
+        sf::String fps;
     };
 }
+
