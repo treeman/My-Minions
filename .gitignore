@@ -1,6 +1,6 @@
 *.o
-*.depend
-*.layout
+*depend
+*layout
 *.cbp
 misc/
 *_log.txt
@@ -10,4 +10,4 @@ misc/
 */bin/sound
 */bin/fnt
 *.dll
-
+*/startme
