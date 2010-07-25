@@ -14,7 +14,7 @@
 #include "Tree/Settings.hpp"
 #include "Tree/Butler.hpp"
 #include "Tree/Tweaks.hpp"
-#include "Tree/LogHelper.hpp"
+#include "Tree/Loghelper.hpp"
 
 #define GAME Tree::Game::Instance()
 

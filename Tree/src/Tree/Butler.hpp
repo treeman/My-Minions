@@ -7,7 +7,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Tree/Singleton.hpp"
-#include "Tree/ErrorHandling.hpp"
+#include "Tree/Errorhandling.hpp"
 #include "Tree/Sprite.hpp"
 
 namespace Tree
