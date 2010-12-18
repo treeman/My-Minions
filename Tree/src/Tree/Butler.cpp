@@ -1,12 +1,6 @@
 #include "Tree/Butler.hpp"
-#include "Tree/Game.hpp"
 
 using Tree::Butler;
-
-boost::shared_ptr<Butler> Tree::GetButler()
-{
-    return GAME->GetButler();
-}
 
 Butler::Butler()
 {
@@ -22,7 +16,7 @@ void Butler::LoadSprites( std::string lua_file )
     spr_loader.Load( lua_file );
 }
 
-boost::shared_ptr<sf::Font> Butler::GetFont( std::string path,
+Tree::FntPtr Butler::GetFont( std::string path,
     unsigned int size ) throw( Error::file_not_found )
 {
     typedef std::pair<FontMap::iterator, FontMap::iterator> ItPair;
@@ -39,7 +33,7 @@ boost::shared_ptr<sf::Font> Butler::GetFont( std::string path,
             }
         }
     }
-    boost::shared_ptr<sf::Font> fnt( new sf::Font() );
+    FntPtr fnt( new sf::Font() );
 
     if( !fnt->LoadFromFile( path.c_str(), size ) ) {
         std::string s = "Unable to load font: '" + path + "'";
@@ -50,7 +44,7 @@ boost::shared_ptr<sf::Font> Butler::GetFont( std::string path,
     return fnt;
 }
 
-boost::shared_ptr<sf::Image> Butler::GetImage( std::string path )
+Tree::ImgPtr Butler::GetImage( std::string path )
     throw( Error::file_not_found )
 {
     ImageMap::iterator it = image_map.find( path );
@@ -58,7 +52,7 @@ boost::shared_ptr<sf::Image> Butler::GetImage( std::string path )
         return it->second;
     }
     else {
-        boost::shared_ptr<sf::Image> img( new sf::Image() );
+        ImgPtr img( new sf::Image() );
 
         if( !img->LoadFromFile( path.c_str() ) ) {
             std::string s = "Unable to load image: '" + path + "'";
@@ -70,8 +64,20 @@ boost::shared_ptr<sf::Image> Butler::GetImage( std::string path )
     }
 }
 
-boost::shared_ptr<Tree::Sprite> Butler::GetSprite( std::string name )
+Tree::SpritePtr Butler::GetSprite( std::string name )
 {
     return spr_loader.Get( name );
+}
+Tree::Sprites Butler::GetSprites()
+{
+    return spr_loader.GetSprites();
+}
+Tree::Sprites Butler::GetSpritesFromFile( std::string file )
+{
+    return spr_loader.GetSpritesFromFile( file );
+}
+Tree::Strings Butler::GetSpriteNames()
+{
+    return spr_loader.GetSpriteNames();
 }
 

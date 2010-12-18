@@ -45,6 +45,7 @@ void WindowManager::UpdateWindow()
 
     window->Create( sf::VideoMode( width->Val(), height->Val(), bpp->Val() ),
         title->Val(), style );
+    window->ShowMouseCursor( false );
 }
 
 std::string WindowManager::SetWindowed( bool predicate )

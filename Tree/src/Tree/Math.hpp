@@ -71,53 +71,5 @@ namespace math
     }
 }
 
-namespace fastmath
-{
-    //carmack's quake qsort using newton rhapsons
-    //with evil bit level hacking
-    inline const float isqrt( const float num )
-    {
-        const float x2 = num * 0.5F;
-        float y = num;
-        long i  = * ( long * ) &y;
-        i  = 0x5f3759df - ( i >> 1 );
-        y  = * ( float * ) &i;
-        y  = y * ( 1.5F - ( x2 * y * y ) );
-        y  = y * ( 1.5F - ( x2 * y * y ) );
-        return y;
-    }
-    inline const float sqrt( const float num )
-    {
-        return num * isqrt( num );
-    }
-
-    // sin approximation from
-    // http://www.devmaster.net/forums/showthread.php?t=5784
-    // uses parabola approx with weighted average
-    // very fast with very good precision
-    inline const float sin( const float num )
-    {
-        static const float A = math::INV2PI * 2;
-        static const float B = -4 * math::INVPI * math::INVPI;
-
-        float x = A * num + B * num * std::abs( num );
-
-        static const float P = 0.225;
-
-        return P * ( x * std::abs(x) - x ) + x;
-    }
-    //only valid for -PI >= num => PI
-    inline const float cos( const float num )
-    {
-        return sin( num + math::PI_2 );
-    }
-    inline const float tan( const float num )
-    {
-        const float cos_d = cos( num );
-        if( !cos_d ) return FLT_MAX;
-        return sin( num ) / cos_d;
-    }
-}
-
 #endif
 

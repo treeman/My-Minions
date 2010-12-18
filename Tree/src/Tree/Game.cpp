@@ -18,7 +18,7 @@ Game::Game() : exit_called( false ), fps( 0 ),
 }
 Game::~Game()
 {
-    L_ << "The game is destroyed";
+    L_ << "The game is destroyed\n";
 }
 
 void Game::Draw( const sf::Drawable &obj )
@@ -34,9 +34,31 @@ const sf::Input &Game::GetInput()
     return window->GetInput();
 }
 
+Vec2f Game::GetMousePos() const
+{
+    return mpos;
+}
+
+void Game::SetMousePos( float x, float y )
+{
+    window->SetCursorPosition( x, y );
+    mpos.x = x; mpos.y = y;
+}
+
+int Game::GetWindowWidth() const
+{
+    return window->GetWidth();
+}
+
+int Game::GetWindowHeight() const
+{
+    return window->GetHeight();
+}
+
 void Game::Init( int width, int height, bool windowed, std::string title,
     std::string settings_file )
 {
+    Tree::GetTweaks()->Load( "magic_numbers.lua" );
 
     srand( time( NULL ) );
 
@@ -54,8 +76,12 @@ void Game::Init( int width, int height, bool windowed, std::string title,
             settings->ParseFile( settings_file );
         }
         catch( Error::file_not_found &e ) {
-            L_ << "Oops, you've deleted the settings file '" + settings_file + "'";
-            L_ << "God will not forgive you!!! :@";
+            L_ << "Oops, you've deleted the settings file '" + settings_file + "'\n";
+            L_ << "God will not forgive you!!! :@\n";
+            L_ << "Well... I'll just recreate it for you then I guess\n";
+
+            settings->CreateSettingsFile( settings_file );
+            settings->ParseFile( settings_file );
         }
     }
 
@@ -83,6 +109,9 @@ void Game::Init( int width, int height, bool windowed, std::string title,
     );
 
     game_debug.reset( new Tree::GameDebug() );
+    input_chain->AddHandler( game_debug.get() );
+
+    visual_debug.reset( new Debug() );
 }
 
 void Game::Start()
@@ -97,9 +126,16 @@ void Game::Start()
         const float dt = window->GetFrameTime();
         UpdateFPS( dt );
 
+        visual_debug->ResetTempStrings();
+
         sf::Event event;
         while( window->GetEvent( event ) )
         {
+            if( event.Type == sf::Event::MouseMoved ) {
+                mpos.x = event.MouseMove.X;
+                mpos.y = event.MouseMove.Y;
+            }
+
             //pass down events in a chain
             if( input_chain->HandleEvent( event ) ) {
                 curr_state->HandleEvent( event );
@@ -122,12 +158,13 @@ void Game::Start()
         }
 
         //begin render loop
-        window->Clear();
+        window->Clear( sf::Color( 0, 0, 0 ) );
 
         //we want to render console and debug on top of things
         curr_state->Draw();
-        console->Render();
         game_debug->Draw();
+        visual_debug->Draw();
+        console->Render();
 
         //actually draw everything
         window->Display();

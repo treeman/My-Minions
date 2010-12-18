@@ -1,10 +1,12 @@
 export CC=gcc
-export CFLAGS=-c -Wall -I../Tree/src
+export CFLAGS=-c -Wno-unused-value -Wall -I../Tree/src
 export LIBS=-lX11 -lGL -lXrandr -lfreetype -lsndfile -lopenal -lpthread -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lboost_iostreams -llua
 
 SRC=\
-Demo.cpp \
 main.cpp \
+Demo.cpp
+
+TREE_SRC=\
 ../Tree/src/Tree/Butler.cpp \
 ../Tree/src/Tree/Console.cpp \
 ../Tree/src/Tree/Game.cpp \
@@ -13,28 +15,34 @@ main.cpp \
 ../Tree/src/Tree/InputHandler.cpp \
 ../Tree/src/Tree/Loghelper.cpp \
 ../Tree/src/Tree/Logo.cpp \
-../Tree/src/Tree/Log.cpp \
 ../Tree/src/Tree/Rect.cpp \
 ../Tree/src/Tree/Settings.cpp \
+../Tree/src/Tree/Debug.cpp \
 ../Tree/src/Tree/Sprite.cpp \
 ../Tree/src/Tree/Timer.cpp \
 ../Tree/src/Tree/Tweaks.cpp \
 ../Tree/src/Tree/Util.cpp \
-../Tree/src/Tree/Vec2D.cpp \
 ../Tree/src/Tree/WindowManager.cpp
 
 OBJ=$(SRC:.cpp=.o)
+TREE_OBJ=$(TREE_SRC:.cpp=.o)
 EXE=bin/startme
 
-.PHONY: all clean
+.PHONY: all clean remake mrproper
 
-all: $(SRC) $(EXE)
+all: $(SRC) $(TREE_SRC) $(EXE)
 
-$(EXE): $(OBJ)
-	$(CC) $(OBJ) -o $@ $(LIBS)
+$(EXE): $(OBJ) $(TREE_OBJ)
+	$(CC) $(OBJ) $(TREE_OBJ) -o $@ $(LIBS)
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@
 
+remake: clean all
+
 clean:
-	rm -rf ../obj/* $(OBJ) $(EXE)
+	rm -rf $(EXE) $(OBJ)
+
+mrproper: clean
+	rm -rf $(TREE_OBJ)
+

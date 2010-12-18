@@ -10,7 +10,7 @@
 int main( int argc, char *argv[] )
 {
     //init the boost logs
-    Tree::init_logs();
+    L_.Init( "tree_log.txt" );
 
     try {
         //create the game
@@ -35,15 +35,16 @@ int main( int argc, char *argv[] )
     }
     catch( std::exception &e )
     {
-        L_ << "Fatal exception: " << e.what();
+        L_ << "Fatal exception: " << e.what() << '\n';
     }
     catch( ... )
     {
-        L_ << "Fatal unknown exception caught!";
+        L_ << "Not even Duke could handle this exception!\n";
     }
 
     //destroy the game
     Tree::Game::Instance()->Destroy();
+    L_.Destroy();
 
     return 0;
 }

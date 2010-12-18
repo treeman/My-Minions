@@ -15,6 +15,8 @@
 #include "Tree/Butler.hpp"
 #include "Tree/Tweaks.hpp"
 #include "Tree/Loghelper.hpp"
+#include "Tree/Vec2D.hpp"
+#include "Tree/Debug.hpp"
 
 #define GAME Tree::Game::Instance()
 
@@ -26,8 +28,15 @@ namespace Tree
         ~Game();
 
         void Draw( const sf::Drawable &obj );
+
         float GetFPS();
         const sf::Input &GetInput();
+
+        Vec2f GetMousePos() const;
+        void SetMousePos( float x, float y );
+
+        int GetWindowWidth() const;
+        int GetWindowHeight() const;
 
         void Init( int width, int height, bool windowed, std::string title,
             std::string settings_file = "" );
@@ -62,6 +71,8 @@ namespace Tree
         float fps_buff;
         int fps_frame_count;
 
+        Vec2f mpos;
+
     //encapsulate them in Game instead of being their own Singleton
     public:
         boost::shared_ptr<Settings> GetSettings() const {
@@ -76,12 +87,16 @@ namespace Tree
         boost::shared_ptr<LogHelper> GetLogHelper() const {
             return log_helper;
         }
+        boost::shared_ptr<Tree::Debug> GetVisualDebug() const {
+            return visual_debug;
+        }
 
     private:
         boost::shared_ptr<Settings> settings;
         boost::shared_ptr<Tweaks> tweaks;
         boost::shared_ptr<Butler> butler;
         boost::shared_ptr<LogHelper> log_helper;
+        boost::shared_ptr<Tree::Debug> visual_debug;
     };
 }
 

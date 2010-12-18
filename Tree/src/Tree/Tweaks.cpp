@@ -6,11 +6,6 @@
 
 using Tree::Tweaks;
 
-boost::shared_ptr<Tweaks> Tree::GetTweaks()
-{
-    return GAME->GetTweaks();
-}
-
 Tweaks::Tweaks()
 {
 
@@ -18,6 +13,7 @@ Tweaks::Tweaks()
 
 void Tweaks::Load( std::string path )
 {
+    L_ << "Loading tweaks file '" << path << "'\n";
     LuaState L;
     if( luaL_dofile( L, path.c_str() ) ) {
         const char *str = lua_tostring( L, -1 );
@@ -43,7 +39,7 @@ double Tweaks::GetDouble( std::string s )
     if( it != doubles.end() ) { return it->second; }
     else {
         throw( Error::setting_not_found( ("The double " + s +
-            " wasn't found in tweaks.lua").c_str() ) );
+            " wasn't found in tweaks\n").c_str() ) );
     }
 }
 
@@ -53,7 +49,7 @@ std::string Tweaks::GetString( std::string s )
     if( it != strings.end() ) { return it->second; }
     else {
         throw( Error::setting_not_found( ("The string " + s +
-            " wasn't found in tweaks.lua").c_str() ) );
+            " wasn't found in tweaks\n").c_str() ) );
     }
 }
 

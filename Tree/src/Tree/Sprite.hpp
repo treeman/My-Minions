@@ -8,6 +8,7 @@
 #include "Lua/Lua.hpp"
 #include "Tree/Errorhandling.hpp"
 #include "Tree/Graphics.hpp"
+#include "Tree/Util.hpp"
 
 namespace Tree
 {
@@ -20,8 +21,16 @@ namespace Tree
         float x_off, y_off;
     };
 
+    //meta info about the sprite
+    struct SpriteInfo {
+        std::string file_loaded_from;
+        std::string name;
+    };
+
     class Sprite : public sf::Drawable {
     public:
+        SpriteInfo Info() const;
+
         void Draw();
     private:
         Sprite();
@@ -29,24 +38,39 @@ namespace Tree
 
         void Render( sf::RenderTarget &target ) const;
 
-        typedef std::vector<boost::shared_ptr<SimpleSprite> > Sprites;
+        typedef boost::shared_ptr<SimpleSprite> SimplePtr;
+        typedef std::vector<SimplePtr> Sprites;
 
         Sprites sprites;
+
+        SpriteInfo info;
     };
+
+    typedef boost::shared_ptr<Sprite> SpritePtr;
+    typedef std::vector<SpritePtr> Sprites;
+    typedef std::map<std::string, SpritePtr> SpriteMap;
 
     class SpriteLoader {
     public:
         SpriteLoader();
 
+        //different ways to load a file, either load it once or force a load
+        //even if loaded before
         void Load( std::string lua_file ) throw( Error::lua_error & );
+        void ForceLoad( std::string lua_file ) throw( Error::lua_error & );
 
-        boost::shared_ptr<Sprite> Get( std::string name );
+        SpritePtr Get( std::string name );
+
+        //so we can comb through all sprites we've loaded so far
+        Sprites GetSprites();
+        Sprites GetSpritesFromFile( std::string file );
+        Strings GetSpriteNames();
     private:
-        typedef std::map<std::string, boost::shared_ptr<Sprite> > SpriteMap;
         SpriteMap sprite_map;
+        Strings parsed_files;
 
         //lua helper to load a sprite
-        bool LoadSprite( lua_State *L, boost::shared_ptr<Sprite> spr );
+        bool LoadSprite( lua_State *L, SpritePtr spr );
     };
 }
 

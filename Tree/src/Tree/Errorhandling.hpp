@@ -2,55 +2,44 @@
 
 #include <exception>
 #include <stdexcept>
+#include <string>
 
 namespace Error
 {
-    class sprite_not_found : public std::exception {
+    class my_exception : public std::exception {
     public:
-        sprite_not_found( const char *err ) {
-            s = err;
-        }
+        my_exception( const std::string err ) : s( err ) { }
+        virtual ~my_exception() throw() { }
         virtual const char *what() const throw() {
-            return s;
+            return s.c_str();
         }
-    private:
-        const char *s;
+    protected:
+        const std::string s;
     };
 
-    class file_not_found : public std::exception {
+    class sprite_not_found : public my_exception {
     public:
-        file_not_found( const char *err ) {
-            s = err;
-        }
-        virtual const char *what() const throw() {
-            return s;
-        }
-    private:
-        const char *s;
+        sprite_not_found( std::string err ) : my_exception( err ) { }
     };
 
-    class setting_not_found : public std::exception {
+    class unit_not_found : public my_exception {
     public:
-        setting_not_found( const char *err ) {
-            s = err;
-        }
-        virtual const char *what() const throw() {
-            return s;
-        }
-    private:
-        const char *s;
+        unit_not_found( std::string err ) : my_exception( err ) { }
     };
 
-    class lua_error : public std::exception {
+    class file_not_found : public my_exception {
     public:
-        lua_error( const char *err ) {
-            s = err;
-        }
-        virtual const char *what() const throw() {
-            return s;
-        }
-    private:
-        const char *s;
+        file_not_found( std::string err ) : my_exception( err ) { }
+    };
+
+    class setting_not_found : public my_exception {
+    public:
+        setting_not_found( std::string err ) : my_exception( err ) { }
+    };
+
+    class lua_error : public my_exception {
+    public:
+        lua_error( std::string err ) : my_exception( err ) { }
     };
 }
 

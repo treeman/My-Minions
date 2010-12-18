@@ -29,3 +29,4 @@ namespace Tree
 
 template <class T>
 T *Tree::Singleton<T>::instance = 0;
+

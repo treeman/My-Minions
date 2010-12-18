@@ -7,11 +7,6 @@
 
 using Tree::Settings;
 
-boost::shared_ptr<Settings> Tree::GetSettings()
-{
-    return GAME->GetSettings();
-}
-
 Settings::Settings()
 {
 
@@ -137,6 +132,15 @@ void Settings::ParseSetting( std::string str ) throw()
 
     boost::trim( name ); boost::trim( value );
     SetVariable( name, value );
+}
+
+void Settings::CreateSettingsFile( std::string path )
+{
+    std::ofstream out( path.c_str() );
+    out << ";Hell to thee who corrupt thou file!\n";
+    out << ";Keep in mind that the graphics won't stretch, but just show more as the window grows.\n\n";
+    out << "video_screen_windowed 1\n";
+    out << "fps_show 1\n";
 }
 
 void Settings::SetVariable( std::string name, std::string value )

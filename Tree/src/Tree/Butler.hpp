@@ -9,13 +9,12 @@
 #include "Tree/Singleton.hpp"
 #include "Tree/Errorhandling.hpp"
 #include "Tree/Sprite.hpp"
+#include "Tree/Util.hpp"
 
 namespace Tree
 {
-    class Butler;
-
-    //retrieve butler from the game
-    boost::shared_ptr<Butler> GetButler();
+    typedef boost::shared_ptr<sf::Font> FntPtr;
+    typedef boost::shared_ptr<sf::Image> ImgPtr;
 
     class Butler {
     public:
@@ -24,18 +23,18 @@ namespace Tree
 
         void LoadSprites( std::string lua_file );
 
-        boost::shared_ptr<sf::Font> GetFont( std::string path,
-            unsigned int size = 30 ) throw( Error::file_not_found );
+        FntPtr GetFont( std::string path, unsigned int size = 30 ) throw( Error::file_not_found );
+        ImgPtr GetImage( std::string path ) throw( Error::file_not_found );
 
-        boost::shared_ptr<sf::Image> GetImage( std::string path )
-            throw( Error::file_not_found );
-
-        boost::shared_ptr<Sprite> GetSprite( std::string name );
+        Tree::SpritePtr GetSprite( std::string name );
+        Tree::Sprites GetSprites();
+        Tree::Sprites GetSpritesFromFile( std::string file );
+        Tree::Strings GetSpriteNames();
     private:
-        typedef std::multimap<std::string, boost::shared_ptr<sf::Font> > FontMap;
+        typedef std::multimap<std::string, FntPtr> FontMap;
         FontMap font_map;
 
-        typedef std::map<std::string, boost::shared_ptr<sf::Image> > ImageMap;
+        typedef std::map<std::string, ImgPtr> ImageMap;
         ImageMap image_map;
 
         SpriteLoader spr_loader;

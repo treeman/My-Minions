@@ -14,14 +14,10 @@
 #include "Tree/Singleton.hpp"
 #include "Tree/BaseDator.hpp"
 #include "Tree/Dator.hpp"
+#include "Tree/Util.hpp"
 
 namespace Tree
 {
-    class Settings;
-
-    //get settings from game
-    boost::shared_ptr<Settings> GetSettings();
-
     class SettingsListener {
     public:
         virtual ~SettingsListener() { }
@@ -50,6 +46,8 @@ namespace Tree
 
         void ParseFile( std::string path ) throw( Error::file_not_found );
         void ParseSetting( std::string str ) throw();
+
+        void CreateSettingsFile( std::string path );
 
         void AddListener( SettingsListener *listener );
     private:

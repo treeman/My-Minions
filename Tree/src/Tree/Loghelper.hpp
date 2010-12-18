@@ -1,13 +1,14 @@
 #pragma once
 
+#include <boost/shared_ptr.hpp>
+
 #include "Tree/Log.hpp"
 #include "Tree/InputHandler.hpp"
+#include "Tree/Util.hpp"
 
 namespace Tree
 {
     class LogHelper;
-
-    boost::shared_ptr<LogHelper> GetLogHelper();
 
     class LogHelper : public InputHandler {
     public:

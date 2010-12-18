@@ -1,8 +1,14 @@
+.PHONY: all clean mrproper remake
 
-all: game
+all:
+	@(cd ./Game && $(MAKE) $@)
 
-game:
-	@(cd ./Game && $(MAKE))
+remake: clean all
+	@(cd ./Game && $(MAKE) $@)
 
 clean:
 	@(cd ./Game && $(MAKE) $@)
+
+mrproper:
+	@(cd ./Game && $(MAKE) $@)
+

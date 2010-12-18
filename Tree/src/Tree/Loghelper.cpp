@@ -3,11 +3,6 @@
 
 using Tree::LogHelper;
 
-boost::shared_ptr<LogHelper> Tree::GetLogHelper()
-{
-    return GAME->GetLogHelper();
-}
-
 LogHelper::LogHelper() : shall_log( false ), one_iteration_key( 0 )
 { }
 
@@ -27,6 +22,7 @@ bool LogHelper::HandleEvent( sf::Event &e )
         e.Key.Code == one_iteration_key ) {
         shall_log = true;
     }
+    return true;
 }
 
 void LogHelper::EndofLoop()

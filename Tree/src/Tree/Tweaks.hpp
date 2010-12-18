@@ -4,13 +4,10 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 
+#include "Tree/Util.hpp"
+
 namespace Tree
 {
-    class Tweaks;
-
-    //get tweaks from game
-    boost::shared_ptr<Tweaks> GetTweaks();
-
     class Tweaks {
     public:
         Tweaks();
