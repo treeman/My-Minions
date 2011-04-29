@@ -3,11 +3,11 @@
 *layout
 *.cbp
 misc/
-*_log.txt
+*log.txt
 *.out
 *.exe
-*/bin/gfx
-*/bin/sound
-*/bin/fnt
 *.dll
+callgrind*
+out
+src/Test
 */startme
