@@ -21,8 +21,8 @@ namespace Tree
     private:
         void Render();
 
-        Tree::Strings temp;
-        Tree::StringMap persistent;
+        Strings temp;
+        StringMap persistent;
 
         sf::String render_str;
         const float x_pos;

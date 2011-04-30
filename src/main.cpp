@@ -2,6 +2,7 @@
 #include "Tree/Game.hpp"
 #include "Tree/Logo.hpp"
 #include "Game.hpp"
+#include "Intro.hpp"
 
 int main()
 {
@@ -22,7 +23,9 @@ int main()
         {
             boost::shared_ptr<Tree::GameState> state( new Game() );
             Tree::Game::Instance()->Push( state );
-            state.reset( new Tree::Logo() );
+            //state.reset( new Tree::Logo() );
+            //Tree::Game::Instance()->Push( state );
+            state.reset( new Intro() );
             Tree::Game::Instance()->Push( state );
         }
 

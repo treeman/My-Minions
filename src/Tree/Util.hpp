@@ -14,12 +14,12 @@
 #define TWEAKS Tree::GetTweaks()
 #define SETTINGS Tree::GetSettings()
 
+//make life easier
+typedef std::vector<std::string> Strings;
+typedef std::map<std::string, std::string> StringMap;
+
 namespace Tree
 {
-    //make life easier
-    typedef std::vector<std::string> Strings;
-    typedef std::map<std::string, std::string> StringMap;
-
     // A bunch of helper functions who fetch states from game
     extern float GetFPS();
     extern const sf::Input &GetInput();

@@ -12,8 +12,7 @@ Debug::Debug() :
     y_pos( 7 ),
     line_height( 12 )
 {
-    render_str.SetFont( *Tree::GetButler()->GetFont( "fnt/consola.ttf", 10 ) );
-    render_str.SetSize( 10 );
+    render_str = BUTLER->CreateString( "fnt/consola.ttf", 10 );
     render_str.SetColor( Tree::Color( Tree::GetTweaks()->GetNum( "font_debug_color" ) ) );
 }
 
@@ -28,7 +27,7 @@ void Debug::SetPersistent( std::string id, std::string s )
 }
 void Debug::RemovePersistent( std::string id )
 {
-    Tree::StringMap::iterator it = persistent.find( id );
+    StringMap::iterator it = persistent.find( id );
     if( it != persistent.end() ) {
         persistent.erase( persistent.find( id ) );
     }
@@ -41,7 +40,7 @@ void Debug::ResetTempStrings()
 void Debug::Render()
 {
     int i = 0;
-    for( Tree::StringMap::iterator it = persistent.begin();
+    for( StringMap::iterator it = persistent.begin();
          it != persistent.end(); ++it, ++i )
     {
         render_str.SetText( it->second );
@@ -50,7 +49,7 @@ void Debug::Render()
         Tree::Draw( render_str );
     }
 
-    for( Tree::Strings::iterator it = temp.begin();
+    for( Strings::iterator it = temp.begin();
          it != temp.end(); ++it, ++i )
     {
         render_str.SetText( *it );

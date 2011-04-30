@@ -12,7 +12,9 @@ GameController.cpp \
 Tile.cpp \
 VisualObject.cpp \
 Hero.cpp \
-MoveableObject.cpp
+MoveableObject.cpp \
+Intro.cpp \
+Narrative.cpp
 
 TREE_SRC=\
 Tree/Game.cpp \
