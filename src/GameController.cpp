@@ -29,6 +29,18 @@ bool GameController::HandleEvent( sf::Event &e )
             case sf::Key::Down:
                 cam_nudge_dir.y = 1;
                 break;
+            case sf::Key::A:
+                move_dir.x = -1;
+                break;
+            case sf::Key::D:
+                move_dir.x = 1;
+                break;
+            case sf::Key::W:
+                move_dir.y = -1;
+                break;
+            case sf::Key::S:
+                move_dir.y = 1;
+                break;
             default:
                 break;
         }
@@ -43,6 +55,14 @@ bool GameController::HandleEvent( sf::Event &e )
             case sf::Key::Down:
                 cam_nudge_dir.y = 0;
                 break;
+            case sf::Key::A:
+            case sf::Key::D:
+                move_dir.x = 0;
+                break;
+            case sf::Key::W:
+            case sf::Key::S:
+                move_dir.y = 0;
+                break;
             default:
                 break;
         }
@@ -52,12 +72,20 @@ bool GameController::HandleEvent( sf::Event &e )
 
 void GameController::Update( float dt )
 {
-    if( cam_nudge_dir != Vec2f::zero ) {
+    if( cam_nudge_dir != Vec2i::zero ) {
         Order order;
         order.type = Order::CamNudge;
         const int cam_nudge_speed = SETTINGS->GetValue<int>( "cam_nudge_speed" );
         order.cam_nudge.x = cam_nudge_dir.x * cam_nudge_speed * dt;
         order.cam_nudge.y = cam_nudge_dir.y * cam_nudge_speed * dt;
+        SendOrder( order );
+    }
+
+    if( move_dir != Vec2i::zero ) {
+        Order order;
+        order.type = Order::Move;
+        order.move.x = move_dir.x;
+        order.move.y = move_dir.y;
         SendOrder( order );
     }
 }

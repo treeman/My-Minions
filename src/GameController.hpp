@@ -15,7 +15,8 @@ public:
     bool HandleEvent( sf::Event &e );
     void Update( float dt );
 protected:
-    Vec2f cam_nudge_dir;
+    Vec2i cam_nudge_dir;
+    Vec2i move_dir;
     World *const world;
 };
 

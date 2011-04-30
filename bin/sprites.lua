@@ -14,3 +14,8 @@ tile2 = {
     w = tile_width, h = tile_height,
 }
 
+hero = {
+    path = "gfx/dude.png",
+    w = tile_width, h = tile_height * 2,
+}
+

@@ -7,6 +7,7 @@
 
 #include "IsoGrid.hpp"
 #include "Order.hpp"
+#include "Hero.hpp"
 
 class World : public OrderHandler {
 public:
@@ -25,8 +26,8 @@ public:
     }
 
     Vec2f GetCamPos() const;
-    void NudgeCamX( int notches );
-    void NudgeCamY( int notches );
+    Vec2f NudgeCamX( Vec2f cam, int notches );
+    Vec2f NudgeCamY( Vec2f cam, int notches );
 
     void CenterCam();
     void CenterCamOn( float x, float y );
@@ -34,9 +35,11 @@ public:
     void Update( float dt );
     void Draw();
 private:
-    void UpdateCam();
+    void UpdateCam( Vec2f new_cam );
 
     Vec2f cam;
     IsoGrid grid;
+
+    Hero hero;
 };
 

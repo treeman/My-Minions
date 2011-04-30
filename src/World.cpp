@@ -15,14 +15,21 @@ World::World() :
     CenterCam();
     SETTINGS->Register<bool>( "debug_mouse_grid_conversions", false );
     SETTINGS->Register<bool>( "debug_road_neighbours", false );
+
+    hero.SetPos( grid.GridToPixelPos( 3, 3 ) );
 }
 
 void World::HandleOrder( Order order )
 {
     if( order.type == Order::CamNudge ) {
-        NudgeCamX( order.cam_nudge.x );
-        NudgeCamY( order.cam_nudge.y );
-        UpdateCam();
+        Vec2f new_cam = GetCamPos();
+        new_cam = NudgeCamX( new_cam, order.cam_nudge.x );
+        new_cam = NudgeCamY( new_cam, order.cam_nudge.y );
+        UpdateCam( new_cam );
+    }
+    else if( order.type == Order::Move ) {
+        const Vec2f destination( order.move.x, order.move.y );
+        hero.MoveTowards( destination );
     }
 }
 
@@ -47,14 +54,16 @@ Vec2f World::GetCamPos() const
     return cam;
 }
 
-void World::NudgeCamX( int notches )
+Vec2f World::NudgeCamX( Vec2f cam, int notches )
 {
     cam.x += notches;
+    return cam;
 }
 
-void World::NudgeCamY( int notches )
+Vec2f World::NudgeCamY( Vec2f cam, int notches )
 {
     cam.y += notches;
+    return cam;
 }
 
 void World::CenterCam()
@@ -70,26 +79,29 @@ void World::CenterCamOn( float x, float y )
     const int w = grid.PixelsWide();
     const int h = grid.PixelsHigh();
 
-    cam.x = w / 2 - x;
-    cam.y = h / 2 - y;
-    UpdateCam();
+    Vec2f new_cam = GetCamPos();
+    new_cam.x = w / 2 - x;
+    new_cam.y = h / 2 - y;
+    UpdateCam( new_cam );
 }
+
 void World::Update( float dt )
 {
     grid.Update( dt );
-
-    const Vec2f mpos = Tree::GetMousePos();
-
-    const Vec2f wpos = ConvertToWorld( mpos );
-    const bool valid = grid.IsPosValid( wpos );
-    const Vec2i gpos = grid.PixelToGridPos( wpos );
-
-    const Vec2i tl = grid.TopLeftPos( gpos );
-    const Vec2i tr = grid.TopRightPos( gpos );
-    const Vec2i dl = grid.DownLeftPos( gpos );
-        const Vec2i dr = grid.DownRightPos( gpos );
+    hero.Update( dt );
 
     if( SETTINGS->GetValue<bool>( "debug_mouse_grid_conversions" ) ) {
+        const Vec2f mpos = Tree::GetMousePos();
+
+        const Vec2f wpos = ConvertToWorld( mpos );
+        const bool valid = grid.IsPosValid( wpos );
+        const Vec2i gpos = grid.PixelToGridPos( wpos );
+
+        const Vec2i tl = grid.TopLeftPos( gpos );
+        const Vec2i tr = grid.TopRightPos( gpos );
+        const Vec2i dl = grid.DownLeftPos( gpos );
+        const Vec2i dr = grid.DownRightPos( gpos );
+
         std::stringstream ss;
         ss << "cam pos: " << cam;
         Tree::VisualDebug( ss.str() );
@@ -125,10 +137,16 @@ void World::Update( float dt )
 void World::Draw()
 {
     grid.Draw();
+    hero.Draw();
 }
 
-void World::UpdateCam()
+void World::UpdateCam( Vec2f new_cam )
 {
+    const int move_x = cam.x - new_cam.x;
+    const int move_y = cam.y - new_cam.y;
+    cam = new_cam;
+
+    hero.Move( move_x, move_y );
     grid.SetPos( cam.x, cam.y );
 }
 

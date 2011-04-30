@@ -5,7 +5,7 @@
 class Order {
 public:
     struct MoveOrder {
-        float x, y;
+        int x, y;
     };
 
     struct CamNudgeOrder {

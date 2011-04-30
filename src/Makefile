@@ -10,7 +10,9 @@ IsoGrid.cpp \
 World.cpp \
 GameController.cpp \
 Tile.cpp \
-VisualObject.cpp
+VisualObject.cpp \
+Hero.cpp \
+MoveableObject.cpp
 
 TREE_SRC=\
 Tree/Game.cpp \

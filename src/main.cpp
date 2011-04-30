@@ -13,7 +13,7 @@ int main()
               800             //width
             , 600             //height
             , true            //windowed
-            , "7days test"    //window title
+            , "It's Dangerous To Go Alone! Take This!"    //window title
             , "settings.ini"  //settings file
             , true            //lazy drawing
         );

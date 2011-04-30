@@ -3,8 +3,6 @@
 #include <boost/shared_ptr.hpp>
 
 #include "Tree/Graphics.hpp"
-#include "Tree/Vec2D.hpp"
-#include "Tree/DrawnLazy.hpp"
 #include "VisualObject.hpp"
 
 class Tile : public VisualObject {

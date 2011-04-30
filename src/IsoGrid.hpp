@@ -40,7 +40,6 @@ public:
 
     TilePtr GetTile( Vec2i grid_pos );
 
-
     void Update( float dt );
     void Draw();
 private:
