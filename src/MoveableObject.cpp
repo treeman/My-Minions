@@ -1,5 +1,5 @@
 #include "Tree/Tweaks.hpp"
-#include "Tree/Log.hpp";
+#include "Tree/Log.hpp"
 
 #include "MoveableObject.hpp"
 
@@ -30,19 +30,35 @@ Vec2f MoveableObject::GetOrigin()
 void MoveableObject::MoveTowards( Vec2f next_pos )
 {
     if( !IsMoving() ) {
-        L_ << "Imma move now kk?";
         origin = pos;
         destination = next_pos;
+        in_movement = true;
     }
 }
 
 void MoveableObject::UpdateMovement( float dt )
 {
     if( IsMoving() ) {
-        const Vec2f movement = Vec2f( move_dir.x * move_speed,
-                                      move_dir.y * move_speed );
+        //const Vec2f movement = Vec2f( move_dir.x * move_speed,
+        //                              move_dir.y * move_speed );
+        const Vec2i movement( 10, 10 );
 
-        const Vec2f next_pos = pos + movement;
+        //const Vec2f next_pos = pos + movement;
+        const Vec2i next_pos = (pos + movement) * dt;
+
+        std::stringstream ss;
+        ss << "movement: " << movement;
+        Tree::VisualDebug( ss.str() );
+        ss.str("");
+
+        ss << "curr pos: " << pos;
+        Tree::VisualDebug( ss.str() );
+        ss.str("");
+
+        ss << "next_pos: " << next_pos;
+        Tree::VisualDebug( ss.str() );
+        ss.str("");
+
         pos = next_pos;
     }
 }
