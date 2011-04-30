@@ -1,29 +1,26 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-
-#include "Tree/Game.hpp"
 #include "Tree/Log.hpp"
+#include "Tree/Game.hpp"
 #include "Tree/Logo.hpp"
+#include "Game.hpp"
 
-#include "Demo.hpp"
-
-int main( int argc, char *argv[] )
+int main()
 {
-    L_.Init( "tree_log.txt" );
+    L_.Init( "log.txt" );
 
     try {
         //create the game
         Tree::Game::Instance()->Init(
-              800 //width
-            , 600 //height
-            , true //windowed
-            , "7days test" //window title
-            , "settings.ini" //settings file
+              800             //width
+            , 600             //height
+            , true            //windowed
+            , "7days test"    //window title
+            , "settings.ini"  //settings file
+            , true            //lazy drawing
         );
 
         //push your gamestates here
         {
-            boost::shared_ptr<Tree::GameState> state( new Demo() );
+            boost::shared_ptr<Tree::GameState> state( new Game() );
             Tree::Game::Instance()->Push( state );
             state.reset( new Tree::Logo() );
             Tree::Game::Instance()->Push( state );
@@ -41,10 +38,10 @@ int main( int argc, char *argv[] )
         L_ << "Not even Duke could handle this exception!\n";
     }
 
-    //destroy the game
+    //Destroy the singletons
     Tree::Game::Instance()->Destroy();
     L_.Destroy();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 

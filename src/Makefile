@@ -5,7 +5,12 @@ export LIBS=-lX11 -lGL -lXrandr -lfreetype -lsndfile -lopenal -lpthread -lsfml-g
 
 SRC=\
 main.cpp \
-Demo.cpp \
+Game.cpp \
+IsoGrid.cpp \
+World.cpp \
+GameController.cpp \
+Tile.cpp \
+VisualObject.cpp
 
 TREE_SRC=\
 Tree/Game.cpp \
