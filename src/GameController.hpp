@@ -26,5 +26,7 @@ protected:
     int curr_obj;
 
     int curr_speed;
+
+    Tree::Timer del_t;
 };
 

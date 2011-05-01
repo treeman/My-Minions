@@ -193,8 +193,8 @@ void World::Draw()
 
 void World::UpdateCam( Vec2f new_cam )
 {
-    const int move_x = cam.x - new_cam.x;
-    const int move_y = cam.y - new_cam.y;
+    //const int move_x = cam.x - new_cam.x;
+    //const int move_y = cam.y - new_cam.y;
     cam = new_cam;
 
     //hero.Move( move_x, move_y );

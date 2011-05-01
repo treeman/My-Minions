@@ -102,6 +102,42 @@ bool GameController::HandleEvent( sf::Event &e )
                 break;
         }
     }
+    else if( e.Type == sf::Event::MouseButtonPressed ) {
+        const Vec2f mpos( e.MouseButton.X, e.MouseButton.Y );
+        const Vec2i wpos = world->ConvertToWorld( mpos );
+
+        switch( e.MouseButton.Button ) {
+            /*case sf::Mouse::Left:
+                if( curr_obj == 0 ) {
+                    SendPos( Order::AddPath );
+                }
+                else {
+                    Order order;
+                    order.type = Order::PlaceObject;
+                    order.object.x = wpos.x;
+                    order.object.y = wpos.y;
+                    order.object.obj = curr_obj;
+
+                    SendOrder( order );
+                }
+                break;*/
+            case sf::Mouse::Right:
+                del_t.Restart();
+                SendPos( Order::RemovePath );
+                break;
+            default:
+                break;
+        }
+    }
+    else if( e.Type == sf::Event::MouseButtonReleased ) {
+        switch( e.MouseButton.Button ) {
+            case sf::Mouse::Right:
+                del_t.Stop();
+                break;
+            default:
+                break;
+        }
+    }
     return true;
 }
 
@@ -134,7 +170,11 @@ void GameController::Update( float dt )
             SendOrder( order );
         }
     }
-    if( Tree::GetInput().IsMouseButtonDown( sf::Mouse::Right ) ) {
+    /*if( Tree::GetInput().IsMouseButtonDown( sf::Mouse::Right ) ) {
+        SendPos( Order::RemovePath );
+    }*/
+
+    if( del_t.IsStarted() && del_t.GetTime() > TWEAKS->GetNum( "key_press_limit" )) {
         SendPos( Order::RemovePath );
     }
 }

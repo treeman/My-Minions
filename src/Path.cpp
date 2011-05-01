@@ -46,6 +46,14 @@ bool Path::HasObj( Vec2i point )
     }
     return false;
 }
+bool Path::IsCharged( Vec2i point )
+{
+    for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {
+        if( it->point == point ) { return true; }
+    }
+    return false;
+}
+
 PathObjPtr Path::GetObj( Vec2i point )
 {
     for( Objects::iterator it = objects.begin(); it != objects.end(); ++it ) {
@@ -70,15 +78,25 @@ void Path::Add( PathObjPtr obj )
 
 void Path::Remove( Vec2i point )
 {
-    /*if( IsCharged( point ) ) {
-
+    if( IsCharged( point ) ) {
+        for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {
+            if( it->point == point ) {
+                charges.erase( it );
+                return;
+            }
+        }
     }
     else if( HasObj( point ) ) {
-
+        for( Objects::iterator it = objects.begin(); it != objects.end(); ++it ) {
+            if( (*it)->GetGridPos() == point ) {
+                objects.erase( it );
+                return;
+            }
+        }
     }
-    else {*/
+    else {
         points.erase( point );
-    //}
+    }
 }
 
 Path::Points Path::Neighbours( Vec2i pt )

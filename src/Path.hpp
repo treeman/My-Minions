@@ -24,6 +24,8 @@ public:
 
     bool Has( Vec2i point );
     bool HasObj( Vec2i point );
+    bool IsCharged( Vec2i point );
+
     PathObjPtr GetObj( Vec2i point );
 
     void Add( Vec2i point );
