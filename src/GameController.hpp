@@ -18,9 +18,13 @@ protected:
     // Shortcut for simpler order sending
     void SendPos( Order::OrderType type );
     void SendSimple( Order::OrderType type );
-    void SendSpeed( float speed );
+    void SendSpeed();
 
     Vec2i cam_nudge_dir;
+
     World *const world;
+    int curr_obj;
+
+    int curr_speed;
 };
 

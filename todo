@@ -5,16 +5,18 @@ Sounds:
     *Hit a dead end
     *Initiate charge sound
 
-    At least 5 different sound objects to place
-        (drums or whatever, so we can make something fun out of this)
+    *At least 5 different sound objects to place
+    *    (drums or whatever, so we can make something fun out of this)
 
 Core engine:
     2 types of charges (0 and 1)
     Detect intersections
-    Universal time for charge travel
-        Pause/Unpause and set the speed
-    Object chooser
-        Objects for different sounds
+    *Universal time for charge travel
+    *    Pause/Unpause and set the speed
+        Need visual? At least a marker or something
+    *Object chooser
+        *Objects for different sounds
+        Need visual
         AND, OR, NOT gates
             Need to connect with several entrances
             And it needs to interact with path

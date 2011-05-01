@@ -10,7 +10,7 @@ Path::Path( IsoGrid *const _grid ) : grid( _grid )
     spr = BUTLER->CreateSprite( "gfx/empty.png" );
     charge = BUTLER->CreateSprite( "gfx/charge.png" );
 
-    chock_time = TWEAKS->GetNum( "chock_time" );
+    clock_time = TWEAKS->GetNum( "clock_time" );
 
     charge_it = BUTLER->CreateSound( "snd/charge.wav" );
     dead_end = BUTLER->CreateSound( "snd/deadend.wav" );
@@ -29,14 +29,42 @@ void Path::Pause()
     t.Pause();
 }
 
+void Path::SetClockTime( float time )
+{
+    clock_time = time;
+}
+
 bool Path::Has( Vec2i point )
 {
     return points.count( point );
+}
+bool Path::HasObj( Vec2i point )
+{
+    for( Objects::iterator it = objects.begin(); it != objects.end(); ++it ) {
+        if( (*it)->GetGridPos() == point ) return true;
+    }
+    return false;
+}
+PathObjPtr Path::GetObj( Vec2i point )
+{
+    for( Objects::iterator it = objects.begin(); it != objects.end(); ++it ) {
+        if( (*it)->GetGridPos() == point ) return *it;
+    }
+    throw Error::logical_fault( "couldn't find point" );
 }
 
 void Path::Add( Vec2i point )
 {
     points.insert( point );
+}
+
+void Path::Add( PathObjPtr obj )
+{
+    const Vec2i pos = obj->GetGridPos();
+    if( Has( pos ) && !HasObj( pos ) ) {
+        //L_ << "Adding object" << pos << '\n';
+        objects.push_back( obj );
+    }
 }
 
 void Path::Remove( Vec2i point )
@@ -81,7 +109,7 @@ void Path::AddChock( Charges &charges, Vec2i point, Vec2i dir )
 void Path::Update( float dt )
 {
     const float curr_time = t.GetTime();
-    if( curr_time > chock_time ) {
+    if( curr_time > clock_time ) {
         Charges next_charges;
 
         for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {
@@ -153,6 +181,16 @@ void Path::Update( float dt )
             charge_it.Play();
             charges.splice( charges.begin(), chocks );
         }
+
+        for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {
+            const Vec2i pt = it->point;
+
+            if( HasObj( pt ) ) {
+                PathObjPtr obj = GetObj( pt );
+                obj->ChargeIn( *it );
+            }
+        }
+
         t.Restart();
     }
 }
@@ -169,6 +207,14 @@ void Path::Draw( int x_off, int y_off )
         //std::stringstream s;
         //s << *it;
         //Tree::VisualDebug( s.str() );
+    }
+
+    for( Objects::iterator it = objects.begin(); it != objects.end(); ++it ) {
+        Vec2i pos = grid->GridToPixelPos( (*it)->GetGridPos() );
+        pos.x -= x_off; pos.y -= y_off;
+
+        (*it)->SetPos( pos );
+        (*it)->Draw();
     }
 
     for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {

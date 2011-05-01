@@ -5,6 +5,8 @@
 
 #include "World.hpp"
 #include "Controller.hpp"
+#include "PathObject.hpp"
+#include "ObjectFactory.hpp"
 
 class Game : public Tree::GameState {
 public:
@@ -20,7 +22,6 @@ private:
     sf::Sprite mouse;
 
     boost::shared_ptr<World> world;
-
     boost::shared_ptr<Controller> controller;
 
     Tree::InputChain input_chain;

@@ -3,6 +3,8 @@
 #include "Tree/Util.hpp"
 #include "Tree/Settings.hpp"
 #include "Tree/Butler.hpp"
+
+#include "ObjectFactory.hpp"
 #include "World.hpp"
 
 World::World() :
@@ -20,9 +22,6 @@ World::World() :
 
 void World::HandleOrder( Order order )
 {
-    const Vec2i wpos( order.pos.x, order.pos.y );
-    const Vec2i gpos = grid.PixelToGridPos( wpos );
-
     if( order.type == Order::CamNudge ) {
         Vec2f new_cam = GetCamPos();
         new_cam = NudgeCamX( new_cam, order.cam_nudge.x );
@@ -30,14 +29,39 @@ void World::HandleOrder( Order order )
         UpdateCam( new_cam );
     }
     else if( order.type == Order::AddPath ) {
+        const Vec2i wpos( order.pos.x, order.pos.y );
+        const Vec2i gpos = grid.PixelToGridPos( wpos );
+
         if( gpos != invalid_grid_pos ) {
                 path.Add( gpos );
         }
     }
+    else if( order.type == Order::PlaceObject ) {
+        const int obj_num = order.object.obj - 1;
+        //L_ << "Recieving: " << obj_num << "\n";
+        //L_ << "Factory has: " << NumObjects() << "\n";
+
+        if( obj_num >= 0 && obj_num < NumObjects() ) {
+            PathObjPtr o = GetObject( obj_num );
+
+            const Vec2i wpos( order.object.x, order.object.y );
+            const Vec2i gpos = grid.PixelToGridPos( wpos );
+            o->SetGridPos( gpos );
+
+            //L_ << "Adding object" << gpos << '\n';
+            path.Add( o );
+        }
+    }
     else if( order.type == Order::RemovePath ) {
+        const Vec2i wpos( order.pos.x, order.pos.y );
+        const Vec2i gpos = grid.PixelToGridPos( wpos );
+
         path.Remove( gpos );
     }
     else if( order.type == Order::Chock ) {
+        const Vec2i wpos( order.pos.x, order.pos.y );
+        const Vec2i gpos = grid.PixelToGridPos( wpos );
+
         path.Chock( gpos );
     }
     else if( order.type == Order::Pause ) {
@@ -53,6 +77,7 @@ void World::HandleOrder( Order order )
     }
     else if( order.type == Order::SetSpeed ) {
         L_ << "Setting speed: " << order.sim_speed << '\n';
+        path.SetClockTime( order.sim_speed );
     }
 }
 

@@ -12,6 +12,11 @@ public:
         int x, y;
     };
 
+    struct Place {
+        int x, y;
+        int obj;
+    };
+
     enum OrderType {
         Move,
         CamNudge,
@@ -22,6 +27,7 @@ public:
         Pause,
         Unpause,
         SetSpeed,
+        PlaceObject,
     };
 
     OrderType type;
@@ -29,7 +35,8 @@ public:
     union {
         CamNudgeOrder   cam_nudge;
         Pos             pos;
-        float             sim_speed;
+        float           sim_speed;
+        Place           object;
     };
 };
 

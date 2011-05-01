@@ -15,7 +15,10 @@ Hero.cpp \
 MoveableObject.cpp \
 Intro.cpp \
 Narrative.cpp \
-Path.cpp
+Path.cpp \
+MusicObject.cpp \
+PathObject.cpp \
+ObjectFactory.cpp
 
 TREE_SRC=\
 Tree/Game.cpp \
