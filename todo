@@ -1,0 +1,34 @@
+Sounds:
+    Intersection sounds for 2, 3 and 4 charges
+    Simple turn
+    Split sound, T intersection
+    Hit a dead end
+    Initiate charge sound
+
+    At least 5 different sound objects to place
+        (drums or whatever, so we can make something fun out of this)
+
+Core engine:
+    2 types of charges (0 and 1)
+    Universal time for charge travel
+        Pause/Unpause and set the speed
+    Object chooser
+        Objects for different sounds
+        AND, OR, NOT gates
+            Need to connect with several entrances
+            And it needs to interact with path
+            possibly NAND, NOR, XOR later too?
+            If I really really have time, add more complex stuff
+        Rotate rotateable objects
+            (dunno if we need all possible combinations of ports though)
+
+    Intro/Narrative/Tutorial stuff
+
+Graphics:
+    Paths, graphics for all objects
+    Graphics for intro
+
+Later on, only when we've got the time:
+    Save and Load maps (with menu or something)
+    Infinitive map which generates the more you move around
+
