@@ -24,6 +24,9 @@ class Path {
 public:
     Path( IsoGrid *const grid );
 
+    typedef std::set<Vec2i> Points;
+    Points points;
+
     bool Has( Vec2i point );
 
     void Add( Vec2i point );
@@ -32,15 +35,14 @@ public:
     void Remove( Vec2i point );
     void Remove( int x, int y ) { Remove( Vec2i( x, y ) ); }
 
-    void Chock( Vec2i point, Vec2i dir = Vec2i::zero );
+    Points Neighbours( Vec2i point );
+
+    bool Chock( Vec2i point, Vec2i dir = Vec2i::zero );
 
     void Update( float dt );
 
     void Draw( int x_off, int y_off );
 private:
-    typedef std::set<Vec2i> Points;
-    Points points;
-
     typedef std::list<Charge> Charges;
     Charges charges;
 

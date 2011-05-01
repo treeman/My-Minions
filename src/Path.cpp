@@ -28,12 +28,31 @@ void Path::Remove( Vec2i point )
     points.erase( point );
 }
 
-void Path::Chock( Vec2i point, Vec2i dir )
+Path::Points Path::Neighbours( Vec2i pt )
+{
+    Points neighbours;
+
+    const Vec2i left = grid->TopLeftPos( pt );
+    const Vec2i right = grid->TopLeftPos( pt );
+    const Vec2i up = grid->TopLeftPos( pt );
+    const Vec2i down = grid->TopLeftPos( pt );
+
+    if( Has( left ) ) neighbours.insert( left );
+    if( Has( right ) ) neighbours.insert( right );
+    if( Has( up ) ) neighbours.insert( up );
+    if( Has( down ) ) neighbours.insert( down );
+
+    return neighbours;
+}
+
+bool Path::Chock( Vec2i point, Vec2i dir )
 {
     if( points.count( point ) ) {
         L_ << "Chocking: " << point << " -> " << dir << '\n';
         charges.push_back( Charge( point, dir ) );
+        return true;
     }
+    return false;
 }
 
 void Path::Update( float dt )
@@ -48,20 +67,69 @@ void Path::Update( float dt )
                 Chock( grid->DownLeftPos( pt ), Vec2i::down );
             }
             else {
-                Vec2i next_pt;
+                const Vec2i left = grid->TopLeftPos( pt );
+                const Vec2i right = grid->DownRightPos( pt );
+                const Vec2i up = grid->TopRightPos( pt );
+                const Vec2i down = grid->DownLeftPos( pt );
+
+                Vec2i order[4];
+                Vec2i dir[4];
+
                 if( it->dir == Vec2i::left ) {
-                    next_pt = grid->TopLeftPos( pt );
+                    order[0] = left; dir[0] = Vec2i::left;
+                    order[1] = down; dir[1] = Vec2i::down;
+                    order[2] = up; dir[2] = Vec2i::up;
+                    order[3] = right; dir[3] = Vec2i::right;
                 }
                 else if( it->dir == Vec2i::right ) {
-                    next_pt = grid->DownRightPos( pt );
+                    order[0] = right; dir[0] = Vec2i::right;
+                    order[1] = down; dir[1] = Vec2i::down;
+                    order[2] = up; dir[2] = Vec2i::up;
+                    order[3] = left; dir[3] = Vec2i::left;
                 }
                 else if( it->dir == Vec2i::up ) {
-                    next_pt = grid->TopRightPos( pt );
+                    order[0] = up; dir[0] = Vec2i::up;
+                    order[1] = left; dir[1] = Vec2i::left;
+                    order[2] = right; dir[2] = Vec2i::right;
+                    order[3] = down; dir[3] = Vec2i::down;
                 }
                 else if( it->dir == Vec2i::down ) {
-                    next_pt = grid->DownLeftPos( pt );
+                    order[0] = down; dir[0] = Vec2i::down;
+                    order[1] = left; dir[1] = Vec2i::left;
+                    order[2] = right; dir[2] = Vec2i::right;
+                    order[3] = up; dir[3] = Vec2i::up;
                 }
-                Chock( next_pt, it->dir );
+
+                if( !Chock( order[0], dir[0] ) ) {
+                    if( Has( order[1] ) || Has( order[2] ) ) {
+                        Chock( order[1], dir[1] );
+                        Chock( order[2], dir[2] );
+                    }
+                    else {
+                        Chock( order[3], dir[3] );
+                    }
+                }
+
+                /*if( it->dir == Vec2i::left ) {
+                    if( !Chock( left, it->dir ) ) {
+                        if( Has( down ) || Has( up ) ) {
+                            Chock( down, it->dir );
+                            Chock( up, it->dir );
+                        }
+                        else {
+                            Chock( right, it->dir );
+                        }
+                    }
+                }
+                else if( it->dir == Vec2i::right ) {
+                    Chock( right, it->dir );
+                }
+                else if( it->dir == Vec2i::up ) {
+                    Chock( up, it->dir );
+                }
+                else if( it->dir == Vec2i::down ) {
+                    Chock( down, it->dir );
+                }*/
             }
             Charges::iterator del = it;
             ++it;
