@@ -7,4 +7,4 @@ koncept_y = 207
 
 hero_move_speed = 20
 
-chock_time = 1
+chock_time = 2

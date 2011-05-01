@@ -97,6 +97,7 @@ void World::Update( float dt )
 {
     grid.Update( dt );
     hero.Update( dt );
+    path.Update( dt );
 
     if( SETTINGS->GetValue<bool>( "debug_mouse_grid_conversions" ) ) {
         const Vec2f mpos = Tree::GetMousePos();

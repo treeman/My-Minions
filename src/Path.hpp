@@ -5,13 +5,19 @@
 
 #include "Tree/Graphics.hpp"
 #include "Tree/Vec2D.hpp"
+#include "Tree/Timer.hpp"
 
 #include "IsoGrid.hpp"
 
 struct Charge {
+    Charge( Vec2i pt, Vec2i d ) : point( pt ), dir( d )
+    {
+        t.Start();
+    }
+
     Vec2i point;
     Vec2i dir;
-    Timer t;
+    Tree::Timer t;
 };
 
 class Path {
@@ -26,7 +32,9 @@ public:
     void Remove( Vec2i point );
     void Remove( int x, int y ) { Remove( Vec2i( x, y ) ); }
 
-    void Chock( Vec2i point );
+    void Chock( Vec2i point, Vec2i dir = Vec2i::zero );
+
+    void Update( float dt );
 
     void Draw( int x_off, int y_off );
 private:

@@ -29,6 +29,9 @@ bool GameController::HandleEvent( sf::Event &e )
             case sf::Key::Down:
                 cam_nudge_dir.y = 1;
                 break;
+            case sf::Key::Space:
+                SendOrder( Create( Order::Chock ) );
+                break;
             default:
                 break;
         }
@@ -81,8 +84,8 @@ void GameController::Update( float dt )
     if( Tree::GetInput().IsMouseButtonDown( sf::Mouse::Right ) ) {
         SendOrder( Create( Order::RemovePath ) );
     }
-    if( Tree::GetInput().IsKeyDown( sf::Key::Space ) ) {
-        SendOrder( Create( Order::Chock ) );
-    }
+    //if( Tree::GetInput().IsKeyDown( sf::Key::Space ) ) {
+        //SendOrder( Create( Order::Chock ) );
+    //}
 }
 
