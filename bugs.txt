@@ -1,2 +1,0 @@
-gpos 13, 21 and 9, 23 can't coexist in path
-same for others
