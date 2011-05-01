@@ -1,7 +1,7 @@
 export CC=gcc
 #speed add flags -O3 -minline-all-stringops
 export CFLAGS=-c -Wno-unused-value -Wall -I./
-export LIBS=-lX11 -lGL -lXrandr -lfreetype -lsndfile -lopenal -lpthread -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lboost_iostreams -llua
+export LIBS=-lX11 -lGL -lXrandr -lfreetype -lsndfile -lopenal -lpthread -lsfml-graphics-s -lsfml-audio -lsfml-window-s -lsfml-system-s -lboost_iostreams -llua
 
 SRC=\
 main.cpp \

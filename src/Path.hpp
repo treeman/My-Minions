@@ -52,5 +52,7 @@ private:
     IsoGrid *grid;
 
     float chock_time;
+
+    sf::Sound snd;
 };
 

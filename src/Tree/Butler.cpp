@@ -64,6 +64,26 @@ Tree::ImgPtr Butler::GetImage( std::string path, bool shall_smooth )
     }
 }
 
+Tree::SndPtr Butler::GetSoundBuffer( std::string path )
+    throw( Error::resource_not_found )
+{
+    SoundMap::iterator it = sound_map.find( path );
+    if( it != sound_map.end() ) {
+        return it->second;
+    }
+    else {
+        SndPtr snd( new sf::SoundBuffer() );
+
+        if( !snd->LoadFromFile( path.c_str() ) ) {
+            throw( Error::resource_not_found(
+                "Unable to load sound: '" + path + "'" ) );
+        }
+
+        sound_map.insert( std::make_pair( path, snd ) );
+        return snd;
+    }
+}
+
 sf::Sprite Butler::CreateSprite( std::string name )
     throw( Error::resource_not_found )
 {
@@ -90,5 +110,13 @@ sf::String Butler::CreateString( std::string fnt_path, int size )
     str.SetFont( *GetFont( fnt_path, size ) );
     str.SetSize( size );
     return str;
+}
+
+sf::Sound Butler::CreateSound( std::string path )
+    throw( Error::resource_not_found )
+{
+    sf::Sound snd;
+    snd.SetBuffer( *GetSoundBuffer( path ) );
+    return snd;
 }
 

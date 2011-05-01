@@ -11,6 +11,8 @@ Path::Path( IsoGrid *const _grid ) : grid( _grid )
     charge = BUTLER->CreateSprite( "gfx/charge.png" );
 
     chock_time = TWEAKS->GetNum( "chock_time" );
+
+    snd = BUTLER->CreateSound( "snd/play.wav" );
 }
 
 bool Path::Has( Vec2i point )
@@ -101,6 +103,7 @@ void Path::Update( float dt )
                 }
 
                 if( !Chock( order[0], dir[0] ) ) {
+                    snd.Play();
                     if( Has( order[1] ) || Has( order[2] ) ) {
                         Chock( order[1], dir[1] );
                         Chock( order[2], dir[2] );
@@ -109,27 +112,6 @@ void Path::Update( float dt )
                         Chock( order[3], dir[3] );
                     }
                 }
-
-                /*if( it->dir == Vec2i::left ) {
-                    if( !Chock( left, it->dir ) ) {
-                        if( Has( down ) || Has( up ) ) {
-                            Chock( down, it->dir );
-                            Chock( up, it->dir );
-                        }
-                        else {
-                            Chock( right, it->dir );
-                        }
-                    }
-                }
-                else if( it->dir == Vec2i::right ) {
-                    Chock( right, it->dir );
-                }
-                else if( it->dir == Vec2i::up ) {
-                    Chock( up, it->dir );
-                }
-                else if( it->dir == Vec2i::down ) {
-                    Chock( down, it->dir );
-                }*/
             }
             Charges::iterator del = it;
             ++it;
