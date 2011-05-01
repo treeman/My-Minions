@@ -1,3 +1,5 @@
+#include "Tree/Butler.hpp"
+#include "Tree/Log.hpp"
 #include "PathObject.hpp"
 
 PathObject::PathObject()
@@ -13,10 +15,21 @@ PathObject::PathObject( sf::Sprite _spr ) : spr( _spr )
 void PathObject::NewPos( Vec2i pos )
 {
     spr.SetPosition( pos );
+
+    right_dir.SetPosition( pos );
+    left_dir.SetPosition( pos );
+    up_dir.SetPosition( pos );
+    down_dir.SetPosition( pos );
 }
 void PathObject::Render()
 {
     Tree::Draw( spr );
+    if( ShowDirection() ) {
+        if( face == Vec2i::right ) Tree::Draw( right_dir );
+        else if( face == Vec2i::down ) Tree::Draw( down_dir );
+        else if( face == Vec2i::left ) Tree::Draw( left_dir );
+        else if( face == Vec2i::up ) Tree::Draw( up_dir );
+    }
 }
 
 Charge PathObject::ChargeOut()
@@ -50,5 +63,10 @@ void PathObject::Reset()
 {
     has_charge = false;
     face = Vec2i::right;
+
+    right_dir = BUTLER->CreateSprite( "gfx/right_dir.png" );
+    left_dir = BUTLER->CreateSprite( "gfx/left_dir.png" );
+    up_dir = BUTLER->CreateSprite( "gfx/up_dir.png" );
+    down_dir = BUTLER->CreateSprite( "gfx/down_dir.png" );
 }
 

@@ -36,6 +36,7 @@ public:
     void ClockPulse();
 private:
     void Reset();
+    bool ShowDirection() { return true; }
 
     int n;
     bool status;
@@ -51,6 +52,7 @@ public:
     void ClockPulse();
 private:
     void Reset();
+    bool ShowDirection() { return true; }
 
     int n;
     bool status;

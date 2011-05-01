@@ -35,16 +35,23 @@ protected:
     void NewPos( Vec2i pos );
     void Render();
 
+    virtual bool ShowDirection() { return false; }
+
     Vec2i gpos;
 
     sf::Sprite spr;
+
+    sf::Sprite right_dir;
+    sf::Sprite left_dir;
+    sf::Sprite up_dir;
+    sf::Sprite down_dir;
 
     void QueueCharge( Charge &charge );
     bool has_charge;
     Charge out_charge;
 
     Vec2i face;
-
+private:
     void Reset();
 };
 

@@ -27,6 +27,8 @@ public:
     bool IsCharged( Vec2i point );
     bool IsChocked( Vec2i point );
 
+    void Rotate( Vec2i point );
+
     void KillCharges();
 
     PathObjPtr GetObj( Vec2i point );

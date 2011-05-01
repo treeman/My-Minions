@@ -69,6 +69,11 @@ bool Path::IsChocked( Vec2i point )
     return false;
 }
 
+void Path::Rotate( Vec2i point )
+{
+    GetObj( point )->Rotate();
+}
+
 void Path::KillCharges()
 {
     chocks.clear();

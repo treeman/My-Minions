@@ -48,8 +48,12 @@ void World::HandleOrder( Order order )
             const Vec2i gpos = grid.PixelToGridPos( wpos );
             o->SetGridPos( gpos );
 
-            //L_ << "Adding object" << gpos << '\n';
-            path.Add( o );
+            if( path.HasObj( gpos ) ) {
+                path.Rotate( gpos );
+            }
+            else {
+                path.Add( o );
+            }
         }
     }
     else if( order.type == Order::RemovePath ) {

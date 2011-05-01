@@ -21,5 +21,5 @@ clock8 = 0.1
 clock9 = 0.05
 
 -- Treshold for when to do multiple actions, only applies to some things
-key_press_limit = 0.3
+key_press_limit = 0.1
 

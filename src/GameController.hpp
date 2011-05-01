@@ -23,6 +23,8 @@ protected:
     void SendSimple( Order::OrderType type );
     void SendSpeed();
 
+    void SendPlacement();
+
     Vec2i cam_nudge_dir;
 
     World *const world;
@@ -31,6 +33,7 @@ protected:
     int curr_speed;
 
     Tree::Timer del_t;
+    Tree::Timer place_t;
 
     PathObjPtr obj;
     sf::Sprite obj_spr;
