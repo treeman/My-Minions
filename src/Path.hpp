@@ -49,13 +49,15 @@ private:
     Charges charges;
     Charges chocks;
 
-    void AddChock( Charges &charges, Vec2i point, Vec2i dir );
+    void AddChock( Charges &charges, Vec2i point, Vec2i dir, int type );
 
     typedef std::list<PathObjPtr> Objects;
     Objects objects;
 
     sf::Sprite spr;
-    sf::Sprite charge;
+
+    sf::Sprite pos_charge;
+    sf::Sprite neg_charge;
 
     IsoGrid *grid;
 

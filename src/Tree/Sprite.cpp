@@ -60,6 +60,11 @@ sf::Sprite SpriteLoader::Create( std::string name ) throw( Error::resource_not_f
 bool SpriteLoader::LoadSprite( lua_State *L, sf::Sprite *spr ) throw( Error::lua_error & )
 {
     if( lua_istable( L, -1 ) ) {
+        // Hack to not try to load package.path into our sprite loading
+        // But it is trying to load a crapload of other stuff..
+        std::string name = lua_tostring( L, -2 );
+        if( name == "package" ) return false;
+        //L_<< "trying to load " << name << '\n';
 
         std::string path = "";
         float x = 0, y = 0;
@@ -72,6 +77,9 @@ bool SpriteLoader::LoadSprite( lua_State *L, sf::Sprite *spr ) throw( Error::lua
         Tree::get_num<float>( L, "x", x );
         Tree::get_num<float>( L, "y", y );
 
+        Tree::get_num<float>( L, "w", w );
+        Tree::get_num<float>( L, "h", h );
+
         Tree::get_num<float>( L, "x_off", x_off );
         Tree::get_num<float>( L, "y_off", y_off );
 
@@ -80,9 +88,7 @@ bool SpriteLoader::LoadSprite( lua_State *L, sf::Sprite *spr ) throw( Error::lua
 
         Tree::get_bool( L, "smoothen", smoothen );
 
-        if( Tree::get_num<float>( L, "w", w ) &&
-            Tree::get_num<float>( L, "h", h ) &&
-            Tree::get_string( L, "path", path ) )
+        if( Tree::get_string( L, "path", path ) )
         {
             Tree::ImgPtr img = Tree::GetButler()->GetImage( path );
 
@@ -90,8 +96,10 @@ bool SpriteLoader::LoadSprite( lua_State *L, sf::Sprite *spr ) throw( Error::lua
                 img->SetSmooth( smoothen );
 
                 spr->SetImage( *img );
-                spr->SetSubRect( sf::IntRect( x, y, x + w, y + h ) );
-                spr->SetCenter( hot_x, hot_y );
+                if( w != 0 && h != 0 ) {
+                    spr->SetSubRect( sf::IntRect( x, y, x + w, y + h ) );
+                    spr->SetCenter( hot_x, hot_y );
+                }
 
                 return true;
             }

@@ -9,21 +9,25 @@ Sounds:
     *    (drums or whatever, so we can make something fun out of this)
 
 Core engine:
-    2 types of charges (0 and 1)
+    *2 types of charges (0 and 1)
     Detect intersections
     *Universal time for charge travel
     *    Pause/Unpause and set the speed
         Need visual? At least a marker or something
-    *Object chooser
+    *Objects
         *Objects for different sounds
         Need visual
         AND, OR, NOT gates
+            *NOT done
             Need to connect with several entrances
             And it needs to interact with path
             possibly NAND, NOR, XOR later too?
             If I really really have time, add more complex stuff
         Rotate rotateable objects
             (dunno if we need all possible combinations of ports though)
+        Delete objects, then delete path
+        Global charge kill switch
+        Kill individual charges
 
     Intro/Narrative/Tutorial stuff
 

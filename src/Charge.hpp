@@ -3,7 +3,8 @@
 #include "Tree/Vec2D.hpp"
 
 struct Charge {
-    Charge( Vec2i pt, Vec2i d ) : point( pt ), dir( d ), type( 1 ), can_kill( false )
+    Charge( Vec2i pt, Vec2i d, int _type ) :
+            point( pt ), dir( d ), type( _type ), can_kill( false )
     { }
 
     Vec2i point;

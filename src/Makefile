@@ -11,8 +11,6 @@ World.cpp \
 GameController.cpp \
 Tile.cpp \
 VisualObject.cpp \
-Hero.cpp \
-MoveableObject.cpp \
 Intro.cpp \
 Narrative.cpp \
 Path.cpp \

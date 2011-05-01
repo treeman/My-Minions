@@ -16,8 +16,6 @@ World::World() :
     CenterCam();
     SETTINGS->Register<bool>( "debug_mouse_grid_conversions", false );
     SETTINGS->Register<bool>( "debug_road_neighbours", false );
-
-    hero.SetPos( grid.GridToPixelPos( 3, 3 ) );
 }
 
 void World::HandleOrder( Order order )
@@ -136,7 +134,6 @@ void World::CenterCamOn( float x, float y )
 void World::Update( float dt )
 {
     grid.Update( dt );
-    hero.Update( dt );
     path.Update( dt );
 
     if( SETTINGS->GetValue<bool>( "debug_mouse_grid_conversions" ) ) {
@@ -191,7 +188,6 @@ void World::Update( float dt )
 void World::Draw()
 {
     grid.Draw();
-    //hero.Draw();
     path.Draw( cam.x, cam.y );
 }
 
@@ -201,7 +197,7 @@ void World::UpdateCam( Vec2f new_cam )
     const int move_y = cam.y - new_cam.y;
     cam = new_cam;
 
-    hero.Move( move_x, move_y );
+    //hero.Move( move_x, move_y );
     grid.SetPos( cam.x, cam.y );
 }
 

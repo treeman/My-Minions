@@ -8,7 +8,8 @@
 Path::Path( IsoGrid *const _grid ) : grid( _grid )
 {
     spr = BUTLER->CreateSprite( "gfx/empty.png" );
-    charge = BUTLER->CreateSprite( "gfx/charge.png" );
+    pos_charge = BUTLER->CreateSprite( "pos_charge" );
+    neg_charge = BUTLER->CreateSprite( "neg_charge" );
 
     clock_time = TWEAKS->GetNum( "clock_time" );
 
@@ -69,7 +70,15 @@ void Path::Add( PathObjPtr obj )
 
 void Path::Remove( Vec2i point )
 {
-    points.erase( point );
+    /*if( IsCharged( point ) ) {
+
+    }
+    else if( HasObj( point ) ) {
+
+    }
+    else {*/
+        points.erase( point );
+    //}
 }
 
 Path::Points Path::Neighbours( Vec2i pt )
@@ -96,13 +105,13 @@ bool Path::CanChock( Vec2i point )
 
 void Path::Chock( Vec2i point, Vec2i dir )
 {
-    AddChock( chocks, point, dir );
+    AddChock( chocks, point, dir, 1 );
 }
 
-void Path::AddChock( Charges &charges, Vec2i point, Vec2i dir )
+void Path::AddChock( Charges &charges, Vec2i point, Vec2i dir, int type )
 {
     if( CanChock( point ) ) {
-        charges.push_back( Charge( point, dir ) );
+        charges.push_back( Charge( point, dir, type ) );
     }
 }
 
@@ -157,12 +166,12 @@ void Path::Update( float dt )
                 }
 
                 if( CanChock( order[0] ) ) {
-                    AddChock( next_charges, order[0], dir[0] );
+                    AddChock( next_charges, order[0], dir[0], it->type );
                 }
                 else {
                     if( Has( order[1] ) || Has( order[2] ) ) {
-                        AddChock( next_charges, order[1], dir[1] );
-                        AddChock( next_charges, order[2], dir[2] );
+                        AddChock( next_charges, order[1], dir[1], it->type );
+                        AddChock( next_charges, order[2], dir[2], it->type );
                         if( Has( order[1] ) && Has( order[2] ) ) {
                             split.Play();
                         }
@@ -171,7 +180,7 @@ void Path::Update( float dt )
                         }
                     }
                     else {
-                        AddChock( next_charges, order[3], dir[3] );
+                        AddChock( next_charges, order[3], dir[3], it->type );
                         dead_end.Play();
                     }
                 }
@@ -189,7 +198,7 @@ void Path::Update( float dt )
 
             if( HasObj( pt ) ) {
                 PathObjPtr obj = GetObj( pt );
-                obj->ChargeIn( *it );
+                *it = obj->ChargeIn( *it );
             }
         }
 
@@ -223,8 +232,14 @@ void Path::Draw( int x_off, int y_off )
         Vec2i pos = grid->GridToPixelPos( it->point );
         pos.x -= x_off; pos.y -= y_off;
 
-        charge.SetPosition( pos );
-        Tree::Draw( charge );
+        if( it->type ) {
+            pos_charge.SetPosition( pos );
+            Tree::Draw( pos_charge );
+        }
+        else {
+            neg_charge.SetPosition( pos );
+            Tree::Draw( neg_charge );
+        }
     }
 }
 

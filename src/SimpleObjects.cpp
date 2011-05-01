@@ -1,8 +1,9 @@
+#include "Tree/Log.hpp"
 #include "SimpleObjects.hpp"
 
 SilencerObject::SilencerObject()
 {
-    spr = BUTLER->CreateSprite( "gfx/black.png" );
+    spr = BUTLER->CreateSprite( "gfx/deleter.png" );
 }
 
 Charge SilencerObject::ChargeIn( Charge &charge )
@@ -25,7 +26,7 @@ Charge MusicObject::ChargeIn( Charge &charge )
 
 NotObject::NotObject()
 {
-    spr = BUTLER->CreateSprite( "gfx/black.png" );
+    spr = BUTLER->CreateSprite( "gfx/not.png" );
 }
 
 Charge NotObject::ChargeIn( Charge &charge )

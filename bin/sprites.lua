@@ -1,21 +1,9 @@
 -- here's the spriteloading facility
 -- be gentle with it
 
-tile_width = 40
-tile_height = 20
+tile1 = { path = "gfx/grasstile1.png", }
+tile2 = { path = "gfx/grasstile2.png", }
 
-tile1 = {
-    path = "gfx/grasstile1.png",
-    w = tile_width, h = tile_height,
-}
-
-tile2 = {
-    path = "gfx/grasstile2.png",
-    w = tile_width, h = tile_height,
-}
-
-hero = {
-    path = "gfx/dude.png",
-    w = tile_width, h = tile_height * 2,
-}
+pos_charge = { path = "gfx/pos_charge.png" }
+neg_charge = { path = "gfx/neg_charge.png" }
 
