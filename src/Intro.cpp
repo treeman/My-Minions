@@ -20,13 +20,26 @@ Intro::~Intro()
 
 bool Intro::HandleEvent( sf::Event &e )
 {
+    if( e.Type == sf::Event::KeyPressed ) {
+        switch( e.Key.Code ) {
+            case sf::Key::F10:
+                GAME->Exit();
+                break;
+            case sf::Key::Space:
+            case sf::Key::Return:
+            case sf::Key::Escape:
+                GAME->Pop();
+                break;
+            default:
+                break;
+        }
+    }
     return true;
 }
 
 void Intro::Loaded()
 {
     Tree::DrawNonLazy();
-    narrative.Start();
 }
 
 void Intro::Update( float dt )

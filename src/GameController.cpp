@@ -107,20 +107,6 @@ bool GameController::HandleEvent( sf::Event &e )
         const Vec2i wpos = world->ConvertToWorld( mpos );
 
         switch( e.MouseButton.Button ) {
-            /*case sf::Mouse::Left:
-                if( curr_obj == 0 ) {
-                    SendPos( Order::AddPath );
-                }
-                else {
-                    Order order;
-                    order.type = Order::PlaceObject;
-                    order.object.x = wpos.x;
-                    order.object.y = wpos.y;
-                    order.object.obj = curr_obj;
-
-                    SendOrder( order );
-                }
-                break;*/
             case sf::Mouse::Right:
                 del_t.Restart();
                 SendPos( Order::RemovePath );
@@ -160,7 +146,6 @@ void GameController::Update( float dt )
             SendPos( Order::AddPath );
         }
         else {
-            //L_ << "I want to build an object of type: " << curr_obj << '\n';
             Order order;
             order.type = Order::PlaceObject;
             order.object.x = wpos.x;
@@ -170,9 +155,6 @@ void GameController::Update( float dt )
             SendOrder( order );
         }
     }
-    /*if( Tree::GetInput().IsMouseButtonDown( sf::Mouse::Right ) ) {
-        SendPos( Order::RemovePath );
-    }*/
 
     if( del_t.IsStarted() && del_t.GetTime() > TWEAKS->GetNum( "key_press_limit" )) {
         SendPos( Order::RemovePath );
