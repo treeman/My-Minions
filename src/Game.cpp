@@ -56,6 +56,7 @@ void Game::Update( float dt )
 void Game::Draw()
 {
     world->Draw();
+    controller->Draw();
 
     if( Tree::IsMouseValid() ) {
         Tree::Draw( mouse );

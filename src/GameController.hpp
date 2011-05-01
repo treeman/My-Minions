@@ -5,6 +5,7 @@
 #include "Tree/InputHandler.hpp"
 #include "Order.hpp"
 #include "Controller.hpp"
+#include "PathObject.hpp"
 
 class World;
 
@@ -13,7 +14,9 @@ public:
     GameController( World *const world );
 
     bool HandleEvent( sf::Event &e );
+
     void Update( float dt );
+    void Draw();
 protected:
     // Shortcut for simpler order sending
     void SendPos( Order::OrderType type );
@@ -28,5 +31,8 @@ protected:
     int curr_speed;
 
     Tree::Timer del_t;
+
+    PathObjPtr obj;
+    sf::Sprite obj_spr;
 };
 

@@ -28,6 +28,7 @@ public:
         Unpause,
         SetSpeed,
         PlaceObject,
+        KillCharges,
     };
 
     OrderType type;

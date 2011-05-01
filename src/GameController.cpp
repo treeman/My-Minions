@@ -14,6 +14,10 @@ GameController::GameController( World *const _world ) :
     curr_speed = 3;
 
     SendSpeed();
+
+    obj_spr = BUTLER->CreateSprite( "gfx/empty.png" );
+
+    obj_spr.SetPosition( 20, Tree::GetWindowHeight() - 40 );
 }
 
 bool GameController::HandleEvent( sf::Event &e )
@@ -44,35 +48,16 @@ bool GameController::HandleEvent( sf::Event &e )
             case sf::Key::P:
                 SendSimple( Order::TogglePause );
                 break;
-            case sf::Key::Num1:
-                curr_obj = 0;
+
+            case sf::Key::A:
+                if( curr_obj > 0 ) --curr_obj;
                 break;
-            case sf::Key::Num2:
-                curr_obj = 1;
+            case sf::Key::S:
+                if( curr_obj < NumObjects() ) ++ curr_obj;
                 break;
-            case sf::Key::Num3:
-                curr_obj = 2;
-                break;
-            case sf::Key::Num4:
-                curr_obj = 3;
-                break;
-            case sf::Key::Num5:
-                curr_obj = 4;
-                break;
-            case sf::Key::Num6:
-                curr_obj = 5;
-                break;
-            case sf::Key::Num7:
-                curr_obj = 6;
-                break;
-            case sf::Key::Num8:
-                curr_obj = 7;
-                break;
-            case sf::Key::Num9:
-                curr_obj = 8;
-                break;
-            case sf::Key::Num0:
-                curr_obj = 9;
+
+            case sf::Key::K:
+                SendSimple( Order::KillCharges );
                 break;
 
             case sf::Key::LControl:
@@ -159,6 +144,19 @@ void GameController::Update( float dt )
     if( del_t.IsStarted() && del_t.GetTime() > TWEAKS->GetNum( "key_press_limit" )) {
         SendPos( Order::RemovePath );
     }
+
+    if( curr_obj == 0 ) {
+        obj_spr = BUTLER->CreateSprite( "gfx/empty.png" );
+    }
+    else {
+        obj_spr = GetObject( curr_obj - 1 )->GetSprite();
+    }
+    obj_spr.SetPosition( 20, Tree::GetWindowHeight() - 40 );
+}
+
+void GameController::Draw()
+{
+    Tree::Draw( obj_spr );
 }
 
 void GameController::SendPos( Order::OrderType type )

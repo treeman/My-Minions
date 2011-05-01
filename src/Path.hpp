@@ -25,6 +25,9 @@ public:
     bool Has( Vec2i point );
     bool HasObj( Vec2i point );
     bool IsCharged( Vec2i point );
+    bool IsChocked( Vec2i point );
+
+    void KillCharges();
 
     PathObjPtr GetObj( Vec2i point );
 
@@ -72,9 +75,6 @@ private:
     sf::Sound split;
     sf::Sound turn;
 
-    bool play_charge;
-    bool play_dead_end;
-    bool play_split;
-    bool play_turn;
+    sf::String fnt;
 };
 

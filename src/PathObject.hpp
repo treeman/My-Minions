@@ -26,6 +26,8 @@ public:
     void Rotate();
     Vec2i Facing();
 
+    sf::Sprite GetSprite() { return spr; }
+
     virtual void Update( float dt ) { }
 protected:
     virtual void ChargeOutSent() { }

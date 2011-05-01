@@ -38,7 +38,7 @@ PathObjPtr GetObject( size_t num ) throw( Error::resource_not_found )
             o.reset( new AndObject() );
             break;
         case 8:
-            o.reset( new AndObject() );
+            o.reset( new OrObject() );
             break;
     }
     return o;

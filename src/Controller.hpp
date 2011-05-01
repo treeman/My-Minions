@@ -17,6 +17,8 @@ public:
 
     virtual bool HandleEvent( sf::Event & ) { return true; }
     virtual void Update( float ) { }
+    // hack
+    virtual void Draw() { }
 protected:
     typedef std::vector<OrderHandler*> OrderHandlers;
     OrderHandlers order_handlers;

@@ -38,12 +38,11 @@ AndObject::AndObject()
 {
     Reset();
 
-    spr = BUTLER->CreateSprite( "gfx/black.png" );
+    spr = BUTLER->CreateSprite( "gfx/and.png" );
 }
 
 void AndObject::ChargeIn( Charge &charge )
 {
-    //L_ << "Charge: " << charge.type << '\n';
     ++n;
     if( n > 1 ) {
         status = status && charge.type;
@@ -78,12 +77,11 @@ OrObject::OrObject()
 {
     Reset();
 
-    spr = BUTLER->CreateSprite( "gfx/black.png" );
+    spr = BUTLER->CreateSprite( "gfx/or.png" );
 }
 
 void OrObject::ChargeIn( Charge &charge )
 {
-    //L_ << "Charge: " << charge.type << '\n';
     ++n;
     if( n > 1 ) {
         status = status || charge.type;

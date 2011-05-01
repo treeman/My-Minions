@@ -8,6 +8,10 @@ struct Charge {
             point( pt ), dir( d ), type( _type ), can_kill( false )
     { }
 
+    bool operator == ( const Charge &c ) {
+        return point == c.point && dir == c.dir;
+    }
+
     Vec2i point;
     Vec2i dir;
 

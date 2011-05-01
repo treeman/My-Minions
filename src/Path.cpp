@@ -18,21 +18,29 @@ Path::Path( IsoGrid *const _grid ) : grid( _grid )
     split = BUTLER->CreateSound( "snd/split.wav" );
     turn = BUTLER->CreateSound( "snd/turn.wav" );
 
-    t.Start();
+    fnt = BUTLER->CreateString( "fnt/lucon.ttf", 12 );
+    fnt.SetPosition( 68, Tree::GetWindowHeight() - 50 );
 }
 
 void Path::Start()
 {
     t.Start();
+    std::stringstream ss;
+    ss << "Heartbeat rate: " << (int)(80 / clock_time);
+    fnt.SetText( ss.str() );
 }
 void Path::Pause()
 {
     t.Pause();
+    fnt.SetText( "Puh, paused.." );
 }
 
 void Path::SetClockTime( float time )
 {
     clock_time = time;
+    std::stringstream ss;
+    ss << "Heartbeat rate: " << (int)(80 / clock_time);
+    fnt.SetText( ss.str() );
 }
 
 bool Path::Has( Vec2i point )
@@ -52,6 +60,19 @@ bool Path::IsCharged( Vec2i point )
         if( it->point == point ) { return true; }
     }
     return false;
+}
+bool Path::IsChocked( Vec2i point )
+{
+    for( Charges::iterator it = chocks.begin(); it != chocks.end(); ++it ) {
+        if( it->point == point ) { return true; }
+    }
+    return false;
+}
+
+void Path::KillCharges()
+{
+    chocks.clear();
+    charges.clear();
 }
 
 PathObjPtr Path::GetObj( Vec2i point )
@@ -78,7 +99,15 @@ void Path::Add( PathObjPtr obj )
 
 void Path::Remove( Vec2i point )
 {
-    if( IsCharged( point ) ) {
+    if( IsChocked( point ) ) {
+        for( Charges::iterator it = chocks.begin(); it != chocks.end(); ++it ) {
+            if( it->point == point ) {
+                charges.erase( it );
+                return;
+            }
+        }
+    }
+    else if( IsCharged( point ) ) {
         for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {
             if( it->point == point ) {
                 charges.erase( it );
@@ -243,6 +272,9 @@ void Path::Update( float dt )
             charges.splice( charges.begin(), chocks );
         }
 
+        // This isn't effective, bot I don't care atm
+        Charges unique;
+
         for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {
             const Vec2i pt = it->point;
 
@@ -250,7 +282,17 @@ void Path::Update( float dt )
                 PathObjPtr obj = GetObj( pt );
                 obj->ChargeIn( *it );
             }
+
+            bool has = false;
+            for( Charges::iterator is = unique.begin(); is != unique.end(); ++is ) {
+                if( *it == *is ) {
+                    has = true;
+                    break;
+                }
+            }
+            if( !has ) { unique.push_back( *it ); }
         }
+        charges = unique;
 
         t.Restart();
     }
@@ -291,5 +333,24 @@ void Path::Draw( int x_off, int y_off )
             Tree::Draw( neg_charge );
         }
     }
+
+    for( Charges::iterator it = chocks.begin(); it != chocks.end(); ++it ) {
+        Vec2i pos = grid->GridToPixelPos( it->point );
+        pos.x -= x_off; pos.y -= y_off;
+
+        if( it->type ) {
+            pos_charge.SetPosition( pos );
+            Tree::Draw( pos_charge );
+        }
+        else {
+            neg_charge.SetPosition( pos );
+            Tree::Draw( neg_charge );
+        }
+    }
+
+    const float h = Tree::GetWindowHeight();
+    Tree::Draw( sf::Shape::Rectangle( 0, h - 60, 220, h, sf::Color::Black ) );
+
+    Tree::Draw( fnt );
 }
 

@@ -16,6 +16,8 @@ World::World() :
     CenterCam();
     SETTINGS->Register<bool>( "debug_mouse_grid_conversions", false );
     SETTINGS->Register<bool>( "debug_road_neighbours", false );
+
+    path.Start();
 }
 
 void World::HandleOrder( Order order )
@@ -61,6 +63,9 @@ void World::HandleOrder( Order order )
         const Vec2i gpos = grid.PixelToGridPos( wpos );
 
         path.Chock( gpos );
+    }
+    else if( order.type == Order::KillCharges ) {
+        path.KillCharges();
     }
     else if( order.type == Order::Pause ) {
         path.Pause();
@@ -189,6 +194,7 @@ void World::Draw()
 {
     grid.Draw();
     path.Draw( cam.x, cam.y );
+
 }
 
 void World::UpdateCam( Vec2f new_cam )
