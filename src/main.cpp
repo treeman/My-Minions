@@ -23,8 +23,8 @@ int main()
         {
             boost::shared_ptr<Tree::GameState> state( new Game() );
             Tree::Game::Instance()->Push( state );
-            state.reset( new Intro() );
-            Tree::Game::Instance()->Push( state );
+            //state.reset( new Intro() );
+            //Tree::Game::Instance()->Push( state );
             //state.reset( new Tree::Logo() );
             //Tree::Game::Instance()->Push( state );
         }

@@ -5,7 +5,7 @@
 
 int NumObjects()
 {
-    return 7;
+    return 8;
 }
 
 PathObjPtr GetObject( size_t num ) throw( Error::resource_not_found )
@@ -33,6 +33,9 @@ PathObjPtr GetObject( size_t num ) throw( Error::resource_not_found )
             break;
         case 6:
             o.reset( new NotObject() );
+            break;
+        case 7:
+            o.reset( new AndObject() );
             break;
     }
     return o;

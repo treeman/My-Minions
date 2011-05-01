@@ -7,14 +7,14 @@ class SilencerObject : public PathObject {
 public:
     SilencerObject();
 
-    Charge ChargeIn( Charge &charge );
+    void ChargeIn( Charge &charge );
 };
 
 class MusicObject : public PathObject {
 public:
     MusicObject( std::string spr, std::string snd );
 
-    Charge ChargeIn( Charge &charge );
+    void ChargeIn( Charge &charge );
 private:
     sf::Sound snd;
 };
@@ -23,6 +23,21 @@ class NotObject : public PathObject {
 public:
     NotObject();
 
-    Charge ChargeIn( Charge &charge );
+    void ChargeIn( Charge &charge );
+};
+
+class AndObject : public PathObject {
+public:
+    AndObject();
+
+    void ChargeIn( Charge &charge );
+    void ChargeOutSent();
+
+    void ClockPulse();
+private:
+    void Reset();
+
+    int n;
+    int status;
 };
 

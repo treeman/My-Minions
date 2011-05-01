@@ -52,6 +52,7 @@ private:
     Charges chocks;
 
     void AddChock( Charges &charges, Vec2i point, Vec2i dir, int type );
+    void AddChock( Charges &charges, Charge chock );
 
     typedef std::list<PathObjPtr> Objects;
     Objects objects;

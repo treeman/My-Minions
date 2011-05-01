@@ -128,8 +128,12 @@ void Path::Chock( Vec2i point, Vec2i dir )
 
 void Path::AddChock( Charges &charges, Vec2i point, Vec2i dir, int type )
 {
-    if( CanChock( point ) ) {
-        charges.push_back( Charge( point, dir, type ) );
+    AddChock( charges, Charge( point, dir, type ) );
+}
+void Path::AddChock( Charges &charges, Charge chock )
+{
+    if( CanChock( chock.point ) ) {
+        charges.push_back( chock );
     }
 }
 
@@ -138,6 +142,35 @@ void Path::Update( float dt )
     const float curr_time = t.GetTime();
     if( curr_time > clock_time ) {
         Charges next_charges;
+
+        for( Objects::iterator it = objects.begin(); it != objects.end(); ++it ) {
+            if( (*it)->HasOutCharge() ) {
+                const Vec2i pt = (*it)->GetGridPos();
+                const Vec2i face = (*it)->Facing();
+
+                L_ << "We're " << pt << " " << face << '\n';
+
+                Vec2i out_pos;
+                if( face == Vec2i::left ) out_pos = grid->TopLeftPos( pt );
+                else if( face == Vec2i::right ) out_pos = grid->DownRightPos( pt );
+                else if( face == Vec2i::up ) out_pos = grid->TopRightPos( pt );
+                else if( face == Vec2i::down ) out_pos = grid->DownLeftPos( pt );
+
+                L_ << "We wanna charge: " << out_pos << '\n';
+                Charge charge = (*it)->ChargeOut();
+                charge.point = out_pos;
+                charge.can_kill = false;
+                charge.dir = face;
+
+                if( Has( out_pos ) ) {
+                    L_ << "Def added in next\n";
+                    AddChock( next_charges, charge  );
+                }
+
+            }
+            (*it)->ClockPulse();
+        }
+
 
         for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {
             if( it->can_kill ) continue;
@@ -204,7 +237,6 @@ void Path::Update( float dt )
                 }
             }
         }
-
         charges = next_charges;
         if( !chocks.empty() ) {
             charge_it.Play();
@@ -216,7 +248,7 @@ void Path::Update( float dt )
 
             if( HasObj( pt ) ) {
                 PathObjPtr obj = GetObj( pt );
-                *it = obj->ChargeIn( *it );
+                obj->ChargeIn( *it );
             }
         }
 

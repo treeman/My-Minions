@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "Tree/Log.hpp"
 #include "SimpleObjects.hpp"
 
@@ -6,10 +8,9 @@ SilencerObject::SilencerObject()
     spr = BUTLER->CreateSprite( "gfx/deleter.png" );
 }
 
-Charge SilencerObject::ChargeIn( Charge &charge )
+void SilencerObject::ChargeIn( Charge &charge )
 {
     charge.can_kill = true;
-    return charge;
 }
 
 MusicObject::MusicObject( std::string spr_path, std::string snd_path )
@@ -18,10 +19,9 @@ MusicObject::MusicObject( std::string spr_path, std::string snd_path )
     snd = BUTLER->CreateSound( snd_path );
 }
 
-Charge MusicObject::ChargeIn( Charge &charge )
+void MusicObject::ChargeIn( Charge &charge )
 {
     if( charge.type ) { snd.Play(); }
-    return charge;
 }
 
 NotObject::NotObject()
@@ -29,9 +29,47 @@ NotObject::NotObject()
     spr = BUTLER->CreateSprite( "gfx/not.png" );
 }
 
-Charge NotObject::ChargeIn( Charge &charge )
+void NotObject::ChargeIn( Charge &charge )
 {
     charge.type = !charge.type;
-    return charge;
+}
+
+AndObject::AndObject()
+{
+    Reset();
+
+    spr = BUTLER->CreateSprite( "gfx/black.png" );
+}
+
+void AndObject::ChargeIn( Charge &charge )
+{
+    ++n;
+    if( n > 1 ) {
+        status = status && charge.type;
+    }
+    else {
+        status = charge.type;
+    }
+
+    if( n >= 2 ) {
+        Charge res;
+        res.type = status;
+        QueueCharge( charge );
+    }
+
+    charge.can_kill = true;
+
+    std::stringstream ss;
+    ss << "And's status: " << status << " " << n <<" "<< HasOutCharge();
+    Tree::VisualDebug( "and", ss.str() );
+}
+
+void AndObject::ChargeOutSent() { Reset(); }
+
+void AndObject::ClockPulse() { Reset(); }
+
+void AndObject::Reset()
+{
+    n = status = 0;
 }
 
