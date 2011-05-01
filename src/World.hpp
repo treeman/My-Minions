@@ -46,5 +46,8 @@ private:
     void Unpause();
     void TogglePause();
     bool is_running;
+
+    void SaveMap();
+    void LoadMap();
 };
 

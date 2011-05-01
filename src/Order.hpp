@@ -29,6 +29,8 @@ public:
         SetSpeed,
         PlaceObject,
         KillCharges,
+        SaveMap,
+        LoadMap,
     };
 
     OrderType type;

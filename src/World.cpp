@@ -1,4 +1,5 @@
 #include <boost/foreach.hpp>
+#include <fstream>
 
 #include "Tree/Util.hpp"
 #include "Tree/Settings.hpp"
@@ -83,8 +84,13 @@ void World::HandleOrder( Order order )
         TogglePause();
     }
     else if( order.type == Order::SetSpeed ) {
-        L_ << "Setting speed: " << order.sim_speed << '\n';
         path.SetClockTime( order.sim_speed );
+    }
+    else if( order.type == Order::SaveMap ) {
+        SaveMap();
+    }
+    else if( order.type == Order::LoadMap ) {
+        LoadMap();
     }
 }
 
@@ -225,5 +231,35 @@ void World::TogglePause()
     else {
         Unpause();
     }
+}
+
+void World::SaveMap()
+{
+    std::fstream file;
+    file.open( "level.dat", std::fstream::out | std::fstream::trunc );
+    if( !file.is_open() ) {
+        L_ << "Crap couldn't save level.dat\n";
+        return;
+    }
+    else {
+        path.Save( file );
+    }
+
+    file.close();
+}
+
+void World::LoadMap()
+{
+    std::ifstream file;
+    file.open( "level.dat" );
+    if( !file.is_open() ) {
+        L_ << "Crap couldn't load level.dat\n";
+        return;
+    }
+    else {
+        path.Load( file );
+    }
+
+    file.close();
 }
 

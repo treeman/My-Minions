@@ -141,6 +141,8 @@ void Settings::CreateSettingsFile( std::string path )
     out << ";Keep in mind that the graphics won't stretch, but just show more as the window grows.\n\n";
     out << "video_screen_windowed 1\n";
     out << "fps_show 1\n";
+
+    out.close();
 }
 
 void Settings::SetVariable( std::string name, std::string value )
@@ -179,7 +181,8 @@ void Settings::AddListener( SettingsListener *listener )
     listener_list.insert( listener_list.end(), listener );
 }
 
-void Settings::UpdateListeners( std::string setting, std::string value, std::string return_val )
+void Settings::UpdateListeners( std::string setting, std::string value,
+    std::string return_val )
 {
     for( ListenerList::iterator it = listener_list.begin(); it != listener_list.end(); ++it )
     {

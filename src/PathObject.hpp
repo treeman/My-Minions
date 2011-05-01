@@ -22,6 +22,9 @@ public:
 
     virtual void ClockPulse() { }
 
+    int GetObjNum() { return obj_num; }
+    void SetObjNum( int n ) { obj_num = n; }
+
     // Only one entrance
     void Rotate();
     Vec2i Facing();
@@ -51,6 +54,8 @@ protected:
     Charge out_charge;
 
     Vec2i face;
+
+    int obj_num;
 private:
     void Reset();
 };

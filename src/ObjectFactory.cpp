@@ -1,5 +1,6 @@
 #include <sstream>
 
+#include "Tree/Tweaks.hpp"
 #include "ObjectFactory.hpp"
 #include "SimpleObjects.hpp"
 
@@ -14,19 +15,24 @@ PathObjPtr GetObject( size_t num ) throw( Error::resource_not_found )
     PathObjPtr o;
     switch( num ) {
         case 0:
-            o.reset( new MusicObject( "gfx/music1.png", "snd/play.wav" ) );
+            o.reset( new MusicObject( "gfx/music1.png",
+                TWEAKS->GetString( "thud1" )));
             break;
         case 1:
-            o.reset( new MusicObject( "gfx/music2.png", "snd/blip.wav" ) );
+            o.reset( new MusicObject( "gfx/music2.png",
+                TWEAKS->GetString( "thud2" )));
             break;
         case 2:
-            o.reset( new MusicObject( "gfx/music3.png", "snd/coin.wav" ) );
+            o.reset( new MusicObject( "gfx/music3.png",
+                TWEAKS->GetString( "tick" )));
             break;
         case 3:
-            o.reset( new MusicObject( "gfx/music4.png", "snd/tick.wav" ) );
+            o.reset( new MusicObject( "gfx/music4.png",
+                TWEAKS->GetString( "spike" )));
             break;
         case 4:
-            o.reset( new MusicObject( "gfx/music5.png", "snd/twang.wav" ) );
+            o.reset( new MusicObject( "gfx/music5.png",
+                TWEAKS->GetString( "blip" )));
             break;
         case 5:
             o.reset( new SilencerObject() );
@@ -41,6 +47,7 @@ PathObjPtr GetObject( size_t num ) throw( Error::resource_not_found )
             o.reset( new OrObject() );
             break;
     }
+    o->SetObjNum( num );
     return o;
 }
 

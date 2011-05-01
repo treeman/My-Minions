@@ -1,3 +1,5 @@
+#include <boost/algorithm/string.hpp>
+
 #include "Tree/Butler.hpp"
 #include "Tree/VisualDebug.hpp"
 #include "Tree/Tweaks.hpp"
@@ -13,10 +15,10 @@ Path::Path( IsoGrid *const _grid ) : grid( _grid )
 
     clock_time = TWEAKS->GetNum( "clock_time" );
 
-    charge_it = BUTLER->CreateSound( "snd/charge.wav" );
-    dead_end = BUTLER->CreateSound( "snd/deadend.wav" );
-    split = BUTLER->CreateSound( "snd/split.wav" );
-    turn = BUTLER->CreateSound( "snd/turn.wav" );
+    //charge_it = BUTLER->CreateSound( "snd/charge.wav" );
+    dead_end = BUTLER->CreateSound( TWEAKS->GetString( "dead_end" ) );
+    split = BUTLER->CreateSound( TWEAKS->GetString( "split" ) );
+    turn = BUTLER->CreateSound( TWEAKS->GetString( "turn" ) );
 
     fnt = BUTLER->CreateString( "fnt/lucon.ttf", 12 );
     fnt.SetPosition( 68, Tree::GetWindowHeight() - 50 );
@@ -131,23 +133,6 @@ void Path::Remove( Vec2i point )
     else {
         points.erase( point );
     }
-}
-
-Path::Points Path::Neighbours( Vec2i pt )
-{
-    Points neighbours;
-
-    const Vec2i left = grid->TopLeftPos( pt );
-    const Vec2i right = grid->TopLeftPos( pt );
-    const Vec2i up = grid->TopLeftPos( pt );
-    const Vec2i down = grid->TopLeftPos( pt );
-
-    if( Has( left ) ) neighbours.insert( left );
-    if( Has( right ) ) neighbours.insert( right );
-    if( Has( up ) ) neighbours.insert( up );
-    if( Has( down ) ) neighbours.insert( down );
-
-    return neighbours;
 }
 
 bool Path::CanChock( Vec2i point )
@@ -273,7 +258,7 @@ void Path::Update( float dt )
         }
         charges = next_charges;
         if( !chocks.empty() ) {
-            charge_it.Play();
+            //charge_it.Play();
             charges.splice( charges.begin(), chocks );
         }
 
@@ -357,5 +342,82 @@ void Path::Draw( int x_off, int y_off )
     Tree::Draw( sf::Shape::Rectangle( 0, h - 60, 220, h, sf::Color::Black ) );
 
     Tree::Draw( fnt );
+}
+
+void Path::Save( std::fstream &file )
+{
+    file << "charges\n";
+    for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {
+        file << it->point <<" "<< it->dir <<" "<< it->type <<"  "<<
+            it->can_kill << '\n';
+    }
+    file << "points\n";
+
+    for( Points::iterator it = points.begin(); it != points.end(); ++it ) {
+        file << *it << " ";
+    }
+    file << '\n';
+    file << "objects\n";
+
+    for( Objects::iterator it = objects.begin(); it != objects.end(); ++it ) {
+        file << (*it)->GetGridPos() << " " << (*it)->Facing() << " "
+            << (*it)->GetObjNum() << '\n';
+    }
+}
+
+void Path::Load( std::ifstream &file )
+{
+    //Charges
+    while( !file.eof() )
+    {
+        if( str == "charges" ) continue;
+
+        std::string str;
+        std::getline( file, str );
+        //if( str.size() == 0 ) {
+        //L_ << "<" << str << '\n';
+        if( str == "points" ) {
+            //L_ << "It's done!\n";
+            break;
+        }
+        else {
+            std::vector<std::string> strs;
+            boost::split( strs, str, boost::is_any_of("\t ") );
+
+            Charge charge;
+            L_ << "Charge: " << str << '\n';
+        }
+    }
+
+    // Points
+    while( !file.eof() )
+    {
+        std::string str;
+        std::getline( file, str );
+        //if( str.size() == 0 ) {
+        //L_ << "<" << str << '\n';
+        if( str == "objects" ) {
+            //L_ << "It's done!\n";
+            break;
+        }
+        else {
+            L_ << "Points: " << str << '\n';
+        }
+    }
+
+    //Objects
+    while( !file.eof() )
+    {
+        std::string str;
+        std::getline( file, str );
+        //L_ << "<" << str << '\n';
+        if( str.size() == 0 ) {
+            //L_ << "It's done!\n";
+            break;
+        }
+        else {
+            L_ << "Object: " << str << '\n';
+        }
+    }
 }
 

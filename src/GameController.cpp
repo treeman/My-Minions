@@ -49,10 +49,10 @@ bool GameController::HandleEvent( sf::Event &e )
                 SendSimple( Order::TogglePause );
                 break;
 
-            case sf::Key::A:
+            case sf::Key::Num1:
                 if( curr_obj > 0 ) --curr_obj;
                 break;
-            case sf::Key::S:
+            case sf::Key::Num2:
                 if( curr_obj < NumObjects() ) ++ curr_obj;
                 break;
 
@@ -67,6 +67,13 @@ bool GameController::HandleEvent( sf::Event &e )
             case sf::Key::LShift:
                 if( curr_speed < 9 ) curr_speed++;
                 SendSpeed();
+                break;
+
+            case sf::Key::S:
+                SendSimple( Order::SaveMap );
+                break;
+            case sf::Key::L:
+                SendSimple( Order::LoadMap );
                 break;
 
             default:
@@ -132,21 +139,6 @@ void GameController::Update( float dt )
         order.cam_nudge.y = cam_nudge_dir.y * cam_nudge_speed * dt;
         SendOrder( order );
     }
-
-    /*if( Tree::GetInput().IsMouseButtonDown( sf::Mouse::Left ) ) {
-        if( curr_obj == 0 ) {
-            SendPos( Order::AddPath );
-        }
-        else {
-            Order order;
-            order.type = Order::PlaceObject;
-            order.object.x = wpos.x;
-            order.object.y = wpos.y;
-            order.object.obj = curr_obj;
-
-            SendOrder( order );
-        }
-    }*/
 
     const float key_press_limit = TWEAKS->GetNum( "key_press_limit" );
     if( del_t.IsStarted() && del_t.GetTime() > key_press_limit ) {

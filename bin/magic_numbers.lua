@@ -23,3 +23,14 @@ clock9 = 0.05
 -- Treshold for when to do multiple actions, only applies to some things
 key_press_limit = 0.1
 
+-- Sounds are numbers too?
+dead_end = "snd/action.wav"
+split = "snd/sand.wav"
+turn = "snd/can.wav"
+
+thud1 = "snd/th.wav"
+thud2 = "snd/th2.wav"
+tick = "snd/tick.wav"
+spike = "snd/metal.wav"
+blip = "snd/blip.wav"
+

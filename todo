@@ -16,14 +16,10 @@ Core engine:
     *    Need visual? At least a marker or something
     *Objects
         *Objects for different sounds
-        Need visual
-        AND, OR, NOT gates
-            *AND, OR, NOT done
-            *Need to connect with several entrances
-            *And it needs to interact with path
-            possibly NAND, NOR, XOR later too?
-        Rotate rotateable objects
-            (dunno if we need all possible combinations of ports though)
+        *Need visual
+        *AND, OR, NOT gates
+        NAND, NOR, XOR later too?
+        *Rotate rotateable objects
         *Delete objects, then delete path
         *Global charge kill switch
         *Kill individual charges
@@ -31,7 +27,7 @@ Core engine:
     Intro/Narrative/Tutorial stuff
 
 Graphics:
-    Paths, graphics for all objects
+    *Paths, graphics for all objects
     Graphics for intro
 
 Later on, only when we've got the time:
