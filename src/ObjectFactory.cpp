@@ -1,11 +1,11 @@
 #include <sstream>
 
 #include "ObjectFactory.hpp"
-#include "MusicObject.hpp"
+#include "SimpleObjects.hpp"
 
 int NumObjects()
 {
-    return 5;
+    return 7;
 }
 
 PathObjPtr GetObject( size_t num ) throw( Error::resource_not_found )
@@ -27,6 +27,12 @@ PathObjPtr GetObject( size_t num ) throw( Error::resource_not_found )
             break;
         case 4:
             o.reset( new MusicObject( "gfx/music5.png", "snd/twang.wav" ) );
+            break;
+        case 5:
+            o.reset( new SilencerObject() );
+            break;
+        case 6:
+            o.reset( new NotObject() );
             break;
     }
     return o;

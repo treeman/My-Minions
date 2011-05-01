@@ -9,6 +9,7 @@
 class PathObject : public VisualObject {
 public:
     PathObject() { }
+    PathObject( sf::Sprite spr );
     virtual ~PathObject() { }
 
     void SetGridPos( Vec2i pos ) { gpos = pos; }
@@ -19,7 +20,12 @@ public:
 
     virtual void Update( float dt ) { }
 protected:
+    void NewPos( Vec2i pos );
+    void Render();
+
     Vec2i gpos;
+
+    sf::Sprite spr;
 };
 
 typedef boost::shared_ptr<PathObject> PathObjPtr;

@@ -113,6 +113,8 @@ void Path::Update( float dt )
         Charges next_charges;
 
         for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {
+            if( it->can_kill ) continue;
+
             const Vec2i pt = it->point;
             if( it->dir == Vec2i::zero ) {
                 Chock( grid->TopLeftPos( pt ), Vec2i::left );

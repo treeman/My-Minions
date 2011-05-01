@@ -16,9 +16,9 @@ MoveableObject.cpp \
 Intro.cpp \
 Narrative.cpp \
 Path.cpp \
-MusicObject.cpp \
 PathObject.cpp \
-ObjectFactory.cpp
+ObjectFactory.cpp \
+SimpleObjects.cpp
 
 TREE_SRC=\
 Tree/Game.cpp \
