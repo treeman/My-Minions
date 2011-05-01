@@ -148,7 +148,7 @@ void Path::Update( float dt )
                 const Vec2i pt = (*it)->GetGridPos();
                 const Vec2i face = (*it)->Facing();
 
-                L_ << "We're " << pt << " " << face << '\n';
+                //L_ << "We're " << pt << " " << face << '\n';
 
                 Vec2i out_pos;
                 if( face == Vec2i::left ) out_pos = grid->TopLeftPos( pt );
@@ -156,14 +156,14 @@ void Path::Update( float dt )
                 else if( face == Vec2i::up ) out_pos = grid->TopRightPos( pt );
                 else if( face == Vec2i::down ) out_pos = grid->DownLeftPos( pt );
 
-                L_ << "We wanna charge: " << out_pos << '\n';
                 Charge charge = (*it)->ChargeOut();
                 charge.point = out_pos;
                 charge.can_kill = false;
                 charge.dir = face;
+                //L_ << "We wanna charge: " << charge.type << '\n';
 
                 if( Has( out_pos ) ) {
-                    L_ << "Def added in next\n";
+                    //L_ << "Def added in next\n";
                     AddChock( next_charges, charge  );
                 }
 

@@ -38,6 +38,21 @@ private:
     void Reset();
 
     int n;
-    int status;
+    bool status;
+};
+
+class OrObject : public PathObject {
+public:
+    OrObject();
+
+    void ChargeIn( Charge &charge );
+    void ChargeOutSent();
+
+    void ClockPulse();
+private:
+    void Reset();
+
+    int n;
+    bool status;
 };
 
