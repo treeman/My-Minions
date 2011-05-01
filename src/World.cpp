@@ -6,11 +6,9 @@
 #include "World.hpp"
 
 World::World() :
-    //a full 800x600 screen (tiles are 20x10)
-    //grid( 39, 119, 20, 10 )
-    grid( 19, 59, 40, 20 )
-    //roughly half that then =)
-    //grid( 20, 60, 20, 10 )
+    //a full 800x600 screen
+    grid( 19, 59, 40, 20 ),
+    path( &grid )
 {
     CenterCam();
     SETTINGS->Register<bool>( "debug_mouse_grid_conversions", false );
@@ -21,15 +19,25 @@ World::World() :
 
 void World::HandleOrder( Order order )
 {
+    const Vec2i wpos( order.pos.x, order.pos.y );
+    const Vec2i gpos = grid.PixelToGridPos( wpos );
+
     if( order.type == Order::CamNudge ) {
         Vec2f new_cam = GetCamPos();
         new_cam = NudgeCamX( new_cam, order.cam_nudge.x );
         new_cam = NudgeCamY( new_cam, order.cam_nudge.y );
         UpdateCam( new_cam );
     }
-    else if( order.type == Order::Move ) {
-        const Vec2f destination( order.move.x, order.move.y );
-        hero.MoveTowards( destination );
+    else if( order.type == Order::AddPath ) {
+        if( gpos != invalid_grid_pos ) {
+                path.Add( gpos );
+        }
+    }
+    else if( order.type == Order::RemovePath ) {
+        path.Remove( gpos );
+    }
+    else if( order.type == Order::Chock ) {
+        path.Chock( gpos );
     }
 }
 
@@ -131,13 +139,19 @@ void World::Update( float dt )
             Tree::VisualDebug( ss.str() );
             ss.str("");
         }
+
+        if( path.Has( gpos ) ) { ss << "pathed"; }
+        else { ss << "unpathed"; }
+        Tree::VisualDebug( ss.str() );
+        ss.str("");
     }
 }
 
 void World::Draw()
 {
     grid.Draw();
-    hero.Draw();
+    //hero.Draw();
+    path.Draw( cam.x, cam.y );
 }
 
 void World::UpdateCam( Vec2f new_cam )

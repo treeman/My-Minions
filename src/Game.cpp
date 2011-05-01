@@ -34,7 +34,8 @@ bool Game::HandleEvent( sf::Event &e )
 
 void Game::Loaded()
 {
-    Tree::DrawLazy();
+    //Tree::DrawLazy();
+    Tree::DrawNonLazy();
     Tree::SetMousePos(
         Tree::GetWindowWidth() / 2,
         Tree::GetWindowHeight() / 2

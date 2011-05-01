@@ -4,24 +4,27 @@
 
 class Order {
 public:
-    struct MoveOrder {
+    struct CamNudgeOrder {
         int x, y;
     };
 
-    struct CamNudgeOrder {
+    struct Pos {
         int x, y;
     };
 
     enum OrderType {
         Move,
         CamNudge,
+        AddPath,
+        RemovePath,
+        Chock,
     };
 
     OrderType type;
 
     union {
-        MoveOrder       move;
         CamNudgeOrder   cam_nudge;
+        Pos             pos;
     };
 };
 

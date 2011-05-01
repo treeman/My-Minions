@@ -8,6 +8,7 @@
 #include "IsoGrid.hpp"
 #include "Order.hpp"
 #include "Hero.hpp"
+#include "Path.hpp"
 
 class World : public OrderHandler {
 public:
@@ -41,5 +42,7 @@ private:
     IsoGrid grid;
 
     Hero hero;
+
+    Path path;
 };
 

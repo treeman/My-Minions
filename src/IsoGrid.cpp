@@ -17,11 +17,12 @@ IsoGrid::IsoGrid( int x_tiles, int y_tiles, int tw, int th )
             const Vec2i grid_pos( x, y );
 
             sf::Sprite base;
-            if( pos.y & 1 ) {
+            if( grid_pos.y & 1 ) {
                 base = BUTLER->CreateSprite( "tile1" );
             }
             else {
                 base = BUTLER->CreateSprite( "tile2" );
+                //base = BUTLER->CreateSprite( "gfx/empty.png" );
             }
             TilePtr tile( new Tile( base, pos, tile_w, tile_h, grid_pos ) );
             tiles.push_back( tile );

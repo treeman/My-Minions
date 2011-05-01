@@ -14,7 +14,8 @@ VisualObject.cpp \
 Hero.cpp \
 MoveableObject.cpp \
 Intro.cpp \
-Narrative.cpp
+Narrative.cpp \
+Path.cpp
 
 TREE_SRC=\
 Tree/Game.cpp \

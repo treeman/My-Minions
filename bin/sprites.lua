@@ -4,7 +4,7 @@
 tile_width = 40
 tile_height = 20
 
-tile = {
+tile1 = {
     path = "gfx/grasstile1.png",
     w = tile_width, h = tile_height,
 }

@@ -142,6 +142,8 @@ void Game::Init(
     input_chain->AddHandler( game_debug.get() );
 
     visual_debug.reset( new Debug() );
+
+    window->SetFramerateLimit( 100 );
 }
 
 void Game::Start()

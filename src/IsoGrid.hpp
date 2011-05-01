@@ -6,6 +6,8 @@
 #include "Tree/Vec2D.hpp"
 #include "Tile.hpp"
 
+const Vec2i invalid_grid_pos( -1, -1 );
+
 class IsoGrid {
 public:
     IsoGrid( int tiles_wide, int tiles_high, int tile_w, int tile_h );
