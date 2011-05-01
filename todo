@@ -1,15 +1,16 @@
 Sounds:
     Intersection sounds for 2, 3 and 4 charges
-    Simple turn
-    Split sound, T intersection
-    Hit a dead end
-    Initiate charge sound
+    *Simple turn
+    *Split sound, T intersection
+    *Hit a dead end
+    *Initiate charge sound
 
     At least 5 different sound objects to place
         (drums or whatever, so we can make something fun out of this)
 
 Core engine:
     2 types of charges (0 and 1)
+    Detect intersections
     Universal time for charge travel
         Pause/Unpause and set the speed
     Object chooser
@@ -31,4 +32,7 @@ Graphics:
 Later on, only when we've got the time:
     Save and Load maps (with menu or something)
     Infinitive map which generates the more you move around
+
+Bugs:
+    When placing the charge it takes a while before it stabilizes
 

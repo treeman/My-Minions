@@ -44,5 +44,10 @@ private:
     Hero hero;
 
     Path path;
+
+    void Pause();
+    void Unpause();
+    void TogglePause();
+    bool is_running;
 };
 

@@ -30,7 +30,10 @@ bool GameController::HandleEvent( sf::Event &e )
                 cam_nudge_dir.y = 1;
                 break;
             case sf::Key::Space:
-                SendOrder( Create( Order::Chock ) );
+                SendPos( Order::Chock );
+                break;
+            case sf::Key::P:
+                SendSimple( Order::TogglePause );
                 break;
             default:
                 break;
@@ -53,7 +56,7 @@ bool GameController::HandleEvent( sf::Event &e )
     return true;
 }
 
-Order GameController::Create( Order::OrderType type )
+void GameController::SendPos( Order::OrderType type )
 {
     const Vec2f mpos = Tree::GetMousePos();
     const Vec2i wpos = world->ConvertToWorld( mpos );
@@ -63,7 +66,14 @@ Order GameController::Create( Order::OrderType type )
     order.pos.x = wpos.x;
     order.pos.y = wpos.y;
 
-    return order;
+    SendOrder( order );
+}
+
+void GameController::SendSimple( Order::OrderType type )
+{
+    Order order;
+    order.type = type;
+    SendOrder( order );
 }
 
 void GameController::Update( float dt )
@@ -78,11 +88,10 @@ void GameController::Update( float dt )
     }
 
     if( Tree::GetInput().IsMouseButtonDown( sf::Mouse::Left ) ) {
-        Order order = Create( Order::AddPath );
-        SendOrder( order );
+        SendPos( Order::AddPath );
     }
     if( Tree::GetInput().IsMouseButtonDown( sf::Mouse::Right ) ) {
-        SendOrder( Create( Order::RemovePath ) );
+        SendPos( Order::RemovePath );
     }
     //if( Tree::GetInput().IsKeyDown( sf::Key::Space ) ) {
         //SendOrder( Create( Order::Chock ) );

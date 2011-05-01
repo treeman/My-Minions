@@ -18,6 +18,10 @@ public:
         AddPath,
         RemovePath,
         Chock,
+        TogglePause,
+        Pause,
+        Unpause,
+        SetSpeed,
     };
 
     OrderType type;
@@ -25,6 +29,7 @@ public:
     union {
         CamNudgeOrder   cam_nudge;
         Pos             pos;
+        int             sim_speed;
     };
 };
 

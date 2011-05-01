@@ -15,8 +15,9 @@ public:
     bool HandleEvent( sf::Event &e );
     void Update( float dt );
 protected:
-    // Shortcut for simple order by mouse pos
-    Order Create( Order::OrderType type );
+    // Shortcut for simpler order sending
+    void SendPos( Order::OrderType type );
+    void SendSimple( Order::OrderType type );
 
     Vec2i cam_nudge_dir;
     World *const world;

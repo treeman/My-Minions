@@ -8,7 +8,8 @@
 World::World() :
     //a full 800x600 screen
     grid( 19, 59, 40, 20 ),
-    path( &grid )
+    path( &grid ),
+    is_running( true )
 {
     CenterCam();
     SETTINGS->Register<bool>( "debug_mouse_grid_conversions", false );
@@ -38,6 +39,17 @@ void World::HandleOrder( Order order )
     }
     else if( order.type == Order::Chock ) {
         path.Chock( gpos );
+    }
+    else if( order.type == Order::Pause ) {
+        path.Pause();
+        Pause();
+    }
+    else if( order.type == Order::Unpause ) {
+        path.Start();
+        Unpause();
+    }
+    else if( order.type == Order::TogglePause ) {
+        TogglePause();
     }
 }
 
@@ -163,5 +175,25 @@ void World::UpdateCam( Vec2f new_cam )
 
     hero.Move( move_x, move_y );
     grid.SetPos( cam.x, cam.y );
+}
+
+void World::Pause()
+{
+    path.Pause();
+    is_running = false;
+}
+void World::Unpause()
+{
+    path.Start();
+    is_running = true;
+}
+void World::TogglePause()
+{
+    if( is_running ) {
+        Pause();
+    }
+    else {
+        Unpause();
+    }
 }
 

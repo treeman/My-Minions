@@ -12,7 +12,21 @@ Path::Path( IsoGrid *const _grid ) : grid( _grid )
 
     chock_time = TWEAKS->GetNum( "chock_time" );
 
-    snd = BUTLER->CreateSound( "snd/play.wav" );
+    charge_it = BUTLER->CreateSound( "snd/charge.wav" );
+    dead_end = BUTLER->CreateSound( "snd/deadend.wav" );
+    split = BUTLER->CreateSound( "snd/split.wav" );
+    turn = BUTLER->CreateSound( "snd/turn.wav" );
+
+    t.Start();
+}
+
+void Path::Start()
+{
+    t.Start();
+}
+void Path::Pause()
+{
+    t.Pause();
 }
 
 bool Path::Has( Vec2i point )
@@ -47,20 +61,30 @@ Path::Points Path::Neighbours( Vec2i pt )
     return neighbours;
 }
 
-bool Path::Chock( Vec2i point, Vec2i dir )
+bool Path::CanChock( Vec2i point )
 {
-    if( points.count( point ) ) {
-        L_ << "Chocking: " << point << " -> " << dir << '\n';
+    return points.count( point );
+}
+
+void Path::Chock( Vec2i point, Vec2i dir )
+{
+    AddChock( chocks, point, dir );
+}
+
+void Path::AddChock( Charges &charges, Vec2i point, Vec2i dir )
+{
+    if( CanChock( point ) ) {
         charges.push_back( Charge( point, dir ) );
-        return true;
     }
-    return false;
 }
 
 void Path::Update( float dt )
 {
-    for( Charges::iterator it = charges.begin(); it != charges.end(); ) {
-        if( it->t.GetTime() > chock_time ) {
+    const float curr_time = t.GetTime();
+    if( curr_time > chock_time ) {
+        Charges next_charges;
+
+        for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {
             const Vec2i pt = it->point;
             if( it->dir == Vec2i::zero ) {
                 Chock( grid->TopLeftPos( pt ), Vec2i::left );
@@ -102,22 +126,34 @@ void Path::Update( float dt )
                     order[3] = up; dir[3] = Vec2i::up;
                 }
 
-                if( !Chock( order[0], dir[0] ) ) {
-                    snd.Play();
+                if( CanChock( order[0] ) ) {
+                    AddChock( next_charges, order[0], dir[0] );
+                }
+                else {
                     if( Has( order[1] ) || Has( order[2] ) ) {
-                        Chock( order[1], dir[1] );
-                        Chock( order[2], dir[2] );
+                        AddChock( next_charges, order[1], dir[1] );
+                        AddChock( next_charges, order[2], dir[2] );
+                        if( Has( order[1] ) && Has( order[2] ) ) {
+                            split.Play();
+                        }
+                        else {
+                            turn.Play();
+                        }
                     }
                     else {
-                        Chock( order[3], dir[3] );
+                        AddChock( next_charges, order[3], dir[3] );
+                        dead_end.Play();
                     }
                 }
             }
-            Charges::iterator del = it;
-            ++it;
-            charges.erase( del );
         }
-        ++it;
+
+        charges = next_charges;
+        if( !chocks.empty() ) {
+            charge_it.Play();
+            charges.splice( charges.begin(), chocks );
+        }
+        t.Restart();
     }
 }
 
