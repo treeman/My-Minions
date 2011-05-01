@@ -1,4 +1,5 @@
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "Tree/Butler.hpp"
 #include "Tree/VisualDebug.hpp"
@@ -6,6 +7,7 @@
 #include "Tree/Log.hpp"
 
 #include "Path.hpp"
+#include "ObjectFactory.hpp"
 
 Path::Path( IsoGrid *const _grid ) : grid( _grid )
 {
@@ -348,8 +350,8 @@ void Path::Save( std::fstream &file )
 {
     file << "charges\n";
     for( Charges::iterator it = charges.begin(); it != charges.end(); ++it ) {
-        file << it->point <<" "<< it->dir <<" "<< it->type <<"  "<<
-            it->can_kill << '\n';
+        if( it-> can_kill ) continue;
+        file << it->point <<" "<< it->dir <<" "<< it->type << '\n';
     }
     file << "points\n";
 
@@ -365,15 +367,30 @@ void Path::Save( std::fstream &file )
     }
 }
 
+Vec2i To( std::string str )
+{
+    //L_ << str << '\n';
+    Vec2i v;
+    int p = str.find(',');
+    if( p != -1 ) {
+        //L_ << str.substr( 0, p ) << '\n';
+        //L_ << str.substr( p + 1 ) << '\n';
+        v.x = boost::lexical_cast<int>( str.substr( 0, p ) );
+        v.y = boost::lexical_cast<int>( str.substr( p + 1 ) );
+    }
+    return v;
+}
+
 void Path::Load( std::ifstream &file )
 {
     //Charges
     while( !file.eof() )
     {
-        if( str == "charges" ) continue;
-
         std::string str;
         std::getline( file, str );
+
+        if( str == "charges" ) continue;
+
         //if( str.size() == 0 ) {
         //L_ << "<" << str << '\n';
         if( str == "points" ) {
@@ -384,8 +401,14 @@ void Path::Load( std::ifstream &file )
             std::vector<std::string> strs;
             boost::split( strs, str, boost::is_any_of("\t ") );
 
+            //L_ << "Charge: " << str << '\n';
             Charge charge;
-            L_ << "Charge: " << str << '\n';
+            charge.point = To( strs[0] );
+            charge.dir = To( strs[1] );
+            charge.type = boost::lexical_cast<int>( strs[2] );
+            charge.can_kill = false;
+
+            chocks.push_back( charge );
         }
     }
 
@@ -401,7 +424,14 @@ void Path::Load( std::ifstream &file )
             break;
         }
         else {
-            L_ << "Points: " << str << '\n';
+            std::vector<std::string> strs;
+            boost::split( strs, str, boost::is_any_of("\t ") );
+
+            for( size_t i = 0; i < strs.size(); ++i ) {
+                points.insert( To( strs[i] ) );
+            }
+
+            //L_ << "Points: " << str << '\n';
         }
     }
 
@@ -416,7 +446,19 @@ void Path::Load( std::ifstream &file )
             break;
         }
         else {
-            L_ << "Object: " << str << '\n';
+            std::vector<std::string> strs;
+            boost::split( strs, str, boost::is_any_of("\t ") );
+
+            Vec2i pos = To( strs[0] );
+            Vec2i dir = To( strs[1] );
+            int obj_num = boost::lexical_cast<int>( strs[2] );
+
+            PathObjPtr obj = GetObject( obj_num );
+            obj->SetGridPos( pos );
+            obj->SetDir( dir );
+            objects.push_back( obj );
+
+            //L_ << "Object: " << str << '\n';
         }
     }
 }

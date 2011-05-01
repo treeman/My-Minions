@@ -27,6 +27,7 @@ public:
 
     // Only one entrance
     void Rotate();
+    void SetDir( Vec2i dir ) { face = dir; }
     Vec2i Facing();
 
     sf::Sprite GetSprite() { return spr; }
