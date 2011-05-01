@@ -17,6 +17,7 @@ bool GameController::HandleEvent( sf::Event &e )
             case sf::Key::F10:
                 GAME->Exit();
                 break;
+
             case sf::Key::Left:
                 cam_nudge_dir.x = -1;
                 break;
@@ -29,11 +30,40 @@ bool GameController::HandleEvent( sf::Event &e )
             case sf::Key::Down:
                 cam_nudge_dir.y = 1;
                 break;
+
             case sf::Key::Space:
                 SendPos( Order::Chock );
                 break;
+
             case sf::Key::P:
                 SendSimple( Order::TogglePause );
+                break;
+            case sf::Key::Num1:
+                SendSpeed( 0.2 );
+                break;
+            case sf::Key::Num2:
+                SendSpeed( 0.5 );
+                break;
+            case sf::Key::Num3:
+                SendSpeed( 0.8 );
+                break;
+            case sf::Key::Num4:
+                SendSpeed( 1.0 );
+                break;
+            case sf::Key::Num5:
+                SendSpeed( 1.4 );
+                break;
+            case sf::Key::Num6:
+                SendSpeed( 1.8 );
+                break;
+            case sf::Key::Num7:
+                SendSpeed( 2.5 );
+                break;
+            case sf::Key::Num8:
+                SendSpeed( 4.0 );
+                break;
+            case sf::Key::Num9:
+                SendSpeed( 8.0 );
                 break;
             default:
                 break;
@@ -56,6 +86,25 @@ bool GameController::HandleEvent( sf::Event &e )
     return true;
 }
 
+void GameController::Update( float dt )
+{
+    if( cam_nudge_dir != Vec2i::zero ) {
+        Order order;
+        order.type = Order::CamNudge;
+        const int cam_nudge_speed = SETTINGS->GetValue<int>( "cam_nudge_speed" );
+        order.cam_nudge.x = cam_nudge_dir.x * cam_nudge_speed * dt;
+        order.cam_nudge.y = cam_nudge_dir.y * cam_nudge_speed * dt;
+        SendOrder( order );
+    }
+
+    if( Tree::GetInput().IsMouseButtonDown( sf::Mouse::Left ) ) {
+        SendPos( Order::AddPath );
+    }
+    if( Tree::GetInput().IsMouseButtonDown( sf::Mouse::Right ) ) {
+        SendPos( Order::RemovePath );
+    }
+}
+
 void GameController::SendPos( Order::OrderType type )
 {
     const Vec2f mpos = Tree::GetMousePos();
@@ -76,25 +125,11 @@ void GameController::SendSimple( Order::OrderType type )
     SendOrder( order );
 }
 
-void GameController::Update( float dt )
+void GameController::SendSpeed( float speed )
 {
-    if( cam_nudge_dir != Vec2i::zero ) {
-        Order order;
-        order.type = Order::CamNudge;
-        const int cam_nudge_speed = SETTINGS->GetValue<int>( "cam_nudge_speed" );
-        order.cam_nudge.x = cam_nudge_dir.x * cam_nudge_speed * dt;
-        order.cam_nudge.y = cam_nudge_dir.y * cam_nudge_speed * dt;
-        SendOrder( order );
-    }
-
-    if( Tree::GetInput().IsMouseButtonDown( sf::Mouse::Left ) ) {
-        SendPos( Order::AddPath );
-    }
-    if( Tree::GetInput().IsMouseButtonDown( sf::Mouse::Right ) ) {
-        SendPos( Order::RemovePath );
-    }
-    //if( Tree::GetInput().IsKeyDown( sf::Key::Space ) ) {
-        //SendOrder( Create( Order::Chock ) );
-    //}
+    Order order;
+    order.type = Order::SetSpeed;
+    order.sim_speed = speed;
+    SendOrder( order );
 }
 

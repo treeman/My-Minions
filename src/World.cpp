@@ -51,6 +51,9 @@ void World::HandleOrder( Order order )
     else if( order.type == Order::TogglePause ) {
         TogglePause();
     }
+    else if( order.type == Order::SetSpeed ) {
+        L_ << "Setting speed: " << order.sim_speed << '\n';
+    }
 }
 
 Vec2f World::ConvertToWorld( Vec2f screen_pos ) const

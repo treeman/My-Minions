@@ -29,7 +29,7 @@ public:
     union {
         CamNudgeOrder   cam_nudge;
         Pos             pos;
-        int             sim_speed;
+        float             sim_speed;
     };
 };
 
