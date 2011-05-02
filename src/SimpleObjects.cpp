@@ -59,9 +59,9 @@ void AndObject::ChargeIn( Charge &charge )
 
     charge.can_kill = true;
 
-    std::stringstream ss;
-    ss << "And's status: " << status << " " << n <<" "<< HasOutCharge();
-    Tree::VisualDebug( "and", ss.str() );
+    //std::stringstream ss;
+    //ss << "And's status: " << status << " " << n <<" "<< HasOutCharge();
+    //Tree::VisualDebug( "and", ss.str() );
 }
 
 void AndObject::ChargeOutSent() { Reset(); }
@@ -98,9 +98,9 @@ void OrObject::ChargeIn( Charge &charge )
 
     charge.can_kill = true;
 
-    std::stringstream ss;
-    ss << "And's status: " << status << " " << n <<" "<< HasOutCharge();
-    Tree::VisualDebug( "and", ss.str() );
+    //std::stringstream ss;
+    //ss << "And's status: " << status << " " << n <<" "<< HasOutCharge();
+    //Tree::VisualDebug( "and", ss.str() );
 }
 
 void OrObject::ChargeOutSent() { Reset(); }
