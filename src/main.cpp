@@ -14,7 +14,7 @@ int main()
               800             //width
             , 600             //height
             , true            //windowed
-            , "It's Dangerous To Go Alone! Take This!"    //window title
+            , "My Minions"    //window title
             , "settings.ini"  //settings file
             , true            //lazy drawing
         );

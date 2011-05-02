@@ -10,7 +10,8 @@
 
 World::World() :
     //a full 800x600 screen
-    grid( 19, 59, 40, 20 ),
+    //grid( 19, 59, 40, 20 ),
+    grid( 25, 100, 40, 20 ),
     path( &grid ),
     is_running( true )
 {

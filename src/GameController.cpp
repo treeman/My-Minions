@@ -11,13 +11,16 @@ GameController::GameController( World *const _world ) :
     SETTINGS->Register( "cam_nudge_speed", 500 );
 
     // Speed intervals of 1 to 9
-    curr_speed = 3;
-
-    SendSpeed();
+    curr_speed = 6;
 
     obj_spr = BUTLER->CreateSprite( "gfx/empty.png" );
 
     obj_spr.SetPosition( 20, Tree::GetWindowHeight() - 40 );
+}
+
+void GameController::Done()
+{
+    SendSpeed();
 }
 
 bool GameController::HandleEvent( sf::Event &e )

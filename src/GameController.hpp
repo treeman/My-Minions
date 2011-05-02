@@ -13,6 +13,8 @@ class GameController : public Controller {
 public:
     GameController( World *const world );
 
+    void Done();
+
     bool HandleEvent( sf::Event &e );
 
     void Update( float dt );

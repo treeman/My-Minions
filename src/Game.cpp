@@ -16,6 +16,8 @@ Game::Game()
     controller.reset( new GameController( world.get() ) );
     input_chain.AddHandler( controller.get() );
     controller->AddOrderHandler( world.get() );
+
+    controller->Done();
 }
 
 bool Game::HandleEvent( sf::Event &e )

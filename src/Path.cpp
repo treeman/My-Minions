@@ -383,6 +383,11 @@ Vec2i To( std::string str )
 
 void Path::Load( std::ifstream &file )
 {
+    charges.clear();
+    chocks.clear();
+    objects.clear();
+    points.clear();
+
     //Charges
     while( !file.eof() )
     {

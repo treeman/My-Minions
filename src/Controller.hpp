@@ -15,6 +15,8 @@ public:
         order_handlers.push_back( handler );
     }
 
+    virtual void Done() { }
+
     virtual bool HandleEvent( sf::Event & ) { return true; }
     virtual void Update( float ) { }
     // hack
